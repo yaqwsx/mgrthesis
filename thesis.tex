@@ -1,0 +1,247 @@
+\documentclass[11pt,twoside,a4paper]{book}
+\usepackage[shorthands=off,english]{babel} % package for multilingual support
+
+\RequirePackage{iftex}
+\ifPDFTeX
+    \usepackage[utf8]{inputenc}
+    \usepackage[T1]{fontenc}
+    % \usepackage{lmodern}
+\else
+    \RequirePackage{fontspec} % UFT8 fonts for LuaLaTeX
+    % \setmainfont{Latin Modern Roman}
+\fi
+\usepackage{csquotes}
+
+\usepackage[ backend=biber
+            , style=numeric
+            , sortlocale=en_US
+            , bibencoding=UTF8
+            , maxcitenames=3
+            , maxbibnames=100
+            ]{biblatex}
+
+\usepackage{xcolor}
+\definecolor{dark-red}{rgb}{0.6,0.15,0.15}
+\definecolor{dark-green}{rgb}{0.15,0.4,0.15}
+\definecolor{medium-blue}{rgb}{0,0,0.5}
+\definecolor{paradisegreen}{HTML}{45A931}
+
+\usepackage{amssymb,amsmath}
+\usepackage{minted}
+\usepackage{verbatim}
+\usepackage[final]{listings}
+\lstset{ language=C++ }
+\usepackage{paralist}
+% use upquote for straight quotes in verbatim environments
+\usepackage{upquote}
+\usepackage{booktabs}
+
+\usepackage{xspace}
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, shadows, positioning, calc, fit, backgrounds, decorations.pathmorphing, automata, matrix}
+
+\usepackage{pdfpages}
+
+\usepackage{float}
+\makeatletter
+% custom float style, derived from ruled
+% - caption is at the bottom
+% - spaces before and after figure are larger
+% - rules are thinner
+% - bottom rule is missing
+\newcommand\floatc@botruled[2]{{\@fs@cfont #1} #2\par}
+\newcommand\fs@botruled{\def\@fs@cfont{\bfseries}\let\@fs@capt\floatc@botruled
+    \def\@fs@pre{\hrule\kern0.5\abovecaptionskip}%
+    \def\@fs@post{}%
+    \def\@fs@mid{\kern0.5\abovecaptionskip\hrule\kern0.5\abovecaptionskip}%
+\let\@fs@iftopcapt\iffalse}
+\makeatother
+\floatstyle{botruled}
+\restylefloat{figure}
+% \restylefloat{table}
+\usepackage[labelfont=bf]{caption}
+
+\usepackage{multirow}
+\usepackage{microtype}
+
+\usepackage{tabularx}
+%\newcolumntype{C}{>{\centering\arraybackslash}X}
+%\usepackage{arydshln}
+\newcommand{\dg}{\textsuperscript{\dag}}
+
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xspace}
+\usepackage{bm}
+\usepackage{rotating}
+\usepackage{pbox}
+\usepackage{pdflscape}
+\usepackage{tabu, longtable}
+\usepackage{array}
+\usepackage{siunitx}
+
+\newcommand{\mcrot}[4]{\multicolumn{#1}{#2}{\rlap{\rotatebox{#3}{#4}~}}}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
+\newcommand\todo[1]{\noindent\textcolor{red}{#1}}
+\newcommand\add[1]{\noindent\textcolor{green}{#1}}
+
+\newcommand\tablecaption{Nothing}
+\newcommand\tablecaptioncont{Nothing}
+\newcommand\tablelabel{tab:todo}
+
+\newcommand{\paradise}{ParaDiSe\xspace}
+
+\newcommand{\FI}{Faculty of Informatics}
+\newcommand{\MU}{Masaryk University}
+
+\newcommand{\Jirik}{prof. RNDr. Jiří Barnat, Ph.D.}
+
+\newcommand{\thesistitle}{RoFI: Distributed Reconfigurable Robotic Platform}
+\newcommand{\thesissubtitle}{Masters's thesis}
+\newcommand{\thesisauthor}{Jan Mrázek}
+\newcommand{\thesisYearCity}{Brno, 2018}
+\newcommand{\thesisadvisor}{\Jirik}
+
+\newcommand{\note}{\textit{Note:}\xspace}
+
+\addbibresource{bibliography.bib}
+
+\usepackage{setspace}
+\usepackage{placeins}
+
+\addtolength\textwidth{5pt}
+\addtolength\oddsidemargin{1cm}
+\addtolength\evensidemargin{-1cm}
+
+\usepackage{enumitem}
+\providecommand{\tightlist}{%
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parskip}{0pt}%
+    \setlength{\topsep}{0pt}%
+    \setlength{\partopsep}{0pt}}
+
+\usepackage[ pdfauthor={Jan Mrázek}
+            , pdftitle={Caching SMT Queries in SymDivine},
+            , pdfsubject={Bachelor's Thesis},
+            , plainpages=false
+            , pdfpagelabels
+            , unicode
+            , draft=false
+            , colorlinks=true
+            , linkcolor={dark-red}
+            , citecolor={dark-green}
+            , urlcolor={medium-blue}
+            , unicode=true
+            ]{hyperref}
+
+% \newcommand{\TODO}[1]{\textbf{\color{red}#1}}
+
+% autoref names
+\addto\extrasenglish{
+    \renewcommand{\chapterautorefname}{Chapter}
+    \renewcommand{\sectionautorefname}{Section}
+    \renewcommand{\subsectionautorefname}{Section}
+}
+
+\newcommand{\rot}[1]{\rotatebox{90}{#1\hspace*{0.5em}}}
+
+\newcommand{\antispaceatend}{\vspace*{-\topsep}}
+
+% \setlength{\overfullrule}{5pt} % TODO: remove
+
+\begin{document}
+
+% \DocLength{evensidemargin}
+% \DocLength{oddsidemargin}
+% \layout
+
+% initial pages from Mornfall + modifications
+
+\frontmatter
+\pagestyle{empty}
+
+\begin{center}
+    {\Large \sc \FI, \MU}
+    \vskip4em
+    \includegraphics[width = 4cm, height = 4cm] {logo_fi.pdf}
+    \vskip4em
+    {\begin{spacing}{1}
+        \Huge \bf \thesistitle
+    \end{spacing}}
+    \vskip2em
+    {\Large \sc \thesissubtitle}
+    \vskip4em
+    {\LARGE \bf \thesisauthor}
+    \vfill
+    {\hfill \large \thesisYearCity}
+\end{center}
+
+\cleardoublepage
+
+% only in print version!
+\iffalse %@ifprint
+\includepdf[pages={1}]{zadani.pdf}
+\includepdf[pages={1}]{prohlaseni.pdf}
+\cleardoublepage
+\fi
+
+\section*{Declaration} % from Mornfall
+Thereby I declare that this thesis is my original work, which I have
+created on my own. All sources and literature used in writing the
+thesis, as well as any quoted material, are properly cited, including
+full reference to its source.
+
+\vfill
+\textbf{Advisor:} \thesisadvisor
+
+\cleardoublepage
+
+\section*{Abstract}
+
+TBA
+
+\section*{Keywords}
+TBA
+
+\cleardoublepage
+
+\section*{Acknowledgements}
+First, I would like to thank all the people in the ParaDiSe laboratory for
+providing such a nice half work-friendly and half procrastination-friendly
+environment. It was a pleasure to write this thesis with you! Namely, I would
+like to thank Jiří Barnat for providing me the opportunity to become a member of
+ParaDiSe laboratory and advising this thesis, and Vladimír Štill for the instant
+small consultations he provided me all the time.
+
+I would like to thank Zuzana Baranová and Jana Mrázová for consulting the traps
+of the English language with me. Also, I would like to thank my family for
+supporting me and having enough patience with me.
+
+Finally, I cannot forget to thank all the people who constantly reminded me to
+work. This thesis would not exist without you.
+
+
+\cleardoublepage
+\thispagestyle{empty}
+
+\pagestyle{headings}
+\tableofcontents
+\mainmatter
+
+\chapter{Introduction}\label{chap:introduction}
+
+
+\chapter*{Bibliography}
+\addcontentsline{toc}{chapter}{Bibliography}
+\markboth{}{} % avoid headers from last chapter in bibliography
+\printbibliography[heading=none]
+
+\appendix
+\chapter{TBA}
+
+\end{document}

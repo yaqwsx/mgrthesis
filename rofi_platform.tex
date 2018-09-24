@@ -1,0 +1,96 @@
+\chapter{The RoFI platform}\label{chap:rofi}
+
+The goal of the RoFI platform is to create a new platform for distributed,
+modular and self-reconfigurable robots. The platform does not target real-world
+usage but it should serve as a tool for validation of various control algorithms
+in a physical world. This chapter presents the platform and gives an in-depth
+specification of it.
+
+First, we give a brief introduction to a concept of modular robots and establish
+several terms. Then we specify the goals of the RoFI platform and provide its
+specification. The specification is given as it is without any reasoning behind
+the design choices. The reasoning can be found in the following chapter
+\ref{chap:behind}.
+
+\section{Modular Robots}
+
+An modular robotic platform is a way to build robots consisting of
+\emph{modules}, as the name suggests. For our purposes, we consider a module to
+be a single unit following a specification given by the platform. Modules are
+rather high-level pieces with a certain level of self control instead of
+low-level components like individual actuators or sensors. It might even make
+sense to talk about modules as individual robots, which are used to build other
+robots.
+
+Each of these modules has a given set of capabilities. By joining multiple
+modules and via their cooperation, new capabilities can emerge. Different
+configurations of modules can emerge different capabilities. The modules are
+usually mechanically connected together to form a single robot.
+
+The mechanical connection of the modules can be done externally, e.g. by an
+operator, or can be performed by the modules on each own. In the later case, we
+talk about \emph{self-reconfigurable} modules. Depending on the topology of the
+connection, there is a naming established in the literature:
+\begin{enumerate*}
+    \item \emph{chain type} for a linear, snake-like and tree-like configurations
+    \item \emph{lattice type} for an regular grid-based robots
+    \item \todo{XYZ}
+\end{enumerate*}
+Further, if the modules are of a similar shape, they are called \emph{celluar}.
+
+As the robot is form, it can be either \emph{centrally controlled} by a single
+(and possibly external) unit or the distributed nature of the modules can be
+leveraged and therefore, the robot can feature \emph{distributed control}. The
+centrally controlled approach is considered as an easier one, however it does
+not utilize all the potential computational power of the modules and is harder
+to make fault-tolerant in case of failure of the control unit compared to the
+distributed control.
+
+To help to build an intuition about the platform we give an analogy with
+Replicators -- robots present in a sci-fi TV series Star Gate. Readers
+unfamiliar with the TV series can skip the following paragraph.
+
+Replicators consist of a single Replicator block, which is unable to perform any
+action on its own. Single replicator block maps to a module in terminology given
+above. However, when multiple blocks are combined, they are able to perform
+movement and self-control. Therefore, Replicators are:
+\begin{enumerate*}
+    \item modular (they can be assembled in many configurations from a single
+    type of unit)
+    \item self-reconfigurable (the configuration can be changed by the blocks on
+    their own) and
+    \item celluar (as there is only a single type of block).
+\end{enumerate*}
+Whether Replicators are distributed is unclear -- the series does not give much
+detail about it. We strongly believe so, as each blob of modules can operate
+independently on the others an in case of reconfiguration all newly emerged
+blobs become independent.
+
+\section{Goals of the RoFI Platform}
+
+The goal of the RoFI platform is to give an reasonably easy way to validate
+various control algorithms for modular self-reconfigurable robots, as we
+mentioned in the introduction. It does not target for any specific real-world
+usage, like e.g. the Roombots\todo{cite} for being a smart furniture. To fullfil
+these goals we give a following list of requirements for the platform:
+
+\begin{itemize}
+    \item All sources (including CAD models, PCBs, firmwares and libraries)
+    should be kept open-source, to allow for reproducibility of experiments
+    performed on the platform.
+    \item It should be manufacturable by a commonly accessible machinery.
+    \item No deep understanding of mechanical nor electrical engineering should
+    be required to use it.
+    \item Clear specification of the modules should be available to allow for
+    further extension.
+    \item The platform should provide a way to easily distribute new firmware to
+    the modules.
+    \item The platform should allow for both, central and distributed control.
+    \item The platform should provide an easy way to port control algorithms.
+    This reduces to a requirement for an easy way to define an atomic control
+    actions used by the algorithms.
+\end{itemize}
+
+\section{The RoFI Platform Specification}
+
+\todo{Something here}

@@ -20,7 +20,7 @@ be a single unit following a specification given by the platform. Modules are
 rather high-level pieces with a certain level of self control instead of
 low-level components like individual actuators or sensors. It might even make
 sense to talk about modules as individual robots, which are used to build other
-robots.
+robots\cite{brunete_current_2017}.
 
 Each of these modules has a given set of capabilities. By joining multiple
 modules and via their cooperation, new capabilities can emerge. Different
@@ -29,14 +29,17 @@ usually mechanically connected together to form a single robot.
 
 The mechanical connection of the modules can be done externally, e.g. by an
 operator, or can be performed by the modules on each own. In the later case, we
-talk about \emph{self-reconfigurable} modules. Depending on the topology of the
-connection, there is a naming established in the literature:
+talk about \emph{self-reconfigurable} modules \cite{brunete_current_2017}.
+Depending on the topology of the connection, there is a naming established in
+the literature\cite{brunete_current_2017}:
 \begin{enumerate*}
     \item \emph{chain type} for a linear, snake-like and tree-like configurations
     \item \emph{lattice type} for an regular grid-based robots
-    \item \todo{XYZ}
+    \item \emph{hybrid type} for robots combining both previous approaches
 \end{enumerate*}
-Further, if the modules are of a similar shape, they are called \emph{celluar}.
+Further, if there is only a single or a few types of modules in the system, it
+is called \emph{metamorphic}\cite{brunete_current_2017}. Modules of such system
+are also called \emph{cells} as they mimic cells in living organisms.
 
 As the robot is form, it can be either \emph{centrally controlled} by a single
 (and possibly external) unit or the distributed nature of the modules can be
@@ -59,7 +62,7 @@ movement and self-control. Therefore, Replicators are:
     type of unit)
     \item self-reconfigurable (the configuration can be changed by the blocks on
     their own) and
-    \item celluar (as there is only a single type of block).
+    \item metamorphic (as there is only a single type of block).
 \end{enumerate*}
 Whether Replicators are distributed is unclear -- the series does not give much
 detail about it. We strongly believe so, as each blob of modules can operate
@@ -71,8 +74,9 @@ blobs become independent.
 The goal of the RoFI platform is to give an reasonably easy way to validate
 various control algorithms for modular self-reconfigurable robots, as we
 mentioned in the introduction. It does not target for any specific real-world
-usage, like e.g. the Roombots\todo{cite} for being a smart furniture. To fullfil
-these goals we give a following list of requirements for the platform:
+usage, like e.g. the Roombots\cite{bonardi_locomotion_2012} for being a smart
+furniture. To fullfil these goals we give a following list of requirements for
+the platform:
 
 \begin{itemize}
     \item All sources (including CAD models, PCBs, firmwares and libraries)
@@ -92,5 +96,20 @@ these goals we give a following list of requirements for the platform:
 \end{itemize}
 
 \section{The RoFI Platform Specification}
+
+The RoFI platform is a lattice type modular, self-reconfigurable and metamorphic
+platform. It is based on a 10cm cube grid. The platform defines \todo{More and more}
+
+\subsection{The RoFI Module}
+
+\subsection{Lock System}
+
+\subsection{Intermodule Communication and Power Sharing}
+
+\subsection{Intramodule Architecture}
+
+\subsection{The RoFI "BIOS" \todo{Proper naming}}
+
+\subsection{RoFI lib}
 
 \todo{Something here}

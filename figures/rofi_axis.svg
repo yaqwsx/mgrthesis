@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="169.68024mm"
+   width="194.30254mm"
    height="119.82442mm"
-   viewBox="0 0 169.68024 119.82442"
+   viewBox="0 0 194.30254 119.82442"
    version="1.1"
    id="svg1430"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
@@ -116,15 +116,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="215.77054"
-     inkscape:cy="222.06889"
+     inkscape:cx="202.34684"
+     inkscape:cy="222.0689"
      inkscape:document-units="mm"
      inkscape:current-layer="g985"
      showgrid="false"
      inkscape:window-width="1916"
-     inkscape:window-height="1160"
+     inkscape:window-height="1056"
      inkscape:window-x="0"
-     inkscape:window-y="18"
+     inkscape:window-y="0"
      inkscape:window-maximized="0"
      fit-margin-top="10"
      fit-margin-right="10"
@@ -146,7 +146,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-19.169329,-106.29929)">
+     transform="translate(7.0446096,-106.29929)">
     <g
        transform="matrix(0.00178994,0,0,-0.00179279,-511.41466,503.61742)"
        id="g985"
@@ -588,17 +588,29 @@
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';fill:#19d400;fill-opacity:1">β &lt;-90°;+90°&gt;</flowPara></flowRoot>      <flowRoot
          xml:space="preserve"
          id="flowRoot11086-2-0"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:UnYetgul;-inkscape-font-specification:UnYetgul;letter-spacing:0px;word-spacing:0px;fill:#045fff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         transform="matrix(147.81687,0,0,-147.58189,239809.2,285759.3)"><flowRegion
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;line-height:83.80000591%;font-family:UnYetgul;-inkscape-font-specification:UnYetgul;letter-spacing:0px;word-spacing:0px;fill:#045fff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         transform="matrix(147.81687,0,0,-147.58189,225323.14,287087.55)"><flowRegion
            id="flowRegion11088-7-6"
-           style="fill:#045fff;fill-opacity:1"><rect
+           style="line-height:83.80000591%;fill:#045fff;fill-opacity:1"><rect
              id="rect11090-4-4"
-             width="251.42859"
-             height="47.857117"
+             width="353.42856"
+             height="196.85712"
              x="418.57144"
              y="523.94824"
-             style="fill:#045fff;fill-opacity:1" /></flowRegion><flowPara
-           id="flowPara11092-1-4"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';fill:#045fff;fill-opacity:1">γ (-∞;+∞)</flowPara></flowRoot>    </g>
+             style="line-height:83.80000591%;fill:#045fff;fill-opacity:1" /></flowRegion><flowPara
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:83.80000591%;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math';fill:#045fff;fill-opacity:1"
+           id="flowPara933">γ &lt;-180°;+180°&gt;</flowPara></flowRoot>      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1846.24169922px;line-height:125%;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:147.69934082px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         x="312732.19"
+         y="-205271.81"
+         id="text929"
+         transform="scale(1.0007958,-0.99920485)"><tspan
+           sodipodi:role="line"
+           id="tspan927"
+           x="312732.19"
+           y="-205271.81"
+           style="stroke-width:147.69934082px">;</tspan></text>
+    </g>
   </g>
 </svg>

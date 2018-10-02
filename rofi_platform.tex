@@ -140,12 +140,13 @@ to other modules and provide movement.
 
 There are 3 degrees of freedom (figure \ref{fig:rofi_axis}):
 \begin{enumerate*}
-    \item shoe A can rotate against body A along the $\alpha$ axe in range
-    $<-90^\circ; +90^\circ>$,
-    \item shoe B can rorate against body B along the $\beta$ axe in range
-    $<-90^\circ; +90^\circ>$ and
-    \item body A can rotate against body B along the $\gamma$ axe in an
-    unlimited range\footnote{First prototypes feature limitation on the $\gamma$
+    \item shoe A can rotate against body A along the $\alpha$ axe in a range
+    $\langle -90^\circ; +90^\circ\rangle$,
+    \item shoe B can rorate against body B along the $\beta$ axe in a range
+    $\langle -90^\circ; +90^\circ\rangle$ and
+    \item body A can rotate against body B along the $\gamma$ axe in $\langle
+    -180^\circ; +180^\circ\rangle$ with an overflow\footnote{First prototypes
+    feature a limitation on a number of overflows in one direction the $\gamma$
     axe due to technical limitations. }.
 \end{enumerate*}
 The module should be able to provide at least 1.5 $\text{N}\cdot\text{m}$ of
@@ -161,13 +162,13 @@ torque for each axe.
 The flat faces of shoes feature docking system for establishing mechanical
 connection to other modules. There are 6 docks in total (figure
 \ref{fig:rofi_locks}); 3 on each shoe. The docks are marked by the name of a
-shoe and by one of following suffixes: -1, 0, 1. When facing the dock, its index
-gives a factor by which we multiply degree of rotation to turn a shoe around its
-axe in counter clockwise direction. Each dock is oriented. We denote the
-orientation with an arrow. The dock orientation is important for describing
-configurations of a system (more detail on that can be found in section
-\ref{sec:configuration}). Details about docking mechanism are given in section
-\ref{subsec:lock}.
+shoe and by one of following suffixes: $-1$, $0$, $1$. When facing the dock, its
+index gives a factor by which we multiply degree of rotation to turn a shoe
+around its axe in counter clockwise direction. Each dock is oriented. We denote
+the orientation with an orientation vector. The vector starts in a middle of the
+dock. The dock orientation is important for describing configurations of a
+system (more detail on that can be found in section \ref{sec:configuration}).
+Details about docking mechanism are given in section \ref{subsec:lock}.
 
 \begin{figure}
     \centering
@@ -293,14 +294,25 @@ W\}$.
     \label{fig:dock_orientation}
 \end{figure}
 
-We define \emph{model} of an configuration $(G, L)$ intuitively as a volumetric
-body of a system of modules connected according to a topology $G$ with
-axis oriented according to $L$ \todo{this is shady...}. We call a configuration
-\emph{possible} iff a corresponding model exists (this can happen due to
-inconsistency of axis orientation) and the model does not intersect itself.
-\todo{Give example of possible configuration, impossible due to both factors}
+We define a \emph{model} $M = (V, D)$ of an configuration. $V$ is set of spheres
+in 3D space over-approximating shape of the modules in a system. $D$ is a set of
+named orientation vectors of all docks in the system positioned in space. Both
+$D$ and $V$ can be computed via transformation matrixes build from axis
+orientation and knowledge of module geometry.
+
+We call a configuration $C = (G, L)$ with \emph{realizable} iff:
+\begin{enumerate}
+    \item no two spheres in $D$ intersects and
+    \item for each two docks that are connected in $G$:
+        \begin{enumerate}
+            \item their orientation agrees with orientation in $L$,
+            \item their origin points are the same and
+            \item the plane defined by their orientation vectors is perpendicular to axis of a dock.
+        \end{enumerate}
+\end{enumerate}
 Note, that there are no constraints on topology and we consider every topology
 as valid. However, for some topologies there exists no possible configuration.
+\todo{Give example of possible configuration, impossible due to both factors}
 
 \subsection{Intermodule Communication and Power Sharing}
 
@@ -311,5 +323,3 @@ as valid. However, for some topologies there exists no possible configuration.
 \subsection{RoFI lib}
 
 \todo{Something here}
-
-\todo{Define configuration somewhere}

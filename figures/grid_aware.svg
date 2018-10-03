@@ -138,15 +138,15 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1916"
-     inkscape:window-height="1040"
+     inkscape:window-width="956"
+     inkscape:window-height="1176"
      id="namedview836"
      showgrid="false"
-     inkscape:zoom="0.62606659"
-     inkscape:cx="945.29642"
-     inkscape:cy="192.38019"
-     inkscape:window-x="0"
-     inkscape:window-y="18"
+     inkscape:zoom="1.7707837"
+     inkscape:cx="1060.6859"
+     inkscape:cy="182.52239"
+     inkscape:window-x="960"
+     inkscape:window-y="0"
      inkscape:window-maximized="0"
      inkscape:current-layer="g842"
      units="mm"
@@ -221,7 +221,7 @@
    inkscape:connector-curvature="0"
    sodipodi:nodetypes="cccccccccccccccccccccccc" /><path
    id="path8224-3"
-   style="fill-rule:evenodd;stroke:#2167ff;stroke-width:1574.80310059;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+   style="fill-rule:evenodd;stroke:#2167ff;stroke-width:1575;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
    d="M 378530.35,443411.71 V 311102.01 M 26666.667,330708.62 H 444940.92 M 26666.667,377952.71 H 444940.92 M 26666.667,425196.8 H 444940.92 m -19744.08,17244.1 V 310131.2 m -94488.2,132309.7 V 310131.2 M 283464.55,442440.9 V 310131.2 M 236220.46,442440.9 V 310131.2 M 188976.37,442440.9 V 310131.2 M 141732.28,442440.9 V 310131.2 M 94488.184,442440.9 V 310131.2 M 47244.092,442440.9 V 310131.2"
    inkscape:connector-curvature="0"
    sodipodi:nodetypes="cccccccccccccccccccccccc" /><rect
@@ -534,7 +534,7 @@
    id="path8409"
    inkscape:connector-curvature="0"
    transform="matrix(416.66667,0,0,-416.66667,0,467777.79)" /><path
-   style="opacity:1;fill:#cccccc;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:3.77952766;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+   style="opacity:1;fill:#ff8080;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:3.77952766;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
    d="m 794.5931,648.96195 0.009,-18.42404 1.08494,2.84877 c 5.7111,14.99577 17.80512,27.29054 32.63965,33.18141 l 1.97653,0.78489 -17.85933,0.0165 -17.85932,0.0165 z"
    id="path8411"
    inkscape:connector-curvature="0"
@@ -651,6 +651,7 @@
      style="font-size:16666.66601562px;line-height:122.00000286%;text-align:center;text-anchor:middle;stroke-width:416.66665649px"
      id="tspan8477">(M-TRAN like)</tspan></text>
 
+
 <text
    xml:space="preserve"
    style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5208.33349609px;line-height:125%;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:416.66665649px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -668,6 +669,7 @@
      y="-221905.08"
      style="font-size:16666.66601562px;line-height:122.00000286%;text-align:center;text-anchor:middle;stroke-width:416.66665649px"
      id="tspan8477-3">(RoFI like)</tspan></text>
+
 
 <path
    style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1574.80310059;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#TriangleInL)"

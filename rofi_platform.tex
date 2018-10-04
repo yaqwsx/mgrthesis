@@ -115,28 +115,105 @@ module (chapter \ref{chap:universal_module}).
 \section{Module Shape}\label{sec:aware}
 
 The shape of modules in the RoFI platform is based on a 10cm cube grid. There is
-a inscribed sphere in each cell of the grid. By saying a module  Each module in its default state
-(with all joints in neutral position) should occupy one or more neighbouring
-spheres of the grid. If there
+a inscribed sphere in each cell of the grid. By saying a module \emph{occupies a
+grid cell} we mean that it occupies the sphere inscribed to the cell. Two grid
+cells are adjacent if they share a common face. Therefore, each cell has 6
+adjacent cells.
+
+Each module in its default state (with all joints in neutral position) should
+occupy one or more adjacent cells of the grid. If the module occupies more than
+a single cell, it is also allowed to occupy space of corresponding \emph{body
+hull}. Consider two adjacent cells occupied by the body. Then there is a convex
+hull of their inscribed spheres (see double cell module in figure
+\ref{fig:rofi_shapes}). The body hull is then defined as union of all such
+existing convex hulls for the body. See \ref{fig:rofi_shapes} for an example.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/rofi_shapes.pdf}
-    \caption{RoFI grid system and module shape limitations: The modules occupy  Note that the
-    coloured areas slightly overlap the grid. This is only for purposes of
-    visualizations. They should fit exactly in the grid.}
+    \caption{Example of a body hull construction. Each convex hull of adjacent
+    cells is denoted by a coloured area. The body hull is the union of coloured
+    ares. Note that the coloured areas slightly overlap the grid. This is only
+    for the purpose of visualizations. In reality they fit exactly in the grid.}
     \label{fig:rofi_shapes}
 \end{figure}
 
-The
-platform also specifies a docking system between modules and gives further
-requirements on the module shape. As for today the platform specifies only a
-single universal module, however more, possible specialized, modules are
-expected to be designed in a near future. The shape requirements for modules are
-given in section \ref{subsec:custom_modules}; the universal module is specified
-in the section \ref{subsec:universal_module}.
+The modules are allowed to change their shape by featuring several degrees of
+freedom in form of \emph{joints}. Intuitively, we can view a module as a beads,
+which can rotate against each other along the axis of joints. For an simple
+example of a double cell module movement see figure \ref{fig:grid_aware}.
 
-\section{RoFI Docking System}\label{sec:dock}The modules
+The motivation for such a restriction of the shape is a property we call
+\emph{grid-awareness}. Consider a simple task for a double cell module: having a
+grounded left part of the module, move its right part above the left one. This
+task is illustrated in figure \ref{fig:grid_aware}. If we consider a module
+which fits exactly inside a cube-shaped cell, e.g. an M-TRAN module
+\cite{haruhisa_kurokawa_m-tran_2003}, the module occupies extra cells during the
+movement (marked by red circles in the figure). This restricts the module
+movement in a densely occupied grids. However, if we consider a grid-aware
+module (in the example double cell module), it only occupies the least required
+cells for the movement and therefore should allow for more efficient
+reconfiguration algorithms. Grid-awareness however comes at a const. It requires
+a retractable docking mechanism as two neighbouring modules can feature only a
+point contact. We further discuss this in section \ref{sec:dock}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/grid_aware.pdf}
+    \caption{Visualization of grid-awareness. Consider two module shapes -- an
+    M-TRAN\cite{haruhisa_kurokawa_m-tran_2003} like (int the top row) and a RoFI
+    like (in the bottom row). Given the task to move right body over the left
+    one, M-TRAN like module occupies extra cells due to small parts of it body
+    overlapping out of the gird. On the other hand, RoFI like module occupies
+    the least cells required to make the movement. }
+    \label{fig:grid_aware}
+\end{figure}
+
+We would like to point out that even we referred all examples to a grid-fitting
+positions of the robots (where all movement is performed by steps of
+$90^\circ$), we do not give any restriction on the granularity of the movement.
+We assume the modules are physically able to perform practically unlimited
+granularity (considering limits of a mechanic construction). However, the
+reconfiguration algorithms built on top of the system can consider only a
+discrete steps in the movement if they need to.
+
+The shape specification allows us to define modules with various shape and
+functionality. However, we do not expect the platform to feature many different
+types of modules and especially oddly shaped ones. We strongly believe that a
+double cell module, called \emph{universal module} (described in chapter
+\ref{chap:universal_module}), should be the main building block of RoFI systems.
+However, in future we consider having e.g.
+\begin{itemize}
+    \item a passive module (only a mechanical construction),
+    \item battery module or
+    \item single-cell modules featuring specialized sensors (e.g. camera) or
+    actuators (e.g. robotic hand or a wheel).
+\end{itemize}
+
+
+\section{RoFI Docking System}\label{sec:dock}
+
+Being the modules in the RoFI platform grid-aware, we cannot easily adapt
+existing docking systems from systems like
+Roombots\cite{bonardi_locomotion_2012} or MTRAN III
+\cite{kurokawa_distributed_2008}. The reason for that is two adjacent modules in
+the grid feature only a single point contact and not a whole face contact as it
+is common in other modular robotic platforms.
+
+To overcome this issue, we present the RoFI docking system. This docking system
+is inspired by the HiGen docking system \cite{parrott_higen:_2014}. In summary,
+our docking system:
+\begin{itemize}
+    \item allows for connection of two modules when they are not touching side
+    by side,
+    \item is genderless (each two docks can connect),
+    \item it is based on a mechanical connection (and therefore is not limited
+    by a magnetic force),
+    \item supports communication and power sharing.
+\end{itemize}
+
+
+
 
 \section{RoFI Capabilities}\label{sec:capabilities}
 

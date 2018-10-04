@@ -120,13 +120,14 @@ grid cell} we mean that it occupies the sphere inscribed to the cell. Two grid
 cells are adjacent if they share a common face. Therefore, each cell has 6
 adjacent cells.
 
-Each module in its default state (with all joints in neutral position) should
-occupy one or more adjacent cells of the grid. If the module occupies more than
-a single cell, it is also allowed to occupy space of corresponding \emph{body
-hull}. Consider two adjacent cells occupied by the body. Then there is a convex
-hull of their inscribed spheres (see double cell module in figure
-\ref{fig:rofi_shapes}). The body hull is then defined as union of all such
-existing convex hulls for the body. See \ref{fig:rofi_shapes} for an example.
+Each module in its default state (with all joints in neutral
+position\footnote{definition of joint follows in the text}) should occupy one or
+more adjacent cells of the grid. If the module occupies more than a single cell,
+it is also allowed to occupy space of corresponding \emph{body hull}. Consider
+two adjacent cells occupied by the body. Then there is a convex hull of their
+inscribed spheres (see double cell module in figure \ref{fig:rofi_shapes}). The
+body hull is then defined as union of all such existing convex hulls for the
+body. See \ref{fig:rofi_shapes} for an example.
 
 \begin{figure}
     \centering
@@ -139,9 +140,12 @@ existing convex hulls for the body. See \ref{fig:rofi_shapes} for an example.
 \end{figure}
 
 The modules are allowed to change their shape by featuring several degrees of
-freedom in form of \emph{joints}. Intuitively, we can view a module as a beads,
-which can rotate against each other along the axis of joints. For an simple
-example of a double cell module movement see figure \ref{fig:grid_aware}.
+freedom in form of \emph{joints}. Joint is a rotational degrees of freedom along
+given axis. We do not allow any other type of motion -- therefore e.g.
+retractable nor sliding modules are not allowed in the RoFI platform.
+Intuitively, we can view a module as beads, which can rotate against each other
+along the axis of joints. For an simple example of a double cell module movement
+see figure \ref{fig:grid_aware}.
 
 The motivation for such a restriction of the shape is a property we call
 \emph{grid-awareness}. Consider a simple task for a double cell module: having a
@@ -217,13 +221,22 @@ our docking system:
 
 \section{RoFI Capabilities}\label{sec:capabilities}
 
+The section \ref{sec:aware} gives an idea about all possible shapes the RoFI
+modules can feature and also provides examples of use cases for shape other than
+the universal module. To allow an interaction of different modules and also to
+build a formal description of RoFI systems, there is a need to establish a way
+to describe various modules and their capabilities.
+
+\todo{Give a proper example}
+
+
 \section{RoFI Configurations} \label{sec:configuration}
 
 To ease and unify the development of a firmware and reconfiguration algorithms,
-we give means to describe the system made out of RoFI modules. First, there is
-a globally unique ID (\emph{GUID}) assigned to each module. GUID is a 128-bit
-number. Second, when talking about RoFI systems, we distinguish two terms:
-\emph{topology} and \emph{configuration}:
+we give means to describe the system consisting out of RoFI modules. First,
+there is a globally unique ID (\emph{GUID}) assigned to each module. GUID is a
+128-bit number. Second, when talking about RoFI systems, we distinguish two
+terms: \emph{topology} and \emph{configuration}:
 
 \paragraph{topology} Intuitively, topology describes the connection between the
 modules in a system and does not care about physical layout of the modules.
@@ -231,12 +244,12 @@ Formally, we define it as an undirected graph, where:
 \begin{itemize}
     \item nodes are labeled by module GUIDs. There is exactly one node for each
     module in the system.
-    \item edges represent a connection two docks. The edge is labeled by a pair
-    describing the connection. For modules with GUIDs $a$ and $b$, connection by
-    docks $d_a$ and $d_b$ in an orientation $o$ the label is: $(o, \{(a, d_a),
-    (b, d_b)\})$. There is at most one edge for each dock on the module. The
-    orientation of docks is defined further in the text. Note that undirected
-    edges enforces that both modules has to actively participate on a
+    \item edges represent a connection of two docks. The edge is labeled by a
+    pair describing the connection. For modules with GUIDs $a$ and $b$,
+    connection by docks $d_a$ and $d_b$ in an orientation $o$ the label is: $(o,
+    \{(a, d_a), (b, d_b)\})$. There is at most one edge for each dock on the
+    module. The orientation of docks is defined further in the text. Note that
+    undirected edges enforces that both modules has to actively participate on a
     connection.
 \end{itemize}
 \todo{Give an example (text + figure)}

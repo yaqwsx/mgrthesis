@@ -83,18 +83,6 @@ the figure \ref{fig:rofi_grid}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/grid_aware.pdf}
-    \caption{Visualization of grid-awareness. Consider two module shapes -- M-TRAN\cite{haruhisa_kurokawa_m-tran_2003}
-     like (int the top row) and RoFI like (in the bottom row). Given the task to
-     move right body over the left one, M-TRAN like module occupies extra cells
-     due to small parts of it body overlapping out of the gird. On the other
-     hand, RoFI like module occupies the least cells required to make the
-     movement.   }
-    \label{fig:grid_aware}
-\end{figure}
-
-\begin{figure}
-    \centering
     \includegraphics[width=\textwidth]{figures/rofi_grid.pdf}
     \caption{Reference shape for grid-awareness. If the module can be always inscribed in the shape, it is grid-aware.}
     \label{fig:rofi_grid}
@@ -115,14 +103,6 @@ As the modules are now connected and no motion between them can be performed,
 the enlarged footprint of module over the reference shape does not matter.
 Illustration of the docking process can be found in the figure
 \ref{fig:rofi_locking_example}.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/rofi_locking_example.pdf}
-    \caption{Docking procedure. There is a by-default retracted docking system
-    in the module which expands when the docking should be performed.}
-    \label{fig:rofi_locking_example}
-\end{figure}
 
 \subsection{Intramodule Architecture}
 

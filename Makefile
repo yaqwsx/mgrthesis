@@ -5,7 +5,7 @@ src = $(wildcard *.tex)
 all: thesis
 
 thesis: $(src) $(pdffigures)
-	latexmk -pdf --shell-escape thesis.tex
+	latexmk -halt-on-error -pdf --shell-escape thesis.tex
 
 .PHONY: clean
 clean:

@@ -202,71 +202,8 @@ existing docking systems from systems like
 Roombots\cite{bonardi_locomotion_2012} or MTRAN III
 \cite{kurokawa_distributed_2008}. The reason for that is two adjacent modules in
 the grid feature only a single point contact and not a whole face contact as it
-is common in other modular robotic platforms.
-
-To overcome this issue, we present the RoFI docking system. This docking system
-is inspired by the HiGen docking system \cite{parrott_higen:_2014}. In summary,
-our docking system:
-\begin{itemize}
-    \item allows for connection of two modules when they are not touching side
-    by side,
-    \item is genderless (each two docks can connect),
-    \item it is based on a mechanical connection (and therefore is not limited
-    by a magnetic force),
-    \item supports communication and power sharing.
-\end{itemize}
-
-The docking system is designed to become a stand-alone unit with given
-interface, which can be possibly mass produced and reused in all the modules.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/dock_overview.pdf}
-    \caption{\todo{dock overview}}
-    \label{fig:dock_overview}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/dock_description.pdf}
-    \caption{\todo{dock description}}
-    \label{fig:dock_description}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/locking_process.pdf}
-    \caption{\todo{dock locking}}
-    \label{fig:dock_locking_process}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.75\textwidth]{figures/dock_key_components.pdf}
-    \caption{\todo{dock key components}}
-    \label{fig:dock_key_components}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/skirt_symmetry.pdf}
-    \caption{\todo{skirt symmetry}}
-    \label{fig:dock_skirt_symmetry}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/dock_arrangement.pdf}
-    \caption{\todo{dock internal arrangement}}
-    \label{fig:dock_internal_arrangement}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/dock_positions.pdf}
-    \caption{\todo{dock positions}}
-    \label{fig:dock_positions}
-\end{figure}
+is common in other modular robotic platforms. There is a need for a retractable
+docking system (see \ref{fig:rofi_locking_example}).
 
 \begin{figure}
     \centering
@@ -276,6 +213,192 @@ interface, which can be possibly mass produced and reused in all the modules.
     \label{fig:rofi_locking_example}
 \end{figure}
 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/dock_overview.pdf}
+    \caption{The dock from the RoFI docking system. The model is simplified.}
+    \label{fig:dock_overview}
+\end{figure}
+
+To overcome this issue, we present the RoFI docking system (figure
+\ref{fig:dock_overview}). This docking system is inspired by the HiGen docking
+system \cite{parrott_higen:_2014}. In summary, our docking system:
+\begin{itemize}
+    \item allows for connection of two modules when they are not touching side
+    by side,
+    \item is genderless (each two docks can connect),
+    \item it is based on a mechanical connection (and therefore is not limited
+    by a magnetic force),
+    \item allows for disconnection without participation of the mating side,
+    \item supports communication and power sharing and
+    \item is more compact compared to the HiGen dock.
+\end{itemize}
+
+The docking system is designed to become a stand-alone unit with given
+interface, which can be possibly mass produced and reused in all modules.
+
+\subsection{The Principle of Operation}
+
+The main principle of operation is the same as the principle of the HiGen dock.
+There are two key components -- clip and skirt (figure
+\ref{fig:dock_key_components}). The clip features four latches which can be
+slide under latches of the clip from mating side and form a connection which
+prevents pulling the docks apart. When two skirts touch each other they prevent
+the two mating docks from rotating against each other. By combining these two
+types of joints, we obtain a firm connection between the two docks.
+
+The operation of a single lock is straightforward -- see figures
+\ref{fig:dock_overview} and \ref{fig:dock_description}. Consider a dock in
+the retracted position. When shaft ring (yellow) starts to rotate, it translates
+the motion to the clip (blue). There is a helical slot in the dock body (green)
+which forces the clip to move upwards (to "unscrew"). As the clip moves upwards
+it carries the skirt. The skirt moves in a slot which prevents it from rotating
+against body and therefore it only moves upwards. So far, the clip is extended
+to a locking distance, however the latches of the docks could not slide under
+each other. The end of the slot in the body is not helical and is straight (see
+\todo{figure of the body}). This allows for sliding the latches under each
+other.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/dock_description.pdf}
+    \caption{Naming of the components of the dock. The orientation and the
+    normal vector are important for specifying orientation of two connected
+    docks. }
+    \label{fig:dock_description}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/dock_key_components.pdf}
+    \caption{View of three key components of the dock: clip, skirt and the
+    middle part of the body.}
+    \label{fig:dock_key_components}
+\end{figure}
+
+See figure \ref{fig:dock_locking_process} for an example of an interaction of
+two docks. Situation 1 shows the docks in a position they are in two adjacent
+grid cells. By rotation of the shaft ring the clips and skirts extends
+(Situation 2). Situation 3 show fully expended clips and skirts. The skirts are
+now connected and no rotation movement of the docks is possible. The clips are
+also in the end of the helical slot. By further rotation of the shaft ring the
+clips slides under each other and finish the locking process (situation 4).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/locking_process.pdf}
+    \caption{\todo{dock locking}}
+    \label{fig:dock_locking_process}
+\end{figure}
+
+There are two important observation to note:
+\begin{enumerate*}
+    \item the docks are symmetric, therefore there are 4 different orientation
+    the docks can lock in;
+    \item the movement of two docks does not have to be synchronized and
+    therefore, it is possible for a dock to wait in expanded position or to
+    disconnect when the mating module stops responding.
+\end{enumerate*}
+
+The symmetry of the dock is best to shown on the skirt -- see figure
+\ref{fig:dock_skirt_symmetry}. The skirt is divided into four identical blocks
+along the horizontal and vertical axis. This allows for four different
+orientation of the docks. When two skirts are facing there is a mapping of
+blocks from one skirt to the other one. The facing blocks have the property that
+the green circle is always facing a red one. This feature is is important for
+three reasons:
+\begin{itemize}
+    \item It allows to build pins, which prevents the skirts from rotation (see
+    perspective view in figure \ref{fig:dock_key_components}).
+    \item Also by placing magnets in the holes (red -- north facing up, green --
+    south facing down) the skirts attract to each other. This helps misaligned
+    docks to connect properly.
+    \item By mounting pogo pins \todo{cite} in the symmetry blocks we can build
+    power and data transmission lines between modules.
+\end{itemize}
+There is the same idea behind symmetry of the clip as the idea behind the skirt
+symmetry.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/skirt_symmetry.pdf}
+    \caption{Illustration of the skirt symmetry.}
+    \label{fig:dock_skirt_symmetry}
+\end{figure}
+
+\subsection{Dock Implementation}
+
+The dock outside diameter is
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/dock_arrangement.pdf}
+    \caption{Internal arrangement of the components inside the dock. Note that
+    skirt and clip are not shown.}
+    \label{fig:dock_internal_arrangement}
+\end{figure}
+
+\subsection{Dock Connectors and Communication}
+
+\todo{Finish it!}
+\todo{Docks exchange data using serial line}
+
+\subsection{Mutual Orientation of the Docks}\label{sec:mutual_orientation}
+
+To be able to describe system made out of modules in the section
+\ref{sec:configuration} we define \emph{mutual orientation} of the docks. As
+shown in figure \ref{fig:dock_description}, there is an orientation vector on
+the dock. When two docks connect, there can be an angle of $0^\circ$,
+$90^\circ$, $180^\circ$ or $270^\circ$ between their orientation vectors
+(measured counter clockwise from a perspective one of the modules from shoe
+center to the dock center). Notice, that the angle is the same no matter which
+module we choose. Therefore, we give a following convention for the mutual
+orientation:
+
+If we aim one of the orientation vectors up (to the \emph{north}), the other
+vector aims either:
+\begin{enumerate*}
+    \item \emph{north},
+    \item \emph{east},
+    \item \emph{south} or
+    \item \emph{west}
+\end{enumerate*}
+as shown on figure \ref{fig:dock_orientation}. Therefore we define the mutual
+orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/dock_orientation.pdf}
+    \caption{Possible orientation of two docks. Orientation vector of current
+    perspective is shown as red, the orientation vector of mating dock is shown
+    as blue. Note that during a connection, it does not matter which dock's
+    perspective we choose.}
+    \label{fig:dock_orientation}
+\end{figure}
+
+
+\subsection{Docks in the Grid System}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/dock_positions.pdf}
+    \caption{Given a cell sphere the docks are allowed on 6 positions -- in the
+    middles of faces of the corresponding cell cube. The docks are named using
+    the axis names. Small arrows denote orientation vector of each dock. The
+    vectors follow orientation of previous axe (e.g. dock +Z has an orientation
+    vector in direction of the Y axe).  }
+    \label{fig:dock_positions}
+\end{figure}
+
+\todo{symmetry}
+\todo{comparison to HiGEN}
+\todo{internal arrangement}
+\todo{dimensions}
+\todo{Connectors}
+\todo{Manufacturing detail}
+\todo{Model}
+\todo{Placement on the module}
 
 \section{RoFI Capabilities}\label{sec:capabilities}
 
@@ -316,36 +439,6 @@ Formally, we define it as an undirected graph, where:
 actual module positions. Formally, it is a pair $(G, L)$, where $G$ is a
 topology and $L: \text{GUID} \rightarrow \text{Axis} \rightarrow \mathcal{R}$ is
 a function giving us position of each axis of each module.
-
-As we mentioned in sections \ref{subsec:universal_module} and \ref{subsec:lock},
-each dock features an orientation vector. When two docks connect, their
-orientation vectors can hold angle of $0^\circ$, $90^\circ$, $180^\circ$ or
-$270^\circ$ (measured counter clockwise from a perspective one of the modules
-from shoe center to the dock center). Notice, that the angle is the same no
-matter which module we choose. Therefore, we give a following convention for the
-orientation:
-
-If we aim one of the orientation vectors up (to the \emph{north}), the other
-vector aims either:
-\begin{enumerate*}
-    \item \emph{north},
-    \item \emph{east},
-    \item \emph{south} or
-    \item \emph{west}
-\end{enumerate*}
-as shown on figure \ref{fig:dock_orientation}.
-Therefore we define the orientation $o$ to be an element of $O = \{N, E, S,
-W\}$.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/dock_orientation.pdf}
-    \caption{Possible orientation of two dock. Orientation vector of current
-    perspective is shown as red, the orientation vector of mating dock is shown
-    as blue. Note that it during a connection, it does not matter which dock's
-    perspective we choose.}
-    \label{fig:dock_orientation}
-\end{figure}
 
 We define a \emph{model} $M = (V, D)$ of an configuration. $V$ is set of spheres
 in 3D space over-approximating shape of the modules in a system. $D$ is a set of

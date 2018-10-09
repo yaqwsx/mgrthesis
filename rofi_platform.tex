@@ -227,7 +227,8 @@ system \cite{parrott_higen:_2014}. In summary, our docking system:
 \begin{itemize}
     \item allows for connection of two modules when they are not touching side
     by side,
-    \item is genderless (each two docks can connect),
+    \item is genderless (each two docks can connect and therefore more systems
+    are possible to build),
     \item it is based on a mechanical connection (and therefore is not limited
     by a magnetic force),
     \item allows for disconnection without participation of the mating side,
@@ -249,16 +250,16 @@ the two mating docks from rotating against each other. By combining these two
 types of joints, we obtain a firm connection between the two docks.
 
 The operation of a single lock is straightforward -- see figures
-\ref{fig:dock_overview} and \ref{fig:dock_description}. Consider a dock in
-the retracted position. When shaft ring (yellow) starts to rotate, it translates
-the motion to the clip (blue). There is a helical slot in the dock body (green)
-which forces the clip to move upwards (to "unscrew"). As the clip moves upwards
-it carries the skirt. The skirt moves in a slot which prevents it from rotating
-against body and therefore it only moves upwards. So far, the clip is extended
-to a locking distance, however the latches of the docks could not slide under
-each other. The end of the slot in the body is not helical and is straight (see
-\todo{figure of the body}). This allows for sliding the latches under each
-other.
+\ref{fig:dock_overview} and \ref{fig:dock_description}. Consider a dock in the
+retracted position. When shaft ring (yellow) starts to rotate, it translates the
+motion to the clip (blue). There is a helical slot in the dock body (see figure
+\ref{fig:dock_key_components}) which forces the clip to move upwards (to
+"unscrew"). As the clip moves upwards it carries the skirt. The skirt moves in a
+slot which prevents it from rotating against body and therefore it only moves
+upwards. So far, the clip is extended to a locking distance, however the latches
+of the docks could not slide under each other. The end of the slot in the body
+is not helical and is horizontal (see figure \ref{fig:dock_key_components}).
+This allows for sliding the latches under each other.
 
 \begin{figure}
     \centering
@@ -271,9 +272,9 @@ other.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.75\textwidth]{figures/dock_key_components.pdf}
+    \includegraphics[width=\textwidth]{figures/dock_key_components.pdf}
     \caption{View of three key components of the dock: clip, skirt and the
-    middle part of the body.}
+    center part of the body.}
     \label{fig:dock_key_components}
 \end{figure}
 
@@ -329,7 +330,47 @@ symmetry.
 
 \subsection{Dock Implementation}
 
-The dock outside diameter is
+We designed the dock to be compatible with the 10cm grid. Therefore the dock is
+cylindrical, measuring 45~mm in diameter with a depth of 15~mm and is able to
+expand up to 6~mm (module face-to-face distance 12~mm). Compared to the HiGen
+dock, we feature less than half the depth (HiGen depth is 32~mm) while
+preserving the same docking distance. This was achieved by swapping positions of
+the clip and skirt -- in our case the clip is the external ring and skirt is the
+internal, in the HiGen case skirt is the external ring and clip is the internal
+one. The swap allowed for placing the motor flat (figure
+\ref{fig:dock_internal_arrangement} and therefore flatter profile of the dock
+was achieved.
+
+The dock composes of 5 custom components:
+\begin{enumerate*}
+    \item body,
+    \item shaft ring,
+    \item clip,
+    \item skirt and
+    \item motor mount.
+\end{enumerate*}
+These parts are for the purposes of prototyping 3D printed from the PLA
+material, however the components could be after few modifications lathed and
+milled from metal. The motor used in the design is "298:1 Micro Metal Gearmotor
+HPCB 6V"\footnote{\url{https://www.pololu.com/product/3069}}.
+
+Rather than providing technical drawings of the individual components we provide
+a CAD model in Fusion 360. The model can be found in the Fusion Cloud:
+\url{https://a360.co/2pIQzZ3}.
+
+As we mentioned, the dock is supposed to be a reusable stand-alone unit.
+Therefore there is supposed to be a PCB with driver electronics in the back of
+the dock. However current prototypes does not feature it. The purpose of the
+electronics is to:
+\begin{enumerate*}
+    \item drive the motor in the clip,
+    \item buffer incoming communication from an attached dock,
+    \item provide a bus interface for a master controller in the module to
+    easily control the dock.
+\end{enumerate*}
+The electronics is supposed to be rather simple -- small microcontroller is
+supposed to drive H-bridge for the motor, sense the limit position of the
+mechanism via hall sensors and appropriately placed magnets.
 
 \begin{figure}
     \centering
@@ -453,7 +494,8 @@ We call a configuration $C = (G, L)$ with \emph{realizable} iff:
         \begin{enumerate}
             \item their orientation agrees with orientation in $L$,
             \item their origin points are the same and
-            \item the plane defined by their orientation vectors is perpendicular to axis of a dock.
+            \item the plane defined by their orientation vectors is
+            perpendicular to axis of a dock.
         \end{enumerate}
 \end{enumerate}
 Note, that there are no constraints on topology and we consider every topology

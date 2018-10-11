@@ -33,7 +33,8 @@ talk about \emph{self-reconfigurable} modules \cite{brunete_current_2017}.
 Depending on the topology of the connection, there is a naming established in
 the literature\cite{brunete_current_2017}:
 \begin{enumerate*}
-    \item \emph{chain type} for a linear, snake-like and tree-like configurations,
+    \item \emph{chain type} for a linear, snake-like and tree-like
+    configurations,
     \item \emph{lattice type} for an regular grid-based robots,
     \item \emph{hybrid type} for robots combining both previous approaches.
 \end{enumerate*}
@@ -129,7 +130,7 @@ inscribed spheres (see double cell module in figure \ref{fig:rofi_shapes}). The
 body hull is then defined as union of all such existing convex hulls for the
 body. See \ref{fig:rofi_shapes} for an example.
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.7\textwidth]{figures/rofi_shapes.pdf}
     \caption{Example of a body hull construction. Each convex hull of adjacent
@@ -159,9 +160,10 @@ module (in the example double cell module), it only occupies the least required
 cells for the movement and therefore should allow for more efficient
 reconfiguration algorithms. Grid-awareness however comes at a const. It requires
 a retractable docking mechanism as two neighbouring modules can feature only a
-point contact. We further discuss this in section \ref{sec:dock}.
+point contact. We further discuss this in section \ref{sec:dock} and in section
+\ref{sec:dock_in_grid} we define allowed positions for docks on a module.
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/grid_aware.pdf}
     \caption{Visualization of grid-awareness. Consider two module shapes -- an
@@ -205,7 +207,7 @@ the grid feature only a single point contact and not a whole face contact as it
 is common in other modular robotic platforms. There is a need for a retractable
 docking system (see \ref{fig:rofi_locking_example}).
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/rofi_locking_example.pdf}
     \caption{Docking procedure. There is a by-default retracted docking system
@@ -214,7 +216,7 @@ docking system (see \ref{fig:rofi_locking_example}).
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_overview.pdf}
     \caption{The dock from the RoFI docking system. The model is simplified.}
@@ -254,14 +256,14 @@ The operation of a single lock is straightforward -- see figures
 retracted position. When shaft ring (yellow) starts to rotate, it translates the
 motion to the clip (blue). There is a helical slot in the dock body (see figure
 \ref{fig:dock_key_components}) which forces the clip to move upwards (to
-"unscrew"). As the clip moves upwards it carries the skirt. The skirt moves in a
+``unscrew''). As the clip moves upwards it carries the skirt. The skirt moves in a
 slot which prevents it from rotating against body and therefore it only moves
 upwards. So far, the clip is extended to a locking distance, however the latches
 of the docks could not slide under each other. The end of the slot in the body
 is not helical and is horizontal (see figure \ref{fig:dock_key_components}).
 This allows for sliding the latches under each other.
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_description.pdf}
     \caption{Naming of the components of the dock. The orientation and the
@@ -270,7 +272,7 @@ This allows for sliding the latches under each other.
     \label{fig:dock_description}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_key_components.pdf}
     \caption{View of three key components of the dock: clip, skirt and the
@@ -281,12 +283,12 @@ This allows for sliding the latches under each other.
 See figure \ref{fig:dock_locking_process} for an example of an interaction of
 two docks. Situation 1 shows the docks in a position they are in two adjacent
 grid cells. By rotation of the shaft ring the clips and skirts extends
-(Situation 2). Situation 3 show fully expended clips and skirts. The skirts are
+(Situation 2). Situation 3 shows fully expended clips and skirts. The skirts are
 now connected and no rotation movement of the docks is possible. The clips are
 also in the end of the helical slot. By further rotation of the shaft ring the
 clips slides under each other and finish the locking process (situation 4).
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/locking_process.pdf}
     \caption{\todo{dock locking}}
@@ -302,7 +304,7 @@ There are two important observation to note:
     disconnect when the mating module stops responding.
 \end{enumerate*}
 
-The symmetry of the dock is best to shown on the skirt -- see figure
+The symmetry of the dock is best shown on the skirt -- see figure
 \ref{fig:dock_skirt_symmetry}. The skirt is divided into four identical blocks
 along the horizontal and vertical axis. This allows for four different
 orientation of the docks. When two skirts are facing there is a mapping of
@@ -321,7 +323,7 @@ three reasons:
 There is the same idea behind symmetry of the clip as the idea behind the skirt
 symmetry.
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/skirt_symmetry.pdf}
     \caption{Illustration of the skirt symmetry.}
@@ -339,7 +341,18 @@ the clip and skirt -- in our case the clip is the external ring and skirt is the
 internal, in the HiGen case skirt is the external ring and clip is the internal
 one. The swap allowed for placing the motor flat (figure
 \ref{fig:dock_internal_arrangement} and therefore flatter profile of the dock
-was achieved.
+was achieved. Flat dock profile is a great advantage -- there is more less
+occupied space available in a module.
+
+Note that the depth is independent on the diameter. The diameter choices is a
+trade off between connection stability (increases with diameter) and module size
+(also increases with diameter) as we explain in section \ref{sec:dock_in_grid}.
+We designed our model to be parametric -- it is possible to specify desired
+diameter, connection distance and material thickness and generate a new model.
+The depth of the dock $h$ is equal to $h=l+6w$, where $l$ is the connection
+distance (in our model 6~mm) and $w$ is wall thickness (in our model 1.5~mm).
+Note that the parameters for the model cannot be chosen arbitrarily as there
+some limitation (e.g. motor size).
 
 The dock composes of 5 custom components:
 \begin{enumerate*}
@@ -351,8 +364,8 @@ The dock composes of 5 custom components:
 \end{enumerate*}
 These parts are for the purposes of prototyping 3D printed from the PLA
 material, however the components could be after few modifications lathed and
-milled from metal. The motor used in the design is "298:1 Micro Metal Gearmotor
-HPCB 6V"\footnote{\url{https://www.pololu.com/product/3069}}.
+milled from metal. The motor used in the design is ``298:1 Micro Metal Gearmotor
+HPCB 6V''\footnote{\url{https://www.pololu.com/product/3069}}.
 
 Rather than providing technical drawings of the individual components we provide
 a CAD model in Fusion 360. The model can be found in the Fusion Cloud:
@@ -370,13 +383,17 @@ electronics is to:
 \end{enumerate*}
 The electronics is supposed to be rather simple -- small microcontroller is
 supposed to drive H-bridge for the motor, sense the limit position of the
-mechanism via hall sensors and appropriately placed magnets.
+mechanism via hall sensors and appropriately placed magnets. Usage of hall
+sensors instead of mechanical switches allows for further minimization compared
+to the HiGen dock.
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_arrangement.pdf}
     \caption{Internal arrangement of the components inside the dock. Note that
-    skirt and clip are not shown.}
+    skirt and clip are not shown. The skirt and clip are swapped compared to the
+    HiGen dock. This with a bevel gearing allow for placing the motor flat and
+    therefore achieving half the depth of dock.}
     \label{fig:dock_internal_arrangement}
 \end{figure}
 
@@ -408,7 +425,7 @@ vector aims either:
 as shown on figure \ref{fig:dock_orientation}. Therefore we define the mutual
 orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_orientation.pdf}
     \caption{Possible orientation of two docks. Orientation vector of current
@@ -419,9 +436,25 @@ orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
 \end{figure}
 
 
-\subsection{Docks in the Grid System}
+\subsection{Docks in the Grid System}\label{sec:dock_in_grid}
 
-\begin{figure}
+The shape requirements in the section \ref{sec:aware} omitted placement of the
+docks. As we have already defined the RoFI in this section we can complete the
+shape requirements with possible dock placements.
+
+Consider a single cell sphere, the basic abstract building block of modules
+(figure \ref{sec:dock_in_grid}). We define origin of the cell in the middle of
+the sphere. There up to 6 adjacent cells of the grid (in both direction of all
+axis X, Y and Z.) This defines 6 possible dock positions which we name after an
+axe direction: +X, -X, +Y, -Y, +Z, -Z. We also give an orientation of the dock
+(see figure \ref{sec:dock_in_grid}). The convention for the orientation is that
+it follows direction of the previous axe.
+
+Therefore, each RoFI module can specify subset of docks it features for each
+cell it occupies. Once we introduce module descriptors in section
+\ref{sec:capabilities}, we will be able to unambiguously name each dock.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_positions.pdf}
     \caption{Given a cell sphere the docks are allowed on 6 positions -- in the
@@ -432,14 +465,6 @@ orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
     \label{fig:dock_positions}
 \end{figure}
 
-\todo{symmetry}
-\todo{comparison to HiGEN}
-\todo{internal arrangement}
-\todo{dimensions}
-\todo{Connectors}
-\todo{Manufacturing detail}
-\todo{Model}
-\todo{Placement on the module}
 
 \section{RoFI Capabilities}\label{sec:capabilities}
 
@@ -447,7 +472,19 @@ The section \ref{sec:aware} gives an idea about all possible shapes the RoFI
 modules can feature and also provides examples of use cases for shape other than
 the universal module. To allow an interaction of different modules and also to
 build a formal description of RoFI systems, there is a need to establish a way
-to describe various modules and their capabilities.
+to describe various modules and their capabilities. There are two aspects to
+consider:
+\begin{enumerate}
+    \item modules have different shapes and can perform different movements and
+    \item modules feature different sensors and special functions.
+\end{enumerate}
+
+Both of these aspects are covered by \emph{RoFI descriptors}. Descriptors can be
+exchanged by the modules when they connect together to build a notion of the
+system which is essential for any reconfiguration.
+
+
+
 
 \todo{Give a proper example}
 

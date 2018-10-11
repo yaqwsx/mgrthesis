@@ -124,24 +124,32 @@ adjacent cells.
 Each module in its default state (with all joints in neutral
 position\footnote{definition of joint follows in the text}) should occupy one or
 more adjacent cells of the grid. If the module occupies more than a single cell,
-it is also allowed to occupy space of corresponding \emph{body hull}. Consider
+it is also allowed to occupy space of corresponding \emph{module hull}. Consider
 two adjacent cells occupied by the body. Then there is a convex hull of their
 inscribed spheres (see double cell module in figure \ref{fig:rofi_shapes}). The
-body hull is then defined as union of all such existing convex hulls for the
-body. See \ref{fig:rofi_shapes} for an example.
+module hull is then defined as union of all such existing convex hulls for the
+module. See \ref{fig:rofi_shapes} for an example. When we will reference a
+module shape, we use following informal terminology:
+\begin{itemize*}
+    \item \emph{shoe} is a part of the module occupying a cell sphere and
+    \item \emph{body} is a part of the module occupying mainly rest space from
+    the module hull.
+\end{itemize*}
+See figure \ref{fig:rofi_body_parts} for an example of such naming on the
+universal module.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.7\textwidth]{figures/rofi_shapes.pdf}
-    \caption{Example of a body hull construction. Each convex hull of adjacent
-    cells is denoted by a coloured area. The body hull is the union of coloured
+    \caption{Example of a module hull construction. Each convex hull of adjacent
+    cells is denoted by a coloured area. The module hull is the union of coloured
     ares. Note that the coloured areas slightly overlap the grid. This is only
     for the purpose of visualizations. In reality they fit exactly in the grid.}
     \label{fig:rofi_shapes}
 \end{figure}
 
 The modules are allowed to change their shape by featuring several degrees of
-freedom in form of \emph{joints}. Joint is a rotational degrees of freedom along
+freedom in form of \emph{joints}. Joint is a rotational degree of freedom along
 given axis. We do not allow any other type of motion -- therefore e.g.
 retractable nor sliding modules are not allowed in the RoFI platform.
 Intuitively, we can view a module as beads, which can rotate against each other
@@ -291,7 +299,11 @@ clips slides under each other and finish the locking process (situation 4).
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/locking_process.pdf}
-    \caption{\todo{dock locking}}
+    \caption{Illustration of connection of two dock. Clip of the upper dock is
+    shown red, skirt of the upper dock is shown blue, clip of the bottom dock is
+    shown is as green, skirt of the bottom dock is shown yellow.  Situation 1 is
+    the retracted state. The dock pass by the lock plane (2), then continue
+    expansion (3) and finish by purely rotational movement(4). }
     \label{fig:dock_locking_process}
 \end{figure}
 
@@ -442,13 +454,12 @@ The shape requirements in the section \ref{sec:aware} omitted placement of the
 docks. As we have already defined the RoFI in this section we can complete the
 shape requirements with possible dock placements.
 
-Consider a single cell sphere, the basic abstract building block of modules
-(figure \ref{sec:dock_in_grid}). We define origin of the cell in the middle of
-the sphere. There up to 6 adjacent cells of the grid (in both direction of all
-axis X, Y and Z.) This defines 6 possible dock positions which we name after an
-axe direction: +X, -X, +Y, -Y, +Z, -Z. We also give an orientation of the dock
-(see figure \ref{sec:dock_in_grid}). The convention for the orientation is that
-it follows direction of the previous axe.
+Consider a shoe, the basic abstract building block of modules (figure
+\ref{sec:dock_in_grid}). We define origin of the shoe in the middle of the
+sphere. There up to 6 adjacent shoes in the grid (in both direction of all axis
+X, Y and Z.) This defines 6 possible dock positions which we name after an axe
+direction, we name it $\mathcal{P} = \left\{+X, -X, +Y, -Y, +Z, -Z\right\}$. We
+also give an orientation of the dock (see figure \ref{sec:dock_in_grid}).
 
 Therefore, each RoFI module can specify subset of docks it features for each
 cell it occupies. Once we introduce module descriptors in section
@@ -457,11 +468,9 @@ cell it occupies. Once we introduce module descriptors in section
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_positions.pdf}
-    \caption{Given a cell sphere the docks are allowed on 6 positions -- in the
+    \caption{Given a shoe the docks are allowed on 6 positions -- in the
     middles of faces of the corresponding cell cube. The docks are named using
-    the axis names. Small arrows denote orientation vector of each dock. The
-    vectors follow orientation of previous axe (e.g. dock +Z has an orientation
-    vector in direction of the Y axe).  }
+    the axis names. Small arrows denote orientation vector of each dock.}
     \label{fig:dock_positions}
 \end{figure}
 
@@ -481,20 +490,128 @@ consider:
 
 Both of these aspects are covered by \emph{RoFI descriptors}. Descriptors can be
 exchanged by the modules when they connect together to build a notion of the
-system which is essential for any reconfiguration.
+system which is essential for any reconfiguration. We distinguish two type of
+descriptors:
+\begin{enumerate*}
+    \item \emph{shape descriptor} ($\mathcal{D}_S$) and
+    \item \emph{capability descriptor} ($\mathcal{D}_C$).
+\end{enumerate*}
+
+We define the shape descriptor $\mathcal{D}_S$ as a tuple $(S, B, E, t, d)$
+\begin{itemize}
+    \item $S$ is a finite set of shoes,
+    \item $B$ is a finite set of bodies,
+    \item $E$ is a finite set of edges, formally $E \subset (S\cup B)^2$ such
+    that there are no symmetric edges and self-loops,
+    \item $t$ is a function returning a transformation function (joint
+    transformation matrix) for given edge, formally: $t:
+    E\rightarrow(\mathds{R}\rightarrow\mathds{R}^{4\times4})$,
+    \item $d$ is a function giving a set of dock present on each shoe. Formally,
+    $d: S\rightarrow 2^\mathcal{P}$.
+\end{itemize}
+Intuitively, $\mathcal{D}_D$ is an oriented graph, with two types of nodes --
+shoes and bodies, where edges are labeled by functions returning 3D
+transformation matrixes. Due to the type of $t$ each edge represents a single
+joint. Note that the graph can be cyclic, however for each pair of vertices
+there is at most one edge. When drawing descriptors we denote shoes as circles,
+bodies as squares and we write the functions on the edge. See an example of such
+a descriptor for an universal module in figure \ref{fig:um_descriptor}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/um_descriptor.pdf}
+    \caption{Shape descriptor for an universal module. See figure
+    \ref{fig:rofi_body_parts} and \ref{fig:rofi_axis} for a visualization of the
+    module and its axis. Function $\text{rot}_A(x)$ returns a 3D rotation matrix
+    along axe $A$ and $x$ radians, $\text{trans}_A(x)$ returns a 3D translation
+    matrix in direction of axe $A$ and distance $x$ units, $\text{sym}$ returns
+    a matrix flipping direction of all axis. $G$ denotes size of the grid.}
+    \label{fig:um_descriptor}
+\end{figure}
+
+Note that each edge with a non-constant function in represents a joint. In the
+further text we will abuse the notation a little and name the edges, arguments
+of the corresponding transformation functions and corresponding joints by the
+same name -- usually by a small greek letter. The type of the object represented
+by the name should be obvious from the context. For example we name the edge
+$(\textsf{shoe A}, \textsf{body A})$ as $\alpha$, the same as corresponding
+joint (figure \ref{fig:rofi_axis}) and the argument of rotation. Also, for
+practical reasons we consider all descriptors to have unique naming of shoes and
+bodies (easily achieved by prefix the name by module name), however in the
+examples we omit the prefix to make thing simple.
+
+The shape descriptors given joint position allow for an easy computation of shoe
+positions in the space. Observe a following property of the descriptor: by
+finding a path in a descriptor between two shoes and collecting transformation
+matrices along the path, we get a transformation matrix representing relative
+position of the two shoes. However, finding such a path might not be always
+possible due to an orientation of the edges. By defining a function flip for
+labeling reversed edges such that:
+\[\text{flip}(\text{f})(t) = (\text{f}(t))^{-1}, \text{for every valid } t\] we
+can reverse an orientation of an edge. Once reversed the edge is labeled by
+function returning inverse transformation compared to the original label. This
+allows us to find a path between every two shoes in a module (note that the
+module must be strongly connected by definition).
+
+It is possible to  further extend the idea of module descriptors to find
+positions of the docks.  We can construct a descriptor of a single shoe in the
+same manner as we construct a descriptor for any other module (figure
+\ref{fig:shoe_descriptor}). Note the transformations for docks are constant
+functions. The coordinate system is transformed such that the axis orientation
+is the same as in the figure \ref{fig:dock_description} -- the Z axe is
+perpendicular to the docks and the X axe is coincident with the orientation
+vector.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/shoe_descriptor.pdf}
+    \caption{Shape descriptor of a shoe. Triangles represent docks. See figure
+    \ref{fig:dock_positions} for visualization of physical layout.}
+    \label{fig:shoe_descriptor}
+\end{figure}
+
+We do not consider the docks to be a part of the shape descriptor as they are
+the same for each shoe and therefore for the sake of simplicity, they can be
+omitted. However, we find them useful to consider the following construction.
+
+So far, we talked about descriptors only in a context of a single module. We can
+further extend it to multiple module. If we join two descriptors and add the
+corresponding edges between them, we can use the graph for computing relative
+position of any two shoes in the system. The construction of the connection is
+illustrated in figure \ref{fig:connection_descriptor}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/descriptor_connection.pdf}
+    \caption{Illustration of connection of two module descriptors. Each module
+    has a shoe (shoe A, shoe B) with docks they connect to each other. To
+    connect the modules, new edge is constructed between the docks. Parameter
+    $o$ is the mutual orientation of the docks. Note that it does not matter on
+    the edge orientation as the mutual orientation is symmetric as shown in
+    section \ref{sec:mutual_orientation}. }
+    \label{fig:connection_descriptor}
+\end{figure}
 
 
-
-
-\todo{Give a proper example}
-
+To allow algorithms take various sensors present on modules in account, simple
+sensor enumeration is not enough as the position of sensor matters. Therefore we
+allow sensors to be places on faces of the shoe (names as the corresponding
+docks). The capability descriptor $\mathcal{D}_C$ allows to specify this.
+Formally speaking it is a function $\mathcal{D}_C: S\times\mathcal{P}
+\rightarrow 2^{I}$, where $I$ is a set of all possible sensors. Intuitively,
+$\mathcal{D}_C$ is a labeling of individual docks on the module assigning
+sensors to them. The set of all sensors $I$ contains sensor-dependent
+descriptions\footnote{As there exists only the universal module we consider
+specification of the sensor format rather premature.}.
 
 \section{RoFI Configurations} \label{sec:configuration}
 
-To ease and unify the development of a firmware and reconfiguration algorithms,
-we give means to describe the system consisting out of RoFI modules. First,
-there is a globally unique ID (\emph{GUID}) assigned to each module. GUID is a
-128-bit number. Second, when talking about RoFI systems, we distinguish two
+So far, we gave means to describe a single module. To ease and unify the
+development of a firmware and reconfiguration algorithms, we also give means to
+describe a system consisting out of the RoFI modules.
+
+First, there is a globally unique ID (\emph{GUID}) assigned to each module. GUID
+is a 128-bit number. Second, when talking about RoFI systems, we distinguish two
 terms: \emph{topology} and \emph{configuration}:
 
 \paragraph{topology} Intuitively, topology describes the connection between the

@@ -376,8 +376,11 @@ The dock composes of 5 custom components:
 \end{enumerate*}
 These parts are for the purposes of prototyping 3D printed from the PLA
 material, however the components could be after few modifications lathed and
-milled from metal. The motor used in the design is ``298:1 Micro Metal Gearmotor
-HPCB 6V''\footnote{\url{https://www.pololu.com/product/3069}}.
+milled from metal. We build this assumption on a similar component complexity as
+the ModRED docking system\cite{hossain_towards_2014}. The authors show
+modifications necessary to achieve a serial manufacturability. The motor used in
+the design is commonly availalbe``Pololu 298:1 Micro Metal Gearmotor HPCB
+6V''\footnote{\url{https://www.pololu.com/product/3069}}.
 
 Rather than providing technical drawings of the individual components we provide
 a CAD model in Fusion 360. The model can be found in the Fusion Cloud:
@@ -610,9 +613,10 @@ So far, we gave means to describe a single module. To ease and unify the
 development of a firmware and reconfiguration algorithms, we also give means to
 describe a system consisting out of the RoFI modules.
 
-First, there is a globally unique ID (\emph{GUID}) assigned to each module. GUID
-is a 128-bit number. Second, when talking about RoFI systems, we distinguish two
-terms: \emph{topology} and \emph{configuration}:
+First, there is a globally unique ID (\emph{GUID}) assigned to each instance of
+a module. GUID is a 128-bit number to prevent GUID exhaustion. Second, when
+talking about RoFI systems, we distinguish two terms: \emph{topology} and
+\emph{configuration}:
 
 \paragraph{topology} Intuitively, topology describes the connection between the
 modules in a system and does not care about physical layout of the modules.

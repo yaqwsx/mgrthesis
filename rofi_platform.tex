@@ -581,7 +581,8 @@ So far, we talked about descriptors only in a context of a single module. We can
 further extend it to multiple module. If we join two descriptors and add the
 corresponding edges between them, we can use the graph for computing relative
 position of any two shoes in the system. The construction of the connection is
-illustrated in figure \ref{fig:connection_descriptor}.
+illustrated in figure \ref{fig:connection_descriptor}. We will refer to this
+operation as \emph{shape descriptor union}.
 
 \begin{figure}[h!]
     \centering
@@ -615,50 +616,72 @@ describe a system consisting out of the RoFI modules.
 
 First, there is a globally unique ID (\emph{GUID}) assigned to each instance of
 a module. GUID is a 128-bit number to prevent GUID exhaustion. Second, when
-talking about RoFI systems, we distinguish two terms: \emph{topology} and
-\emph{configuration}:
+talking about RoFI systems, we distinguish two terms:
+\begin{enumerate*}
+    \item \emph{topology} ($\mathcal{T}$) and
+    \item \emph{configuration} ($\mathcal{C}$):
+\end{enumerate*}
 
 \paragraph{topology} Intuitively, topology describes the connection between the
 modules in a system and does not care about physical layout of the modules.
-Formally, we define it as an undirected graph, where:
+Formally, we define a topology $\mathcal{T}$ as a tuple $(M, E, d)$:
 \begin{itemize}
-    \item nodes are labeled by module GUIDs. There is exactly one node for each
-    module in the system.
-    \item edges represent a connection of two docks. The edge is labeled by a
-    pair describing the connection. For modules with GUIDs $a$ and $b$,
-    connection by docks $d_a$ and $d_b$ in an orientation $o$ the label is: $(o,
-    \{(a, d_a), (b, d_b)\})$. There is at most one edge for each dock on the
-    module. The orientation of docks is defined further in the text. Note that
-    undirected edges enforces that both modules has to actively participate on a
-    connection.
+    \item M is a finite set of modules represented by GUID, formally $M\subset
+    G$, where $G$ is a set of all GUIDs.
+    \item E is a finite set undirected edges (connections) between the modules,
+    formally $E\subset M\times M$. Note that the undirected edges forces that
+    both modules have to actively participate on a connection.
+    \item $d$ is a labeling function for edges. The labels are tuples in form
+    $(o, d_a, d_b)$, whrere $o\in\mathcal{O}$ is a mutual orientation of
+    connected docks, $d_a$ and $d_b$ from modules in the edge. The docks are
+    sorted lexicographically on module, shoe and dock. Therefore the labels are
+    canonical.
 \end{itemize}
+
+
 \todo{Give an example (text + figure)}
 
 \paragraph{configuration} Intuitively, configuration is a topology with the
-actual module positions. Formally, it is a pair $(G, L)$, where $G$ is a
-topology and $L: \text{GUID} \rightarrow \text{Axis} \rightarrow \mathcal{R}$ is
-a function giving us position of each axis of each module.
+ module joints positions. Formally, configuration $\mathcal{C}$ is a pair $(T,
+ L)$:
+ \begin{itemize}
+    \item $T$ is a topology and
+    \item $L: M \rightarrow \text{A} \rightarrow \mathds{R}$, where $A$ is a
+    union of axis from all module types, is a function assigning values to all
+    joints in the system.
+ \end{itemize}
 
-We define a \emph{model} $M = (V, D)$ of an configuration. $V$ is set of spheres
-in 3D space over-approximating shape of the modules in a system. $D$ is a set of
-named orientation vectors of all docks in the system positioned in space. Both
-$D$ and $V$ can be computed via transformation matrixes build from axis
-orientation and knowledge of module geometry.
-
-We call a configuration $C = (G, L)$ with \emph{realizable} iff:
+We define a \emph{model of a topology} $\mathcal{M}_\mathcal{T}$ as a descriptor
+obtained by a following procedure:
 \begin{enumerate}
-    \item no two spheres in $D$ intersects and
-    \item for each two docks that are connected in $G$:
-        \begin{enumerate}
-            \item their orientation agrees with orientation in $L$,
-            \item their origin points are the same and
-            \item the plane defined by their orientation vectors is
-            perpendicular to axis of a dock.
-        \end{enumerate}
+    \item rename uniquely descriptors of each module instance in the system,
+    \item select an arbitrary one,
+    \item union the selected descriptor consequently with the other modules
+    using module union (defined in section \ref{sec:capabilities}).
 \end{enumerate}
-Note, that there are no constraints on topology and we consider every topology
-as valid. However, for some topologies there exists no possible configuration.
+Tehn, we define a \emph{model} $\mathcal{M}_mathcal{C}$ of an configuration
+$C=(T, L)$ as a model of $T$, where are labels were evaluated according to $L$,
+i.e. labels are constant values.
+
+We call a configuration $C$ \emph{realizable} iff:
+\begin{enumerate}
+    \item for all pair of shoes, all paths in the model of $C$ yield the same
+    relative position and
+    \item no two shoes in the model of $C$ does not intersect
+\end{enumerate}
+
+Note, that there are no constraints on topology, therefore, we consider every
+topology as valid. However, for some topologies there exists no realizable
+configuration.
+
 \todo{Give example of possible configuration, impossible due to both factors}
+
+Given this terminology, there are few aspects to note:
+\begin{itemize}
+    \item To move the robot means to change a configuration.
+    \item Change in configuration can also mean change in topology.
+    \item Change in topology always mean a change of configuration.
+\end{itemize}
 
 \section{Intermodule Communication}\label{sec:communication}
 

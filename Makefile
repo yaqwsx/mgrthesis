@@ -10,6 +10,7 @@ thesis: $(src) $(pdffigures)
 .PHONY: clean
 clean:
 	latexmk -c
+	rm $(pdffigures)
 
 %.pdf: %.svg
 	inkscape $< --export-pdf=$@

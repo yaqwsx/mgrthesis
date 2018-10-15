@@ -724,11 +724,11 @@ HyMod project \cite{parrott_hymod:_2016}. Even the CAN bus is fault tolerant and
 provides a prioritized messages, for purposes of modular robots features several
 disadvantages:
 \begin{itemize}
-    \item it has a limited bandwidth of 1 Mb/s \todo{cite},
+    \item it has a limited bandwidth of 1 Mb/s \cite{noauthor_road_2013},
     \item it does not scale well as all devices share a medium,
     \item cannot be cyclic and therefore needs bus switches to remove cycles,
     \item needs an adjustable impedance based on the topology
-    (\ref{parrott_hymod:_2016}).
+    (\cite{parrott_hymod:_2016}).
 \end{itemize}
 
 Therefore the RoFI platform leverages traditional computer network based on the
@@ -743,8 +743,9 @@ implementation even for embedded platforms (eg. lwIP \todo{cite}).
 
 There are two possibilities to implement the TCP/IP in the platform: either use
 Ethernet to connect the modules (making each module to act either as a hub or
-switch) or introduce a custom L1/L2 layer from the OSI/ISO model. Introduction
-of custom L1/L2 layers is quite common (see \cite{waitzman_ip_1999}).
+switch) or introduce a custom L1/L2 layer from the OSI/ISO
+model\cite{braden_requirements_1989}. Introduction of custom L1/L2 layers is
+quite common (see \cite{waitzman_ip_1999}).
 \todo{add reasoning to the relevant chapter}
 
 We have already defined the communication between two docks in the section

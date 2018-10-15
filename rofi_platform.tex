@@ -135,7 +135,7 @@ module shape, we use following informal terminology:
     \item \emph{body} is a part of the module occupying mainly rest space from
     the module hull.
 \end{itemize*}
-See figure \ref{fig:rofi_body_parts} for an example of such naming on the
+See figure \ref{fig:um_body_parts} for an example of such naming on the
 universal module.
 
 \begin{figure}[h!]
@@ -524,7 +524,7 @@ a descriptor for an universal module in figure \ref{fig:um_descriptor}.
     \centering
     \includegraphics[width=\textwidth]{figures/um_descriptor.pdf}
     \caption{Shape descriptor for an universal module. See figure
-    \ref{fig:rofi_body_parts} and \ref{fig:rofi_axis} for a visualization of the
+    \ref{fig:um_body_parts} and \ref{fig:um_axis} for a visualization of the
     module and its axis. Function $\text{rot}_A(x)$ returns a 3D rotation matrix
     along axe $A$ and $x$ radians, $\text{trans}_A(x)$ returns a 3D translation
     matrix in direction of axe $A$ and distance $x$ units, $\text{sym}$ returns
@@ -538,7 +538,7 @@ of the corresponding transformation functions and corresponding joints by the
 same name -- usually by a small greek letter. The type of the object represented
 by the name should be obvious from the context. For example we name the edge
 $(\textsf{shoe A}, \textsf{body A})$ as $\alpha$, the same as corresponding
-joint (figure \ref{fig:rofi_axis}) and the argument of rotation. Also, for
+joint (figure \ref{fig:um_axis}) and the argument of rotation. Also, for
 practical reasons we consider all descriptors to have unique naming of shoes and
 bodies (easily achieved by prefix the name by module name), however in the
 examples we omit the prefix to make thing simple.
@@ -643,7 +643,7 @@ Formally, we define a topology $\mathcal{T}$ as a tuple $(M, E, d)$:
     \includegraphics[width=\textwidth]{figures/topology_example.pdf}
     \caption{Example of a topology (left) for a system of the universal modules
     (right). Connection are denoted by gray rectangles, the naming of the docks
-    follow figure \ref{fig:rofi_locks}. }
+    follow figure \ref{fig:um_docks}. }
     \label{fig:topology_example}
 \end{figure}
 

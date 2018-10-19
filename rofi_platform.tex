@@ -90,7 +90,7 @@ module shape, we use following terminology:
 See figure \ref{fig:um_body_parts} for an example of such naming on the
 universal module.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.7\textwidth]{figures/rofi_shapes.pdf}
     \caption{Example of a module hull construction. Each convex hull of adjacent
@@ -126,7 +126,7 @@ retractable docking mechanism as two neighbouring modules can feature only a
 point contact. We further discuss this in section \ref{sec:dock} and in section
 \ref{sec:dock_in_grid} we define allowed positions for docks on a module.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{figures/grid_aware.pdf}
     \caption{Visualization of grid-awareness. Consider two module shapes -- an
@@ -248,7 +248,7 @@ now connected and no rotation movement of the docks is possible. The clips are
 also in the end of the helical slot. By further rotation of the shaft ring the
 clips slides under each other and finish the locking process (situation 4).
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{figures/locking_process.pdf}
     \caption{Illustration of connection of two dock. Clip of the upper dock is
@@ -290,7 +290,7 @@ three reasons:
 There is the same idea behind symmetry of the clip as the idea behind the skirt
 symmetry.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/skirt_symmetry.pdf}
     \caption{Illustration of the skirt symmetry.}
@@ -357,7 +357,7 @@ mechanism via hall sensors and appropriately placed magnets. Usage of hall
 sensors instead of mechanical switches allows for further minimization compared
 to the HiGen dock.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_arrangement.pdf}
     \caption{Internal arrangement of the components inside the dock. Note that
@@ -395,7 +395,7 @@ vector aims either:
 as shown on figure \ref{fig:dock_orientation}. Therefore we define the mutual
 orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_orientation.pdf}
     \caption{Possible orientation of two docks. Orientation vector of current
@@ -423,7 +423,7 @@ Therefore, each RoFI module can specify subset of docks it features for each
 cell it occupies. Once we introduce module descriptors in section
 \ref{sec:capabilities}, we will be able to unambiguously name each dock.
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_positions.pdf}
     \caption{Given a shoe the docks are allowed on 6 positions -- in the
@@ -431,6 +431,76 @@ cell it occupies. Once we introduce module descriptors in section
     the axis names. Small arrows denote orientation vector of each dock.}
     \label{fig:dock_positions}
 \end{figure}
+
+\section{Intermodule Communication}\label{sec:communication}
+
+Intermodule communication is an essential part of a modular robotic system.
+Without it there is no space for emergent behavior to form. There are two
+possible means of communication a wireless and a wired one. Both of them have
+its advantages and disadvantages.
+
+The wireless communication is easy to implement, as there is no need to
+establish a physical connection among the modules. This simplifies docking
+mechanism and also allows for communication of separate systems of modules.
+However, due to its nature it does not scale well as all the modules share the
+same medium and only a single module can transmit at a time. Also standard
+networking technologies like WiFi or Bluetooth are not suitable for handling
+possibly hundreds of device in one place, especially in embedded environment.
+
+On the other hand, wired communication can scale well as each two connected
+modules can communicate without being limited by the other modules. It can be
+also more power efficient compared to the wireless one. As there is already a
+need for physical connection a power sharing interface can be added at minimal
+cost. Therefore the connected modules can share and distribute energy. Unlike
+the wireless one, there is a need for routing as there is no shared medium and
+only adjacent modules can communicate.
+
+The RoFI platform relies primary on a wired communication between each two
+connected modules and optionally allows for a wireless communication. This
+design choice allows for fast and parallel communication inside a single system
+and also allows to establish a communication with another system.
+
+With the RoFI platform we do not want to reinvent the wheel and e.g. come up
+with a custom communication and routing protocol based on RS-485 like M-TRAN or
+the CAN in case of the HyMod project \cite{parrott_hymod:_2016}. For example,
+the CAN bus are fault tolerant and provides a prioritized messages, however for
+purposes of modular robots features several disadvantages:
+\begin{itemize}
+    \item it has a limited bandwidth of 1 Mb/s \cite{noauthor_road_2013},
+    \item it does not scale well as all devices share the same medium,
+    \item cannot be cyclic and therefore, needs bus switches to remove cycles,
+    \item needs an adjustable impedance based on the topology
+    (\cite{parrott_hymod:_2016}).
+\end{itemize}
+
+Therefore, the RoFI platform leverages traditional computer network based on the
+TCP/IP protocol and stack. This allows for easy operation with existing computer
+networks and services. The users can use traditional sockets, port OpenMPI to
+their projects or use the network for sending debug logs from the distributed
+environment. It potentially open doors for global communication of the RoFI
+systems. Using TCP/IP also makes indistinguishable wired and wireless connection
+from each other. Routing and robustness also come for free. The downside of the
+TCP/IP stack is its complexity, however, this is partially compensated by
+existence of ready-to-use implementation even for embedded platforms (eg. lwIP
+\cite{noauthor_lwip_nodate}).
+
+There are two possibilities to implement the TCP/IP in the platform: either use
+Ethernet to connect the modules (making each module to act either as a hub or
+switch) or introduce a custom L1/L2 layer from the OSI/ISO model
+\cite{braden_requirements_1989}. Introduction of custom L1/L2 layers is quite
+common (e.g. \cite{lindgren_ip_2008} or \cite{waitzman_ip_1999}).
+
+We have already defined the communication between two docks in the section
+\ref{sec:dock}. This allows us to pass an arbitrary packets of data between two
+connected modules. Considering concrete implementation in lwIP, these two
+operation, sending a receiving of a packet (possibly with a custom header),is
+all what is necessary to implement a custom device driver. Device driver is a
+terminology of lwIP and basically is equivalent of the L2 of ISO/OSI model.
+
+There is also no need to implement custom routing nor switching -- each dock
+represents a single network interface. There are only up to 2 docks on a single
+full-duplex medium, therefore no switching is required. The routing of IP
+packets is handled by the L3 and is usually already implemented in the stack.
 
 
 \section{RoFI Capabilities}\label{sec:capabilities}
@@ -475,7 +545,7 @@ shoes as circles, bodies as squares and we write the functions on the edge. See
 an example of such a descriptor for an universal module in figure
 \ref{fig:um_descriptor}.
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/um_descriptor.pdf}
     \caption{Shape descriptor for an universal module. See figure
@@ -521,7 +591,7 @@ they are the same for each shoe and therefore for the sake of simplicity, they
 can be omitted. However, we find them useful to consider the following
 construction.
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/shoe_descriptor.pdf}
     \caption{Shape descriptor of a shoe. Triangles represent docks. See figure
@@ -536,7 +606,7 @@ the system can be computed using this graph. The construction of the connection
 is illustrated in figure \ref{fig:connection_descriptor}. We will refer to this
 operation as \emph{shape descriptor union}.
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/descriptor_connection.pdf}
     \caption{Illustration of connection of two module descriptors. Each module
@@ -590,7 +660,7 @@ Formally, we define a topology $\mathcal{T}$ as a tuple $(M, E, d)$:
     canonical.
 \end{itemize}
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/topology_example.pdf}
     \caption{Example of a topology (left) for a system of the universal modules
@@ -635,73 +705,3 @@ Given the terminology, there are few aspects to note:
     \item Change in topology always mean a change of configuration.
 \end{itemize}
 
-\section{Intermodule Communication}\label{sec:communication}
-
-Intermodule communication is an essential part of a modular robotic system.
-Without it there is no space for emergent behavior to form. There are two
-possible means of communication a wireless and a wired one. Both of them have
-its advantages and disadvantages.
-
-The wireless communication is easy to implement, as there is no need to
-establish a physical connection among the modules. This simplifies docking
-mechanism and also allows for communication of separate systems of modules.
-However, due to its nature it does not scale well as all the modules share the
-same medium and only a single module can transmit at a time. Also standard
-networking technologies like WiFi or Bluetooth are not suitable for handling
-possibly hundreds of device in one place, especially in embedded environment.
-
-On the other hand, wired communication can scale well as each two connected
-modules can communicate without being limited by the other modules. It can be
-also more power efficient compared to the wireless one. As there is already a
-need for physical connection a power sharing interface can be added at minimal
-cost. Therefore the connected modules can share and distribute energy. Unlike
-the wireless one, there is a need for routing as there is no shared medium and
-only adjacent modules can communicate.
-
-The RoFI platform relies primary on a wired communication between each two
-connected modules and optionally allows for a wireless communication. This
-design choice allows for fast and parallel communication inside a single system
-and also allows to establish a communication with another system.
-
-With the RoFI platform we do not want to reinvent the wheel and e.g. come up
-with a custom communication and routing protocol based on RS-485 like M-TRAN.
-Another widely used solution is to use the CAN bus. CAN bus is used e.g. in the
-HyMod project \cite{parrott_hymod:_2016}. Even the CAN bus is fault tolerant and
-provides a prioritized messages, for purposes of modular robots features several
-disadvantages:
-\begin{itemize}
-    \item it has a limited bandwidth of 1 Mb/s \cite{noauthor_road_2013},
-    \item it does not scale well as all devices share a medium,
-    \item cannot be cyclic and therefore needs bus switches to remove cycles,
-    \item needs an adjustable impedance based on the topology
-    (\cite{parrott_hymod:_2016}).
-\end{itemize}
-
-Therefore the RoFI platform leverages traditional computer network based on the
-TCP/IP protocol and stack. This allows for easy operation with existing computer
-networks and services, allows to use existing software solutions (e.g. OpenMPI
-for distributed computation) and potentially allows for global communication of
-the RoFI systems. Using TCP/IP also makes indistinguishable wired and wireless
-connection from each other. We also get for free routing, fault tolerance and
-standardized protocols. The downside of the TCP/IP stack is its complexity,
-however this is partially compensated by existence of ready-to-use
-implementation even for embedded platforms (eg. lwIP \todo{cite}).
-
-There are two possibilities to implement the TCP/IP in the platform: either use
-Ethernet to connect the modules (making each module to act either as a hub or
-switch) or introduce a custom L1/L2 layer from the OSI/ISO
-model\cite{braden_requirements_1989}. Introduction of custom L1/L2 layers is
-quite common (see \cite{waitzman_ip_1999}).
-\todo{add reasoning to the relevant chapter}
-
-We have already defined the communication between two docks in the section
-\ref{sec:dock}. This allows us to pass an arbitrary packets of data between two
-connected modules. Considering concrete implementation in lwIP, these two
-operation, sending a receiving of a packet (possibly with a custom header),is
-all what is necessary to implement a custom device driver. Device driver is a
-terminology of lwIP and basically is equivalent of the L2 of ISO/OSI model.
-
-There is also no need to implement custom routing nor switching -- each dock
-represents a single network interface. There are only up to 2 docks on a single
-full-duplex medium, therefore no switching is required. The routing of IP
-packets is handled by the L3 and is usually already implemented in the stack.

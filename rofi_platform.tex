@@ -1,47 +1,55 @@
 \chapter{The RoFI platform}\label{chap:rofi}
 
-The goal of the RoFI platform is to create a new platform for distributed,
-modular and self-reconfigurable robots. The platform does not target real-world
-usage but it should serve as a tool for validation of various control algorithms
-in a physical world. This chapter presents the platform and gives an in-depth
-specification of it.
+As we stated in the introduction, the RoFI platform aims for bridging the gap
+between
+\begin{enumerate*}
+    \item a theoretical and algorithmic point of view on self-reconfigurable
+    modular robots; and
+    \item the implementation of the system in the physical world.
+\end{enumerate*}
+Typical use case of the RoFI platform should be to validate practical aspects of
+a given algorithm. The platform does not target real-world usage yet.
 
-First, we give a brief introduction to a concept of modular robots and establish
-several terms. Then we specify the goals of the RoFI platform and provide its
-specification. The specification is given as it is without any reasoning behind
-the design choices. The reasoning can be found in the following chapter
-\ref{chap:behind}.
+\section{Design Goals}\label{sec:design_goals}
 
-\todo{Something here}
-
-\section{Goals of the RoFI Platform}
-
-The goal of the RoFI platform is to give an reasonably easy way to validate
-various control algorithms for modular self-reconfigurable robots, as we
-mentioned in the introduction. It does not target for any specific real-world
-usage, like e.g. the Roombots\cite{bonardi_locomotion_2012} for being a smart
-furniture. To fullfil these goals we give a following list of requirements for
+Our overall goal can be break down into following requirements specification of
 the platform:
 
-\begin{itemize}
-    \item All sources (including CAD models, PCBs, firmwares and libraries)
-    should be kept open-source, to allow for reproducibility of experiments
-    performed on the platform.
-    \item It should be manufacturable by a commonly accessible machinery.
-    \item No deep understanding of mechanical nor electrical engineering should
-    be required to use it.
-    \item Clear specification of the modules should be available to allow for
-    further extension. It should also contain a formal apparat to describe
-    systems and reason about them.
-    \item The platform should provide a way to easily distribute new firmware to
-    the modules.
-    \item The platform should allow for both, central and distributed control.
-    \item The platform should provide an easy way to port control algorithms.
-    This reduces to a requirement for an easy way to define an atomic control
-    actions used by the algorithms.
-\end{itemize}
+\emph{Platform Requirements}: The platform should allow for versatility.
+Therefore, the platform should specify modules to be self-reconfigurable and it
+also should allow many different configurations of a system. This boils down to
+a design of module shape and dock positions such that the system can be easily
+reconfigured. Versatility can be also supported by extensibility of the platform
+-- the platform should allow for specialized modules (special actuation or
+sensors).
 
-\section{The RoFI Platform}
+\emph{Docking System Requirements}: The docking system is a crucial part of the
+platform as the self-reconfigurability relies on it. The dock of the robot
+should allow the modules to connect in a variety of useful arrangements and
+should not strongly restrict number of possible configurations. Therefore, it
+should be genderless and should allow for several possible orientation of two
+docks. The dock should be also strong enough to support large systems of
+modules. To support fault-tolerance of the platform, one modules should be able
+to disconnect without cooperation of the mating side. This is useful in case of
+module malfunction. The docks should also drain energy only when changing state
+from locked to unlocked and vice-versa. The dock should also allow for
+communication and power sharing among the modules.
+
+\emph{Usability Requirements}: Since the platform is supposed to fill the gap
+between algorithms and the physical world, it should
+\begin{enumerate*}
+    \item provide a formal model of the platform and
+    \item allow for an easy development of new programs and porting existing
+    ones.
+\end{enumerate*}
+The formal model of the platform allows to reason about systems and also
+establishes terminology. Both easy development and porting existing programs can
+be achieved by by adaptation of standard technologies. The platform should also
+provide an automatic way of program distribution among the modules and should
+deal with debugging in the distributed environment to make development for the
+platform more pleasant.
+
+\section{The RoFI Platform }
 
 The RoFI platform is a lattice type modular, self-reconfigurable and metamorphic
 platform. The platform is defined by:
@@ -52,10 +60,10 @@ platform. The platform is defined by:
     \item an intermodule communication (section \ref{sec:communication}).
 \end{enumerate}
 
-The platform also provides a formalism for describing configurations of systems
-built in the platform (section \ref{sec:configuration}) and also gives an
-example of a module fulfilling the specification in form of the Universal
-module (chapter \ref{chap:universal_module}).
+The platform also comes with a formalism for describing configurations of
+systems built in the platform (section \ref{sec:configuration}) and also gives
+an example of a module fulfilling the specification in form of the
+\emph{universal} module (chapter \ref{chap:universal_module}).
 
 \section{Module Shape}\label{sec:aware}
 
@@ -66,14 +74,14 @@ cells are adjacent if they share a common face. Therefore, each cell has 6
 adjacent cells.
 
 Each module in its default state (with all joints in neutral
-position\footnote{definition of joint follows in the text}) should occupy one or
-more adjacent cells of the grid. If the module occupies more than a single cell,
-it is also allowed to occupy space of corresponding \emph{module hull}. Consider
-two adjacent cells occupied by the body. Then there is a convex hull of their
-inscribed spheres (see double cell module in figure \ref{fig:rofi_shapes}). The
-module hull is then defined as union of all such existing convex hulls for the
-module. See \ref{fig:rofi_shapes} for an example. When we will reference a
-module shape, we use following informal terminology:
+position\footnote{Definition of joint follows in the text.}) should occupy one
+or more adjacent cells of the grid. If the module occupies more than a single
+cell, it is also allowed to occupy space of corresponding \emph{module hull}.
+Consider two adjacent cells occupied by the body. Then there is a convex hull of
+their inscribed spheres (see double cell module in figure\ref{fig:rofi_shapes}).
+The module hull is then defined as union of all such existing convex hulls for
+the module. See \ref{fig:rofi_shapes} for an example. When we will reference a
+module shape, we use following terminology:
 \begin{enumerate*}
     \item \emph{shoe} is a part of the module occupying a cell sphere and
     \item \emph{body} is a part of the module occupying mainly rest space from
@@ -92,7 +100,7 @@ universal module.
     \label{fig:rofi_shapes}
 \end{figure}
 
-The modules are allowed to change their shape by featuring several degrees of
+The modules are allowed to change their shape by offering several degrees of
 freedom in form of \emph{joints}. Joint is a rotational degree of freedom along
 given axis. We do not allow any other type of motion -- therefore e.g.
 retractable nor sliding modules are not allowed in the RoFI platform.
@@ -110,8 +118,11 @@ movement (marked by red circles in the figure). This restricts the module
 movement in a densely occupied grids. However, if we consider a grid-aware
 module (in the example double cell module), it only occupies the least required
 cells for the movement and therefore should allow for more efficient
-reconfiguration algorithms. Grid-awareness however comes at a const. It requires
-a retractable docking mechanism as two neighbouring modules can feature only a
+reconfiguration algorithms. The key of grid-awareness is the sphere inscribed in
+a cell. Therefore, Roombots\cite{bonardi_locomotion_2012} are not grid aware
+even they shape is a sphere. Their bodies cannot be inscribed in a spheres
+inside a grid cells. Grid-awareness however comes at a const. It requires a
+retractable docking mechanism as two neighbouring modules can feature only a
 point contact. We further discuss this in section \ref{sec:dock} and in section
 \ref{sec:dock_in_grid} we define allowed positions for docks on a module.
 
@@ -137,29 +148,24 @@ discrete steps in the movement if they need to.
 
 The shape specification allows us to define modules with various shape and
 functionality. However, we do not expect the platform to feature many different
-types of modules and especially oddly shaped ones. We strongly believe that a
-double cell module, called \emph{universal module} (described in chapter
-\ref{chap:universal_module}), should be the main building block of RoFI systems.
-However, in future we consider having e.g.
-\begin{itemize}
-    \item a passive module (only a mechanical construction),
-    \item battery module or
-    \item single-cell modules featuring specialized sensors (e.g. camera) or
-    actuators (e.g. robotic hand or a wheel).
-\end{itemize}
-
+types of modules and especially oddly shaped ones. We strongly believe that the
+double cell universal module (described in chapter \ref{chap:universal_module}),
+should be the main building block of RoFI systems. However, in future we
+consider having e.g. a passive module (only a mechanical construction), battery
+module or single-cell modules featuring specialized sensors (e.g. camera) or
+actuators (e.g. robotic hand or a wheel).
 
 \section{RoFI Docking System}\label{sec:dock}
 
-Being the modules in the RoFI platform grid-aware, we cannot easily adapt
-existing docking systems from systems like
-Roombots\cite{bonardi_locomotion_2012} or MTRAN III
-\cite{kurokawa_distributed_2008}. The reason for that is two adjacent modules in
-the grid feature only a single point contact and not a whole face contact as it
-is common in other modular robotic platforms. There is a need for a retractable
-docking system (see \ref{fig:rofi_locking_example}).
+Since the modules in the RoFI platform are grid-aware, we cannot easily adapt
+existing docking systems from systems like Roombots
+\cite{bonardi_locomotion_2012} or MTRAN III \cite{kurokawa_distributed_2008}.
+The reason for that is two adjacent modules in the grid feature only a single
+point contact and not a whole face contact as it is common in other modular
+robotic platforms. There is a need for a retractable docking system (see
+\ref{fig:rofi_locking_example}).
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/rofi_locking_example.pdf}
     \caption{Docking procedure. There is a by-default retracted docking system
@@ -168,7 +174,7 @@ docking system (see \ref{fig:rofi_locking_example}).
 \end{figure}
 
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_overview.pdf}
     \caption{The dock from the RoFI docking system. The model is simplified.}
@@ -181,13 +187,15 @@ system \cite{parrott_higen:_2014}. In summary, our docking system:
 \begin{itemize}
     \item allows for connection of two modules when they are not touching side
     by side,
-    \item is genderless (each two docks can connect and therefore more systems
-    are possible to build),
-    \item it is based on a mechanical connection (and therefore is not limited
-    by a magnetic force),
-    \item allows for disconnection without participation of the mating side,
-    \item supports communication and power sharing and
-    \item is more compact compared to the HiGen dock.
+    \item allows for connection in four different orientations,
+    \item is genderless (each two docks can connect),
+    \item it is based on a mechanical connection (and therefore it is not
+    limited by a magnetic force and drains energy only during docking and
+    undocking),
+    \item can disconnect without participation of the mating side (which also
+    allows for connection to a passive dock -- similar to Roombots
+    \cite{bonardi_locomotion_2012}) and
+    \item supports data communication and power sharing.
 \end{itemize}
 
 The docking system is designed to become a stand-alone unit with given
@@ -215,7 +223,7 @@ of the docks could not slide under each other. The end of the slot in the body
 is not helical and is horizontal (see figure \ref{fig:dock_key_components}).
 This allows for sliding the latches under each other.
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_description.pdf}
     \caption{Naming of the components of the dock. The orientation and the
@@ -224,7 +232,7 @@ This allows for sliding the latches under each other.
     \label{fig:dock_description}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_key_components.pdf}
     \caption{View of three key components of the dock: clip, skirt and the
@@ -235,7 +243,7 @@ This allows for sliding the latches under each other.
 See figure \ref{fig:dock_locking_process} for an example of an interaction of
 two docks. Situation 1 shows the docks in a position they are in two adjacent
 grid cells. By rotation of the shaft ring the clips and skirts extends
-(Situation 2). Situation 3 shows fully expended clips and skirts. The skirts are
+(situation 2). Situation 3 shows fully expended clips and skirts. The skirts are
 now connected and no rotation movement of the docks is possible. The clips are
 also in the end of the helical slot. By further rotation of the shaft ring the
 clips slides under each other and finish the locking process (situation 4).
@@ -257,7 +265,9 @@ There are two important observation to note:
     the docks can lock in;
     \item the movement of two docks does not have to be synchronized and
     therefore, it is possible for a dock to wait in expanded position or to
-    disconnect when the mating module stops responding.
+    disconnect when the mating module stops responding. This can also be
+    leveraged for construction of passive docks. The passive dock is a component
+    with no moving parts in a shape of locked dock.
 \end{enumerate*}
 
 The symmetry of the dock is best shown on the skirt -- see figure
@@ -268,12 +278,13 @@ blocks from one skirt to the other one. The facing blocks have the property that
 the green circle is always facing a red one. This feature is is important for
 three reasons:
 \begin{itemize}
-    \item It allows to build pins, which prevents the skirts from rotation (see
-    perspective view in figure \ref{fig:dock_key_components}).
-    \item Also by placing magnets in the holes (red -- north facing up, green --
-    south facing down) the skirts attract to each other. This helps misaligned
-    docks to connect properly.
-    \item By mounting pogo pins \todo{cite} in the symmetry blocks we can build
+    \item There are pins on the skirt, which prevents the skirts from
+    rotation against other skirt (see perspective view in figure
+    \ref{fig:dock_key_components}).
+    \item Also, there are magnets in the holes (red -- north facing up, green --
+    south facing up) which attract the skirts to each other. This helps
+    misaligned docks to connect properly.
+    \item By mounting spring contacts in the symmetry blocks we can build
     power and data transmission lines between modules.
 \end{itemize}
 There is the same idea behind symmetry of the clip as the idea behind the skirt
@@ -424,11 +435,11 @@ cell it occupies. Once we introduce module descriptors in section
 
 \section{RoFI Capabilities}\label{sec:capabilities}
 
-The section \ref{sec:aware} gives an idea about all possible shapes the RoFI
-modules can feature and also provides examples of use cases for shape other than
-the universal module. To allow an interaction of different modules and also to
-build a formal description of RoFI systems, there is a need to establish a way
-to describe various modules and their capabilities. There are two aspects to
+The section \ref{sec:aware} gives an idea about all possible shapes of the RoFI
+modules and also provides examples of use cases for shape other than the
+universal module. To allow an interaction of different modules and also to build
+a formal description of RoFI systems, there is a need to establish a way to
+describe various modules and their capabilities. There are two aspects to
 consider:
 \begin{enumerate}
     \item modules have different shapes and can perform different movements and
@@ -458,11 +469,11 @@ We define the shape descriptor $\mathcal{D}_S$ as a tuple $(S, B, E, t, d)$
 \end{itemize}
 Intuitively, $\mathcal{D}_D$ is an oriented graph, with two types of nodes --
 shoes and bodies, where edges are labeled by functions returning 3D
-transformation matrixes. Due to the type of $t$ each edge represents a single
-joint. Note that the graph can be cyclic, however for each pair of vertices
-there is at most one edge. When drawing descriptors we denote shoes as circles,
-bodies as squares and we write the functions on the edge. See an example of such
-a descriptor for an universal module in figure \ref{fig:um_descriptor}.
+transformation matrixes. Note that the graph can be cyclic, however for each
+pair of vertices there is at most one edge. When drawing descriptors we denote
+shoes as circles, bodies as squares and we write the functions on the edge. See
+an example of such a descriptor for an universal module in figure
+\ref{fig:um_descriptor}.
 
 \begin{figure}[h!]
     \centering
@@ -476,38 +487,39 @@ a descriptor for an universal module in figure \ref{fig:um_descriptor}.
     \label{fig:um_descriptor}
 \end{figure}
 
-Note that each edge with a non-constant function in represents a joint. In the
-further text we will abuse the notation a little and name the edges, arguments
-of the corresponding transformation functions and corresponding joints by the
-same name -- usually by a small greek letter. The type of the object represented
-by the name should be obvious from the context. For example we name the edge
+Each edge with a non-constant function represents a joint. In the further text
+we will abuse the notation a little and name the edges, arguments of the
+corresponding transformation functions and corresponding joints by the same name
+-- usually by a small greek letter. The type of the object represented by the
+name should be obvious from the context. For example we name the edge
 $(\textsf{shoe A}, \textsf{body A})$ as $\alpha$, the same as corresponding
 joint (figure \ref{fig:um_axis}) and the argument of rotation. Also, for
 practical reasons we consider all descriptors to have unique naming of shoes and
-bodies (easily achieved by prefix the name by module name), however in the
+bodies (easily achieved by prefixing the name by module name), however in the
 examples we omit the prefix to make thing simple.
 
-The shape descriptors given joint position allow for an easy computation of shoe
-positions in the space. Observe a following property of the descriptor: by
-finding a path in a descriptor between two shoes and collecting transformation
-matrices along the path, we get a transformation matrix representing relative
-position of the two shoes. However, finding such a path might not be always
-possible due to an orientation of the edges. By defining a function flip for
-labeling reversed edges such that:
-\[\text{flip}(\text{f})(t) = (\text{f}(t))^{-1}, \text{for every valid } t\] we
-can reverse an orientation of an edge. Once reversed the edge is labeled by
-function returning inverse transformation compared to the original label. This
-allows us to find a path between every two shoes in a module (note that the
-module must be strongly connected by definition).
+Given joint position, the shape descriptors allow for an easy computation of
+shoe positions in the space. The path in a descriptor between two shoes defines
+transformation matrix representing relative position of the two shoes. However,
+finding such a path might not be always possible due to an orientation of the
+edges. By defining a function flip for labeling reversed edges such that:
+\[\text{flip}(\text{f})(t) = (\text{f}(t))^{-1}, \text{for every } t \text{ in
+range of a corresponding joint}\] an orientation of an edge can be reversed.
+Once reversed, the edge is labeled by function returning inverse transformation
+compared to the original label. Therefore, there is path between every two shoes
+in a module\footnote{The module must be strongly connected by definition.}.
 
-It is possible to  further extend the idea of module descriptors to find
-positions of the docks.  We can construct a descriptor of a single shoe in the
-same manner as we construct a descriptor for any other module (figure
-\ref{fig:shoe_descriptor}). Note the transformations for docks are constant
+It is possible to further extend the idea of module descriptors to find
+positions of the docks. A descriptor of a single shoe can be constructed in the
+same manner a descriptor for any other module (figure
+\ref{fig:shoe_descriptor}). The transformations for docks are constant
 functions. The coordinate system is transformed such that the axis orientation
 is the same as in the figure \ref{fig:dock_description} -- the Z axe is
 perpendicular to the docks and the X axe is coincident with the orientation
-vector.
+vector. We do not consider the docks to be a part of the shape descriptor as
+they are the same for each shoe and therefore for the sake of simplicity, they
+can be omitted. However, we find them useful to consider the following
+construction.
 
 \begin{figure}[h!]
     \centering
@@ -517,15 +529,11 @@ vector.
     \label{fig:shoe_descriptor}
 \end{figure}
 
-We do not consider the docks to be a part of the shape descriptor as they are
-the same for each shoe and therefore for the sake of simplicity, they can be
-omitted. However, we find them useful to consider the following construction.
-
-So far, we talked about descriptors only in a context of a single module. We can
-further extend it to multiple module. If we join two descriptors and add the
-corresponding edges between them, we can use the graph for computing relative
-position of any two shoes in the system. The construction of the connection is
-illustrated in figure \ref{fig:connection_descriptor}. We will refer to this
+So far, we considered descriptors only in a context of a single module. We can
+further extend it to multiple module. Two descriptors can be joined by adding
+edges between connected docks. The relative position of any two shoes in
+the system can be computed using this graph. The construction of the connection
+is illustrated in figure \ref{fig:connection_descriptor}. We will refer to this
 operation as \emph{shape descriptor union}.
 
 \begin{figure}[h!]
@@ -542,15 +550,15 @@ operation as \emph{shape descriptor union}.
 
 
 To allow algorithms take various sensors present on modules in account, simple
-sensor enumeration is not enough as the position of sensor matters. Therefore we
-allow sensors to be places on faces of the shoe (names as the corresponding
-docks). The capability descriptor $\mathcal{D}_C$ allows to specify this.
-Formally speaking it is a function $\mathcal{D}_C: S\times\mathcal{P}
-\rightarrow 2^{I}$, where $I$ is a set of all possible sensors. Intuitively,
-$\mathcal{D}_C$ is a labeling of individual docks on the module assigning
-sensors to them. The set of all sensors $I$ contains sensor-dependent
-descriptions\footnote{As there exists only the universal module we consider
-specification of the sensor format rather premature.}.
+sensor enumeration is not enough as the position of sensor matters. Therefore,
+the RoFI platform allows sensors to be placed on faces of the shoe. The faces
+are named as the corresponding docks (figure \ref{fig:dock_positions}). The
+capability descriptor $\mathcal{D}_C$ is a function $\mathcal{D}_C:
+S\times\mathcal{P} \rightarrow 2^{I}$, where $I$ is a set of all possible
+sensors. Intuitively, $\mathcal{D}_C$ is a labeling of individual docks on the
+module assigning sensors to them. The set of all sensors $I$ contains
+sensor-dependent descriptions\footnote{As there exists only the universal module
+we consider specification of the sensor format rather premature.}.
 
 \section{RoFI Configurations} \label{sec:configuration}
 
@@ -603,34 +611,28 @@ Formally, we define a topology $\mathcal{T}$ as a tuple $(M, E, d)$:
 
 We define a \emph{model of a topology} $\mathcal{M}_\mathcal{T}$ as a descriptor
 obtained by a following procedure:
-\begin{enumerate}
-    \item rename uniquely descriptors of each module instance in the system,
-    \item select an arbitrary one,
+\begin{enumerate*}
+    \item rename uniquely descriptors of each module instance in the system, then
+    \item select an arbitrary one and
     \item union the selected descriptor consequently with the other modules
     using module union (defined in section \ref{sec:capabilities}).
-\end{enumerate}
-Then, we define a \emph{model} $\mathcal{M}_\mathcal{C}$ of an configuration
+\end{enumerate*}
+We define a \emph{model} $\mathcal{M}_\mathcal{C}$ of an configuration
 $C=(T, L)$ as a model of $T$, where are labels were evaluated according to $L$,
-i.e. labels are constant values.
-
-We call a configuration $C$ \emph{realizable} iff:
-\begin{enumerate}
+i.e. labels are constant values. Configuration $C$ is \emph{realizable} iff:
+\begin{enumerate*}
     \item for all pair of shoes, all paths in the model of $C$ yield the same
     relative position and
-    \item no two shoes in the model of $C$ does not intersect
-\end{enumerate}
+    \item no two shoes in the model of $C$ intersect.
+\end{enumerate*}
 
-Note, that there are no constraints on topology, therefore, we consider every
-topology as valid. However, for some topologies there exists no realizable
-configuration.
-
-Given this terminology, there are few aspects to note:
+There are no constraints on topology, therefore, we consider every topology
+valid. However, for some topologies there exists no realizable configuration.
+Given the terminology, there are few aspects to note:
 \begin{itemize}
     \item To move the robot means to change a configuration.
     \item Change in configuration can also mean change in topology.
     \item Change in topology always mean a change of configuration.
-    \item Every acyclic configuration has a simple test to realizability (check
-    for shoe intersection).
 \end{itemize}
 
 \section{Intermodule Communication}\label{sec:communication}
@@ -644,7 +646,7 @@ The wireless communication is easy to implement, as there is no need to
 establish a physical connection among the modules. This simplifies docking
 mechanism and also allows for communication of separate systems of modules.
 However, due to its nature it does not scale well as all the modules share the
-same medium and only a single module can transmit at once. Also standard
+same medium and only a single module can transmit at a time. Also standard
 networking technologies like WiFi or Bluetooth are not suitable for handling
 possibly hundreds of device in one place, especially in embedded environment.
 

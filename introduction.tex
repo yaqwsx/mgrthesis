@@ -29,8 +29,9 @@ branches occurs only spuriously. We guess this is due two factors;
 
 Therefore, in this thesis we aim for an ambitious goal -- to introduce a new
 modular robotic platform, the \emph{RoFI} platform, specially designed to
-overcome the gap between algorithms and the physical world. \todo{It would be
-nice to reference https://xkcd.com/927/, wasn't it?}
+overcome the gap between algorithms and the physical world\footnote{We are aware
+of the potential introduction of a new dead platform as nicely illustrated at
+\url{https://xkcd.com/927/}.}.
 
 The thesis is structured as follows; rest of this chapter gives an overview of
 the modular robotic systems. In chapter \ref{chap:rofi} we define the RoFI
@@ -66,9 +67,9 @@ the literature\cite{brunete_current_2017}:
     \item \emph{lattice type} for a regular grid-based robots,
     \item \emph{hybrid type} for robots combining both previous approaches.
 \end{enumerate*}
-Further, if there is only a single or a few types of modules in the system, it
-is called \emph{metamorphic}\cite{brunete_current_2017}. Modules of such a
-system are also called \emph{cells} as they mimic cells in living organisms.
+Further, if there is only a single or a few types of modules in the system, the
+system is called \emph{metamorphic}\cite{brunete_current_2017}. Modules of such
+a system are also called \emph{cells} as they mimic cells in living organisms.
 
 The system can be either \emph{centrally controlled} by a single (and possibly
 external) unit, or the distributed nature of the modules can be leveraged and
@@ -88,8 +89,8 @@ action on its own. Single replicator block maps to a module in terminology given
 above. However, when multiple blocks are combined, they are able to perform
 movement and self-control. Therefore, Replicators are:
 \begin{enumerate*}
-    \item modular (they can be assembled in many configurations from a single
-    type of unit)
+    \item modular (they can be assembled in many configurations from a given
+    building blocks)
     \item self-reconfigurable (the configuration can be changed by the blocks on
     their own) and
     \item metamorphic (as there is only a single type of block).

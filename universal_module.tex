@@ -6,15 +6,17 @@ module is supposed to be the main building block of RoFI systems. It should
 provide enough versatility to build vast amount of systems.
 
 This chapter provides overview of the design of the universal module and gives a
-specification how to implement it. The current state of implementation is
-discussed in the chapter \ref{chap:prototypes}.
+specification to implement it. The current state of implementation is discussed
+in the chapter \ref{chap:prototypes}.
 
 \section{Universal Module Shape}
 
-The universal RoFI module occupies two adjacent cells of the grid as can be
-seen in the figure \ref{fig:um_reference}. Please note that this drawing gives
-a simplified model in which many technical details are omitted. There are four
-parts from which the module is composed:
+The universal RoFI module occupies two adjacent cells of the grid as can be seen
+in the figure \ref{fig:um_reference}. Please note that this drawing gives a
+simplified model in which many technical details are omitted. The arrangement of
+the module is inspired by the M-TRANs \cite{kurokawa_distributed_2008}. Unlike
+M-TRANs, the universal module is grid-aware. There are four parts from which the
+module is composed:
 \begin{enumerate*}
     \item \emph{body A},
     \item \emph{body B},

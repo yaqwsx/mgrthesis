@@ -1,53 +1,46 @@
 \chapter{The RoFI platform}\label{chap:rofi}
 
-As we stated in the introduction, the RoFI platform aims for bridging the gap
-between
-\begin{enumerate*}
-    \item a theoretical and algorithmic point of view on self-reconfigurable
-    modular robots; and
-    \item the implementation of the system in the physical world.
-\end{enumerate*}
-Typical use case of the RoFI platform should be to validate practical aspects of
-a given algorithm. The platform does not target real-world usage yet.
+The RoFI platform is expected to allow construction of reconfigurable robotic
+systems using small autonomous units. A typical use case for the platform is to
+validate algorithms for reconfigurable robots in a physical world or test
+hypothesis rather than solving real-world problems.
 
 \section{Design Goals}\label{sec:design_goals}
 
 Our overall goal can be break down into following requirements specification of
 the platform:
 
-\emph{Platform Requirements}: The platform should allow for versatility.
-Therefore, the platform should specify modules to be self-reconfigurable and it
- should also allow many different configurations of a system. This boils down to
-a design of module shape and dock positions such that the system can be easily
-reconfigured. Versatility can be also supported by extensibility of the platform
--- the platform should allow for specialized modules (special actuation or
-sensors). The platform should allow distributed control.
+\emph{Platform Requirements}: We expect the platform to define standardized
+autonomous modules, which can physically connect together via a docking system
+in versatile self-reconfigurable systems. This boils down to a design of module
+shape and dock positions such that the system can be easily reconfigured.
+Versatility can be also supported by extensibility of the platform -- the
+platform should allow for specialized modules (special actuation or sensors).
+The platform should allow distributed control.
 
 \emph{Docking System Requirements}: The docking system is a crucial part of the
-platform as the self-reconfigurability relies on it. The dock of the robot
-should allow the modules to connect in a variety of useful arrangements and
-should not strongly restrict number of possible configurations. Therefore, it
-should be genderless and should allow for several possible orientation of two
-docks. The dock should be also strong enough to support large systems of
-modules. To support fault-tolerance of the platform, one modules should be able
-to disconnect without cooperation of the mating side. This is useful in case of
-module malfunction. The docks should also drain energy only when changing state
-from locked to unlocked and vice-versa. The dock should also allow for
-communication and power sharing among the modules.
+platform as the modularity relies on it. The dock should allow the modules to
+connect in a variety of useful arrangements and should not strongly restrict
+number of possible configurations. Therefore, it should be genderless and should
+allow for several possible orientation of two docks. The dock should be also
+strong enough to support large systems of modules. To support fault-tolerance of
+the platform, one modules should be able to disconnect without cooperation of
+the mating side. This is useful in case of module malfunction. The docks should
+also drain energy only when changing state from locked to unlocked and
+vice-versa. The dock should also allow for communication and power sharing among
+the modules.
 
-\emph{Usability Requirements}: Since the platform is supposed to fill the gap
-between algorithms and the physical world, it should
-\begin{enumerate*}
-    \item provide a formal model of the platform and
-    \item allow for an easy development of new programs and porting existing
-    ones.
-\end{enumerate*}
-The formal model of the platform allows to reason about systems and also
-establishes terminology. Both easy development and porting existing programs can
-be achieved by by adaptation of standard technologies. The platform should also
-provide an automatic way of program distribution among the modules and should
-deal with debugging in the distributed environment to make development for the
-platform more pleasant.
+\emph{Usability Requirements}: We expect the platform to allow for fast software
+development. Therefore, the platform should provide a formal model of the
+platform and allow for easy porting of existing algorithms and libraries. The
+formal model of the platform allows to reason about systems and also establishes
+terminology. Porting existing libraries and algorithms is beneficial for fast
+development since it allows to adapt existing, tested code. Both easy
+development of new programs and porting existing ones can be achieved by by
+adaptation of standard technologies. The platform should also provide an
+automatic way of program distribution among the modules and should deal with
+debugging in the distributed environment to make development for the platform
+more pleasant.
 
 \section{The RoFI Platform }
 

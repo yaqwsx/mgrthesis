@@ -75,7 +75,115 @@ is captured in the figure \ref{fig:um_descriptor}.
     \label{fig:um_docks}
 \end{figure}
 
+\todo{We can turn!}
+
+\section{Universal Module Sensors}
+
+We design the universal module to be rather sensor-impecunious rather than
+sensor-rich. There should be various RoFI systems with various sensor needs.
+Therefore, we find much useful to implement in the universal module only sensors
+that can be beneficial nearly in all systems. The special sensors for concrete
+systems should be implemented as separate modules.
+
+There are two types of sensors in each universal module:
+\begin{enumerate*}
+    \item inertial measurement unit (IMU) and
+    \item distance sensors in the middle of each dock.
+\end{enumerate*}
+The IMU provides a basic notion of the module orientation in the space. Data
+from IMU can be used in algorithms to e.g. determine a common direction in space
+among all modules using the Earth's gravitational force. A good solution for the
+IMU IC is MPU-9250\todo{cite} due its compact size and performance per unit
+price ratio.
+
+We plan to use the VL53L1X\todo{cite} time-of-flight distance sensor in each
+dock. The sensors allow the universal module to detect obstacles in front of the
+module, help to establish correct alignment of two docks when connecting and can
+be also used to scan the environment. The scanning of the environment is
+performed by moving a shoe and building a depth map. This provides a primitive
+input to computer vision. For example when the RoFI system is supposed to climb
+the stairs it can measure their geometry by this procedure.
+
 \section{Intramodule Architecture}
+
+Each universal module is an autonomous unit. The module is controlled by a
+single \emph{control unit}. This unit controls all the other components of the
+module as can be seen in the figure \ref{fig:um_internal}. The unit controls
+smart servomotors over a bus built on top UART, docks over SPI bus and directly
+controls charging and power management circuits.
+
+\subsection{Control Unit}
+
+The control unit is designed to be powered by the ESP32 microcontroller
+\todo{cite}. This microcontroller provides enough computational power, provides
+rich peripherals including Bluetooth 4 Low Energy and WiFi 802.11 b/g/n, and
+most importantly the vendor provides great software support. We are mainly
+concerned by three aspects of the software support:
+\begin{enumerate*}
+    \item there is support for modern C/C++ compilers with full support for the
+    C++ standard library (including exception handling and concurrency),
+    \item the development framework provides POSIX compatible interface and
+    \item there is a vendor maintained port of the lwIP library.
+\end{enumerate*}
+
+First two aspects are crucial for easy development of software. From practical
+aspect, the ESP32 is nearly indistinguishable from a desktop POSIX environment
+while it still preserves real-time nature and easy access to low-level
+peripherals. The POSIX compabilit allow the developers to leverage existing
+libraries and port the to the universal module without a big effort. The support
+for lwIP is great benefit as the control unit serves as network switch (as
+defined in the section \ref{sec:communication}) and therefore, we can use it.
+The only necessary part to implement is the custom device driver for the docks.
+
+The control unit is not supposed to provide any sensors except the IMU since the
+placement of IMU in the robot is not crucial. The distance sensors on the docks
+are controlled by a microcontroller on the dock and the control unit
+
+
+\subsection{Motors}
+
+We decided to use so-called \emph{smart servomotors} (servos) to power the
+universal module. These servos are similar to their hobby counterparts. Just
+like the hobby servo, a smart servo is a DC motor with a gearbox combined with a
+driver and feedback loop controller in a single compact package. The main
+difference between these two is that smart servos provide a digital bus for
+sending commands (unlike pulse-width modulation communication used in hobby
+servos) and offer several advanced features. The hobby servo can be controlled
+only in position mode without any feedback to the control system. The smart
+servos usually allow for multiple control modes (torque, speed and position),
+allow continuous rotation and also provide feedback to the control system.
+Therefore, the system is able to detect when the motor reaches a commanded
+position or if the motor is overloaded.
+
+The usage of smart servos simplifies both, the mechanical construction and the
+control unit, as we can ommit motor driver, custom gearing and encoders. In our
+design, we use HerkuleX DRS-0101\todo{cite} servomotors. These servomotors are
+designed to be powered directly from a two cell li-ion accumulator and provide
+1.2 N$\cdot$m of torque. The servos communicate over UART bus, where the control
+unit serves as master and the servos are slaves. The servomotors can be
+daisy-chained and therefore, only t wo wires are requied for the communication.
+The command set provides means to perform synchronized movement.
+
+\todo{Shady}
+We choose the DRS-0101 servos for several reasons: they feature slightly smaller
+mechanical size compared to the Dynamixel AX-12A\todo{cite} (a comparable
+servo), they are mechanically compatible with DRS-0201 \todo{cite} servos, which
+feature twice the power and are also mechanically compatible with Lewansoul
+LX-16A \todo{cite}, which is an low-cost variant.
+
+\subsection{Dock Implementation}
+
+\subsection{Accumulator and Power Management}
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[]{figures/um_internal.pdf}
+    \caption{Block diagram of internal architecture of the module.}
+    \label{fig:um_internal}
+\end{figure}
+
 
 \section{The RoFI "BIOS" \todo{Proper naming}}
 

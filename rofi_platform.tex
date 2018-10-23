@@ -360,11 +360,6 @@ to the HiGen dock.
     \label{fig:dock_internal_arrangement}
 \end{figure}
 
-\subsection{Dock Connectors and Communication}
-
-\todo{Finish it!}
-\todo{Docks exchange data using serial line}
-
 \subsection{Mutual Orientation of the Docks}\label{sec:mutual_orientation}
 
 To be able to describe system made out of modules in the section
@@ -397,6 +392,53 @@ orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
     perspective we choose.}
     \label{fig:dock_orientation}
 \end{figure}
+
+
+\subsection{Docks Interaction}
+
+When to docks are connected, they can exchange the messages and share power. The
+communication and power sharing is accomplished by mechanical contact using pogo
+pins placed in the inner part of the skirt. The communication between two docks
+is implemented as a simple UART.
+
+To allow docks to connect in four different mutual orientations, we use similar
+pin arrangement as the HiGen dock \cite{parrott_higen:_2014}. The pin
+arrangement is shown in the figure \ref{fig:dock_pins}. The pins are arranged
+such that in each orientation one of the pin sections A or B is in contact with
+one of the pad sections 1 or 2. There are 6 pins in total; two pins for power
+sharing (GND and 48 V), two pins for UART (TX and RX) and a dedicated sense pin
+used for detection of the mutual orientation. The orientation could be retrieved
+by detecting which communication line is active, however, we find such solution
+much more complicated.
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[]{figures/dock_pins.pdf}
+    \caption{Pin arrangement on dock skirt. }
+    \label{fig:dock_pins}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/dock_block.pdf}
+    \caption{Block diagram of the dock functionality}
+    \label{fig:dock_block}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/dock_biswitch.pdf}
+    \caption{Implementation of bidirectional switches in the dock.}
+    \label{fig:dock_biswitch}
+\end{figure}
+
+\todo{Finish it!}
+\todo{Docks exchange data using serial line}
+
+\subsection{Dock Interface}
+
+\todo{Dock is build on STM and uses SPI}
 
 
 \subsection{Docks in the Grid System}\label{sec:dock_in_grid}

@@ -81,6 +81,7 @@
 \usepackage{array}
 \usepackage{siunitx}
 \usepackage{dsfont}
+\usepackage{bytefield}
 
 \usepackage{silence}
 
@@ -88,6 +89,7 @@
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcommand\bithead[2]{\bitbox[]{#1}{\scriptsize #2}}
 
 
 \newcommand\todo[1]{\noindent\textcolor{red}{(#1)}}
@@ -111,6 +113,9 @@
 \newcommand{\thesisadvisor}{\Jirik}
 
 \newcommand{\note}{\textit{Note:}\xspace}
+
+\newcommand{\fieldl}[1]{\multicolumn{2}{|c}{#1}}
+\newcommand{\fieldr}[1]{\multicolumn{2}{|c|}{#1}}
 
 \addbibresource{bibliography.bib}
 

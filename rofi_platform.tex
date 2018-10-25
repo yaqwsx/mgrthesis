@@ -16,7 +16,9 @@ in versatile self-reconfigurable systems. This boils down to a design of module
 shape and dock positions such that the system can be easily reconfigured.
 Versatility can be also supported by extensibility of the platform -- the
 platform should allow for specialized modules (special actuation or sensors).
-The platform should allow distributed control.
+The platform should allow distributed control as distributed environment can be
+easily converted a centrally converter, however the vise-versa is not easily
+possible.
 
 \emph{Docking System Requirements}: The docking system is a crucial part of the
 platform as the modularity relies on it. The dock should allow the modules to
@@ -24,7 +26,7 @@ connect in a variety of useful arrangements and should not strongly restrict
 number of possible configurations. Therefore, it should be genderless and should
 allow for several possible orientation of two docks. The dock should be also
 strong enough to support large systems of modules. To support fault-tolerance of
-the platform, one modules should be able to disconnect without cooperation of
+the platform, one module should be able to disconnect without cooperation of
 the mating side. This is useful in case of module malfunction. The docks should
 also drain energy only when changing state from locked to unlocked and
 vice-versa. The dock should also allow for communication and power sharing among
@@ -37,7 +39,7 @@ formal model of the platform allows to reason about systems and also establishes
 terminology. Porting existing libraries and algorithms is beneficial for fast
 development since it allows to adapt existing, tested code. Both easy
 development of new programs and porting existing ones can be achieved by by
-adaptation of standard technologies. The platform should also provide an
+leveraging of standard technologies. The platform should also provide an
 automatic way of program distribution among the modules and should deal with
 debugging in the distributed environment to make development for the platform
 more pleasant.
@@ -49,14 +51,14 @@ platform. The platform is defined by:
 \begin{enumerate}
     \item a grid system with a module shape requirements (section \ref{sec:aware}),
     \item a docking system (section \ref{sec:dock}),
-    \item module descriptions (section \ref{sec:capabilities}) and
-    \item an intermodule communication (section \ref{sec:communication}).
+    \item an intermodule communication (section \ref{sec:communication}) and
+    \item module descriptions (section \ref{sec:capabilities}).
 \end{enumerate}
 
 The platform also comes with a formalism for describing configurations of
 systems built in the platform (section \ref{sec:configuration}) and also gives
 an example of a module fulfilling the specification in form of the
-\emph{universal} module (chapter \ref{chap:universal_module}).
+\emph{universal module} (chapter \ref{chap:universal_module}).
 
 \section{Module Shape}\label{sec:aware}
 
@@ -71,10 +73,10 @@ position\footnote{Definition of joint follows in the text.}) should occupy one
 or more adjacent cells of the grid. If the module occupies more than a single
 cell, it is also allowed to occupy space of corresponding \emph{module hull}.
 Consider two adjacent cells occupied by the body. Then there is a convex hull of
-their inscribed spheres (see double cell module in figure\ref{fig:rofi_shapes}).
-The module hull is then defined as union of all such existing convex hulls for
-the module. See \ref{fig:rofi_shapes} for an example. When we will reference a
-module shape, we use following terminology:
+their inscribed spheres (see double cell module in figure
+\ref{fig:rofi_shapes}). The module hull is then defined as union of all such
+existing convex hulls for the module. See figure \ref{fig:rofi_shapes} for an
+example. When we will reference a module shape, we use following terminology:
 \begin{enumerate*}
     \item \emph{shoe} is a part of the module occupying a cell sphere and
     \item \emph{body} is a part of the module occupying mainly rest space from
@@ -98,7 +100,7 @@ freedom in form of \emph{joints}. Joint is a rotational degree of freedom along
 given axis. We do not allow any other type of motion -- therefore e.g.
 retractable nor sliding modules are not allowed in the RoFI platform.
 Intuitively, we can view a module as beads, which can rotate against each other
-along the axis of joints. For an simple example of a double cell module movement
+along the axis of joints. For a simple example of a double cell module movement
 see figure \ref{fig:grid_aware}.
 
 The motivation for such a restriction of the shape is a property we call
@@ -117,9 +119,9 @@ even they shape is a sphere. Their bodies cannot be inscribed in a spheres
 inside a grid cells. Grid-awareness however comes at a const. It requires a
 retractable docking mechanism as two neighbouring modules can feature only a
 point contact. We further discuss this in section \ref{sec:dock} and in section
-\ref{sec:dock_in_grid} we define allowed positions for docks on a module.
+\ref{sec:dock_in_grid}, we define allowed positions for docks on a module.
 
-\begin{figure}[!ht]
+\begin{figure}[!t]
     \centering
     \includegraphics[width=\textwidth]{figures/grid_aware.pdf}
     \caption{Visualization of grid-awareness. Consider two module shapes -- an
@@ -134,9 +136,9 @@ point contact. We further discuss this in section \ref{sec:dock} and in section
 We would like to point out that even we referred all examples to a grid-fitting
 positions of the robots (where all movement is performed by steps of
 $90^\circ$), we do not give any restriction on the granularity of the movement.
-We assume the modules are physically able to perform practically unlimited
-granularity (considering limits of a mechanic construction). However, the
-reconfiguration algorithms built on top of the system can consider only a
+We assume the modules are physically able to perform movement with practically
+unlimited granularity (considering limits of a mechanic construction). However,
+the reconfiguration algorithms built on top of the system can consider only a
 discrete steps in the movement if they need to.
 
 The shape specification allows us to define modules with various shape and
@@ -144,9 +146,9 @@ functionality. However, we do not expect the platform to feature many different
 types of modules and especially oddly shaped ones. We strongly believe that the
 double cell universal module (described in chapter \ref{chap:universal_module}),
 should be the main building block of RoFI systems. However, in future we
-consider having e.g. a passive module (only a mechanical construction), battery
-module or single-cell modules featuring specialized sensors (e.g. camera) or
-actuators (e.g. robotic hand or a wheel).
+consider having e.g. a passive module (built only from a mechanical
+construction), accumulator module or single-cell modules featuring specialized
+sensors (e.g. camera) or actuators (e.g. robotic hand or a wheel).
 
 \section{RoFI Docking System}\label{sec:dock}
 
@@ -191,15 +193,16 @@ system \cite{parrott_higen:_2014}. In summary, our docking system:
     \item supports data communication and power sharing.
 \end{itemize}
 
-The docking system is designed to become a stand-alone unit with given
-interface, which can be possibly mass produced and reused in all modules.
+The docking system is designed to become a stand-alone unit with a given
+interface (described in section \ref{sec:dock_interface}), which can be possibly
+mass produced and reused in all modules.
 
 \subsection{The Principle of Operation}
 
 The main principle of operation is the same as the principle of the HiGen dock.
 There are two key components -- clip and skirt (figure
-\ref{fig:dock_key_components}). The clip features four latches which can be
-slide under latches of the clip from mating side and form a connection which
+\ref{fig:dock_key_components}). The clip features four hooks which can be
+slide under hooks of the clip from mating side and form a connection which
 prevents pulling the docks apart. When two skirts touch each other they prevent
 the two mating docks from rotating against each other. By combining these two
 types of joints, we obtain a firm connection between the two docks.
@@ -209,12 +212,15 @@ The operation of a single lock is straightforward -- see figures
 retracted position. When shaft ring (yellow) starts to rotate, it translates the
 motion to the clip (blue). There is a helical slot in the dock body (see figure
 \ref{fig:dock_key_components}) which forces the clip to move upwards (to
-``unscrew''). As the clip moves upwards it carries the skirt. The skirt moves in a
-slot which prevents it from rotating against body and therefore it only moves
-upwards. So far, the clip is extended to a locking distance, however the latches
-of the docks could not slide under each other. The end of the slot in the body
-is not helical and is horizontal (see figure \ref{fig:dock_key_components}).
-This allows for sliding the latches under each other.
+``unscrew''). As the clip moves upwards it carries the skirt. The skirt moves in
+a slot which prevents it from rotating against body and therefore it only slides
+upwards. So far, the clip is extended to a locking distance, however, the hooks
+of the docks could not slide under each other. The helical slot is ended by a
+horizontal part (see figure \ref{fig:dock_key_components}). This allows for
+sliding the hooks under each other. The pressure on the hooks and skirts causes
+force only in the Z direction, there is no need to hold the components in
+position by an active component (e.g. motor) and therefore energy is only
+required to change state.
 
 \begin{figure}[t]
     \centering
@@ -239,7 +245,7 @@ grid cells. By rotation of the shaft ring the clips and skirts extends
 (situation 2). Situation 3 shows fully expended clips and skirts. The skirts are
 now connected and no rotation movement of the docks is possible. The clips are
 also in the end of the helical slot. By further rotation of the shaft ring the
-clips slides under each other and finish the locking process (situation 4).
+hooks slides under each other and finish the locking process (situation 4).
 
 \begin{figure}[!ht]
     \centering
@@ -277,8 +283,9 @@ three reasons:
     \item Also, there are magnets in the holes (red -- north facing up, green --
     south facing up) which attract the skirts to each other. This helps
     misaligned docks to connect properly.
-    \item By mounting spring contacts in the symmetry blocks we can build
-    power and data transmission lines between modules.
+    \item By mounting spring contacts in the symmetry blocks we can build power
+    and data transmission lines between modules -- see section
+    \ref{sec:dock_interaction} for detailed description.
 \end{itemize}
 There is the same idea behind symmetry of the clip as the idea behind the skirt
 symmetry.
@@ -300,8 +307,8 @@ preserving the same docking distance. This was achieved by swapping positions of
 the clip and skirt -- in our case the clip is the external ring and skirt is the
 internal, in the HiGen case skirt is the external ring and clip is the internal
 one. The swap allowed for placing the motor flat (figure
-\ref{fig:dock_internal_arrangement} and therefore flatter profile of the dock
-was achieved. Flat dock profile is a great advantage -- there is more less
+\ref{fig:dock_internal_arrangement}) and therefore, flatter profile of the dock
+was achieved. Flat dock profile is a great advantage -- there is more much
 occupied space available in a module.
 
 Note that the depth is independent on the diameter. The diameter choices is a
@@ -325,9 +332,9 @@ The dock composes of 5 custom components:
 These parts are for the purposes of prototyping 3D printed from the PLA
 material, however the components could be after few modifications lathed and
 milled from metal. We build this assumption on a similar component complexity as
-the ModRED docking system\cite{hossain_towards_2014}. The authors show
+the ModRED docking system \cite{hossain_towards_2014}. The authors show
 modifications necessary to achieve a serial manufacturability. The motor used in
-the design is commonly availalbe``Pololu 298:1 Micro Metal Gearmotor HPCB
+the design is commonly available ``Pololu 298:1 Micro Metal Gearmotor HPCB
 6V''\footnote{\url{https://www.pololu.com/product/3069}}.
 
 Rather than providing technical drawings of the individual components we provide
@@ -343,6 +350,7 @@ electronics is to:
     \item buffer incoming communication from an attached dock,
     \item provide a bus interface for a master controller in the module to
     easily control the dock.
+    \item provide interface for power sharing.
 \end{enumerate*}
 The electronics is supposed to be rather simple -- small microcontroller is
 supposed to drive H-bridge for the motor, sense the limit position of the
@@ -394,7 +402,7 @@ orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
 \end{figure}
 
 
-\subsection{Docks Interaction}
+\subsection{Docks Interaction}\label{sec:dock_interaction}
 
 When to docks are connected, they can exchange binary blobs and share power. The
 communication and power sharing is accomplished by mechanical contact using pogo
@@ -405,12 +413,12 @@ To allow docks to connect in four different mutual orientations, we use similar
 pin arrangement as the HiGen dock \cite{parrott_higen:_2014}. The pin
 arrangement is shown in the figure \ref{fig:dock_pins}. The pins are arranged
 such that in each orientation one of the pin sections A or B is in contact with
-one of the pad sections 1 or 2. There are 6 pins in total; two pins for power
+one of the pad sections 1 or 2. There are 5 pins in total; two pins for power
 sharing (GND and 48 V), two pins for UART (TX and RX) and a dedicated sense pin
 used for detection of the mutual orientation. The orientation could be retrieved
 by detecting which communication line is active, however, we find such solution
-much more complicated. The dedicated sense pin can detect if the mating site is
-still attached.
+much more complicated. The dedicated sense pin can also easily detect if the
+mating site is still attached.
 
 \begin{figure}[t]
     \centering
@@ -420,7 +428,7 @@ still attached.
 \end{figure}
 
 Mutual orientation detection works by permanently pulling sense 1 low and sense
-2 high (bot over a protection resistor) as shown in the figure
+2 high (over a protection resistor) as shown in the figure
 \ref{fig:dock_block}. Exactly one of the pins sense A and sense B will be either
 pulled low, or pulled high; the other one will float. The mutual orientation can
 be determined by table in figure \ref{fig:dock_pins}.
@@ -448,10 +456,9 @@ the dock can discard the frame\footnote{This behavior mimics the Ethernet
 interface.}. Bytes of the outcoming frame are required to be sent consequently
 with no additional delay. There is a silent period of 8 bytes (14
 \si{\micro\second}) after each frame. The receiver should discard incomplete
-frame after the silent period and prepare for next incoming frame.
-
-The hardware can implement baudrate correction algorithms and leverage the
-constant header 0xAA for this purpose.
+frame after the silent period and prepare for next incoming frame. The hardware
+can implement baudrate correction algorithms and leverage the constant header
+0xAA for this purpose.
 
 \begin{figure}[t]
     \centering
@@ -465,18 +472,18 @@ constant header 0xAA for this purpose.
 The connection of two docks is direct with no galvanic isolation. Therefore the
 modules in the RoFI systems are required to share the same ground potential or
 float before the connection is performed. The power is shared on a single 48 V
-line. We choose 48 V line to mitigate the power on the conductors.
+line. We choose 48 V line to mitigate the power losses on the conductors.
 
 The dock exposes two power lines to the module -- \emph{EXT} and \emph{INT}. The
-EXT line is required to be directly connected all EXT lines of the other docks
-in a module. The purpose of the EXT line is to share power between connected
-devices. The INT line is supposed to power the module and e.g. charge an
-internal accumulator. See example of dock connection in the universal module in
-the figure \ref{fig:um_internal}. Both of these lines can be connected or
-disconnected independently to the source. The hardware implementation of the
+EXT line is required to be directly connected to all EXT lines of the other
+docks in a module. The purpose of the EXT line is to share power between
+connected devices. The INT line is supposed to power the module and e.g. charge
+an internal accumulator. See example of dock connection in the universal module
+in the figure \ref{fig:um_internal}. Both of these lines can be connected to or
+disconnected from the source independently. The hardware implementation of the
 switch is shown in the figure \ref{fig:dock_biswitch}. Simple transistor switch
-is not enough as the current can flow both direction. The switch also
-monitors line voltage and measures current via electromagnetic coupling.
+is not enough as the current can flow both direction. The switch also monitors
+line voltage and measures current via electromagnetic coupling.
 
 \begin{figure}[t]
     \centering
@@ -485,39 +492,39 @@ monitors line voltage and measures current via electromagnetic coupling.
     \label{fig:dock_biswitch}
 \end{figure}
 
-This separation of the power lines into the EXT and INT lines allow for
+The separation of the power lines into the EXT and INT lines allow for
 different modes of operation:
 \begin{enumerate}
     \item The module does not participate on power sharing (all switches are
     opened). The module serves as an isolator and can be used to separate
-    the system into several independent power sharing parts.
+    the system into several independent power sharing components.
     \item The module connects the docks to the EXT line. The module servers a
     power bridge, but does not drain nor source any power to the system.
     \item One or more docs are connected to the INT line. The module can drain
-    or source power to the system.
+    power from or source power to the system.
     \item The previous modes are combined -- e.g. two docks are connected to the
     EXT line and therefore, can share power, but the module is connected to
     another dock.
 \end{enumerate}
 
-\subsection{Dock Interface}
+\subsection{Dock Interface}\label{sec:dock_interface}
 
 The dock provides SPI slave interface on 3.3 \si{\volt} level to control the
 dock (figure \ref{fig:dock_block}). The chip select pin (CS) serves also as an
-interrupt to the master -- when interrupt is issued, the pin is pulled low.
-Words are transmitted in the little endian byte order, bytes are sent
+interrupt to the master -- when interrupt is issued, the pin is pulled low by
+the slave. Words are transmitted in the little endian byte order, bytes are sent
 most-significat bit first. The data are read at the rising edge of the clock
 signal. The dock should support at least 10 \si{\mega\hertz} clock signal.
 
-There can be multiple variants of the docks (featuring sensors). So far, we
-define only dock variant 1 (with no sensors) further referenced as a \emph{base
-dock}. The following text describes revision 1 of the communication protocol,
-future revisions might be released. Future revisions must be
-backward-compatible.
+There can be multiple variants of the docks (e.g. variants featuring sensors).
+The variants are assigned unique number identifier. So far, we specify only dock
+variant 1 with no sensors, further referenced as a \emph{base dock}. The
+following text describes revision 1 of the communication protocol, future
+revisions might be released. Future revisions must be backward-compatible.
 
 The communication on the bus is performed in transactions -- each transactions
 starts by master pulling CS low and end by releasing CS back to high. Incomplete
-transactions must have no visible effect. Each transaction follows the format:
+transactions must have no observable effect. Each transaction follows the format:
 
 \bigskip
 \begin{bytefield}{32}
@@ -527,13 +534,14 @@ transactions must have no visible effect. Each transaction follows the format:
     \wordbox{2}{dock response}
 \end{bytefield}
 
-No padding of the command data or dock response is required. The commands 0--127
-are reserved for the base dock and all dock types are required to support them.
-The commands 128-255 are dock type specific. The basic commands are:
+\noindent No padding of the command data or dock response is required. The
+commands 0--127 are reserved for the base dock and all dock types are required
+to support them. The commands 128-255 are dock type specific. The basic commands
+are:
 
 \paragraph{Version command (0):} has no command data. The response is in format:
 
-\medskip
+\bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}
     \bitheader{0, 15} \\
     \bitbox{16}{dock variant} \\
@@ -545,8 +553,8 @@ status changing commands like expanding or retracting the dock. We consider
 following bitfields for this command:
 \begin{itemize}
     \item P (position, 1-bit) -- 1: expanded dock, 0: retracted dock,
-    \item I (internal, 1-bit) -- 1: the INT line is connected, 0 the line is disconnected,
-    \item E (external, 1-bit) -- 1: the EXT line is connected, 0 the line is diconnected,
+    \item I (internal, 1-bit) -- 1: the INT line is connected, 0: the line is disconnected,
+    \item E (external, 1-bit) -- 1: the EXT line is connected, 0: the line is diconnected,
     \item C (connected, 1-bit) -- 1: the dock is connected (the sense pin is
     active), 0: the dock is disconnected and
     \item O (mutual orientation, 2-bit) -- 0: north, 1: east, 3: south, 4: west.
@@ -557,7 +565,7 @@ setting a corresponding bit in write mask, we can change state of the
 corresponding feature of the dock to the state specifed by status bitmask. E.g.
 by setting bit I to 1 and setting corresponding bit in write mask, the INT line
 will be connected. Zero bits in the write bitmask are left unchanged. The format
-of the data:
+of the command data is:
 
 \bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}
@@ -570,7 +578,7 @@ of the data:
     \bitbox{13}{\textit{reserved}}
 \end{bytefield}
 
-The dock response follows similar format as the command. The dock returns the
+\noindent The dock response follows similar format as the command. The dock returns the
 status before performing the command. It also sends number of blobs waiting in
 the buffer for transmission, number of blobs not retrieved by the master and
 voltage and current on the power lines. The voltage in 8.8 fixed point number
@@ -601,7 +609,6 @@ enable and disable interrupts. There are following interrupts:
     \item C -- connect or disconnect event occured (the sense pin change) and
     \item I -- new binary blob received.
 \end{itemize}
-
 The data command is a bitmask with enabled interrupts:
 
 \bigskip
@@ -612,7 +619,7 @@ The data command is a bitmask with enabled interrupts:
     \bitbox{14}{\textit{resserved}}
 \end{bytefield}
 
-The response follows the same format:
+\noindent The response follows the same format:
 
 \bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}
@@ -622,13 +629,47 @@ The response follows the same format:
     \bitbox{14}{\textit{resserved}}
 \end{bytefield}
 
-Bits set to 1 signal interrupt reason. After the response is send, all interrupt
-reasons are cleared. Therefore, the mask returns all interrupts reasons from
-last query.
+\noindent Bits set to 1 signal interrupt reason. After the response is send, all
+interrupt reasons are cleared. Therefore, the mask returns all interrupts
+reasons from last query.
 
-\paragraph{Send blob (3)}
+\paragraph{Send blob (3)} is used to send a binary blob. The command data are
+formated as following:
 
-\paragraph{Receive blob (4)}
+\bigskip
+\begin{bytefield}[bitwidth=1.75em]{16}
+    \bitheader{0, 15} \\
+    \bitbox{16}{blob length} \\
+    \wordbox{2}{blob data}
+\end{bytefield}
+
+\noindent The size of a blob should be less than 1500 bytes (to be compatible
+with Ethernet), however the dock might supporter larger blobs.
+
+The response follows the format:
+
+\bigskip
+\begin{bytefield}[bitwidth=1.75em]{16}
+    \bitheader{0-15} \\
+    \bitbox{8}{akcnowledgment}
+\end{bytefield}
+
+\noindent The acknowledgment is nonzero, if the dock was able to place the blob
+in its transmission buffer. However, the blob can be still rejected by the
+mating dock.
+
+\paragraph{Receive blob (4)} is used to obtain a received blob from the mating
+dock. The oldest received blob is send. The command has no data. The response
+follows the format:
+
+\bigskip
+\begin{bytefield}[bitwidth=1.75em]{16}
+    \bitheader{0, 15} \\
+    \bitbox{16}{blob length} \\
+    \wordbox{2}{blob data}
+\end{bytefield}
+
+\noindent If there are no pending blobs, blob of length zero is returned.
 
 \subsection{Docks in the Grid System}\label{sec:dock_in_grid}
 
@@ -637,14 +678,14 @@ docks. As we have already defined the RoFI in this section we can complete the
 shape requirements with possible dock placements.
 
 Consider a shoe, the basic abstract building block of modules (figure
-\ref{sec:dock_in_grid}). We define origin of the shoe in the middle of the
+\ref{fig:dock_positions}). We define origin of the shoe in the middle of the
 sphere. There up to 6 adjacent shoes in the grid (in both direction of all axis
 X, Y and Z.) This defines 6 possible dock positions which we name after an axe
 direction, we name it $\mathcal{P} = \left\{+X, -X, +Y, -Y, +Z, -Z\right\}$. We
-also give an orientation of the dock (see figure \ref{sec:dock_in_grid}).
+also give an orientation of the dock (see figure \ref{fig:dock_positions}).
 
 Therefore, each RoFI module can specify subset of docks it features for each
-cell it occupies. Once we introduce module descriptors in section
+cell it occupies. Once we introduce module descriptors in the section
 \ref{sec:capabilities}, we will be able to unambiguously name each dock.
 
 \begin{figure}[t]
@@ -682,19 +723,19 @@ only adjacent modules can communicate.
 The RoFI platform relies primary on a wired communication between each two
 connected modules and optionally allows for a wireless communication. This
 design choice allows for fast and parallel communication inside a single system
-and also allows to establish a communication with another system.
+and also allows to establish a communication with a remote system.
 
 With the RoFI platform we do not want to reinvent the wheel and e.g. come up
 with a custom communication and routing protocol based on RS-485 like M-TRAN or
 the CAN in case of the HyMod project \cite{parrott_hymod:_2016}. For example,
 the CAN bus are fault tolerant and provides a prioritized messages, however for
-purposes of modular robots features several disadvantages:
+purposes of modular robots, it features several disadvantages:
 \begin{itemize}
     \item it has a limited bandwidth of 1 Mb/s \cite{noauthor_road_2013},
     \item it does not scale well as all devices share the same medium,
     \item cannot be cyclic and therefore, needs bus switches to remove cycles,
     \item needs an adjustable impedance based on the topology
-    (\cite{parrott_hymod:_2016}).
+    \cite{parrott_hymod:_2016}.
 \end{itemize}
 
 Therefore, the RoFI platform leverages traditional computer network based on the
@@ -717,7 +758,7 @@ common (e.g. \cite{lindgren_ip_2008} or \cite{waitzman_ip_1999}).
 We have already defined the communication between two docks in the section
 \ref{sec:dock}. This allows us to pass an arbitrary packets of data between two
 connected modules. Considering concrete implementation in lwIP, these two
-operation, sending a receiving of a packet (possibly with a custom header),is
+operation, sending a receiving of a packet (possibly with a custom header), is
 all what is necessary to implement a custom device driver. Device driver is a
 terminology of lwIP and basically is equivalent of the L2 of ISO/OSI model.
 
@@ -797,7 +838,7 @@ shoe positions in the space. The path in a descriptor between two shoes defines
 transformation matrix representing relative position of the two shoes. However,
 finding such a path might not be always possible due to an orientation of the
 edges. By defining a function flip for labeling reversed edges such that:
-\[\text{flip}(\text{f})(t) = (\text{f}(t))^{-1}, \text{for every } t \text{ in
+\[\text{flip}(\text{f})(t) = (\text{f}(t))^{-1}, \text{ for every } t \text{ in
 range of a corresponding joint}\] an orientation of an edge can be reversed.
 Once reversed, the edge is labeled by function returning inverse transformation
 compared to the original label. Therefore, there is path between every two shoes

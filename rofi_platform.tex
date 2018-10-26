@@ -154,10 +154,10 @@ sensors (e.g., camera) or actuators (e.g., robotic hand or a wheel).
 
 Since the modules in the RoFI platform are grid-aware, we cannot adapt existing
 docking systems from systems like Roombots \cite{bonardi_locomotion_2012} or
-M-TRAN III \cite{kurokawa_distributed_2008}. The reason for that is two adjacent
+M-TRAN III \cite{kurokawa_distributed_2008}. The reason is that two adjacent
 modules in the grid feature only a single point contact and not a whole face
 contact as it is common in other modular robotic platforms. There is a need for
-a retractable docking system (see \ref{fig:rofi_locking_example}).
+a retractable dock (see \ref{fig:rofi_locking_example}).
 
 \begin{figure}[t]
     \centering
@@ -176,8 +176,8 @@ a retractable docking system (see \ref{fig:rofi_locking_example}).
 \end{figure}
 
 To overcome this issue, we present the RoFI docking system (figure
-\ref{fig:dock_overview}). This docking system is inspired by the HiGen docking
-system \cite{parrott_higen:_2014}. In summary, our docking system:
+\ref{fig:dock_overview}). This system is inspired by the HiGen docking
+system \cite{parrott_higen:_2014}. In summary, our dock:
 \begin{itemize}
     \item allows for connection of two modules when they are not touching side
     by side,
@@ -192,15 +192,17 @@ system \cite{parrott_higen:_2014}. In summary, our docking system:
     \item supports data communication and power sharing.
 \end{itemize}
 
-The docking system is designed to become a stand-alone unit with a given
-interface (described in section \ref{sec:dock_interface}), which can be possibly
-mass produced and reused in all modules.
+The docking system is designed to be a stand-alone unit, which can be mass
+produced and reused in all modules. It defines a communication interface between
+two docks (described in section \ref{sec:dock_interaction}) and communication
+interface between module control unit and the dock (described in
+\ref{sec:dock_interface}).
 
 \subsection{The Principle of Operation}
 
 The main principle of operation is the same as the principle of the HiGen dock.
 There are two key components -- clip and skirt (figure
-\ref{fig:dock_key_components}). The clip features four hooks which can be
+\ref{fig:dock_key_components}). The clip features four hooks. These hooks can
 slide under hooks of the clip from the mating side and form a connection which
 prevents pulling the docks apart. When two skirts touch each other, they stop
 the two mating docks from rotating against each other. By combining these two
@@ -287,7 +289,7 @@ three reasons:
     and data transmission lines between modules -- see section
     \ref{sec:dock_interaction} for detailed description.
 \end{itemize}
-There is the same idea behind symmetry of the clip as the idea behind the skirt
+The idea behind symmetry of the clip is the same as the idea behind the skirt
 symmetry.
 
 \begin{figure}[!ht]
@@ -342,15 +344,15 @@ provide a CAD model in Fusion 360. The model can be found in the Fusion Cloud:
 \url{https://a360.co/2pIQzZ3}.
 
 As we mentioned, the dock is supposed to be a reusable stand-alone unit.
-Therefore there is supposed to be a PCB with driver electronics in the back of
-the dock. However current prototype does not feature it. The purpose of the
-electronics is to:
+Therefore, there is a PCB with driver electronics in the back of the dock.
+However, current prototype does not feature it. The purpose of the electronics
+is to:
 \begin{enumerate*}
     \item drive the motor in the clip,
     \item buffer incoming communication from an attached dock,
     \item provide a bus interface for a master controller in the module to
-    easily control the dock and
-    \item provide interface for power sharing.
+    easily control the dock, and
+    \item provide an interface for power sharing.
 \end{enumerate*}
 The electronics is supposed to be rather simple -- small microcontroller is
 supposed to drive H-bridge for the motor, detect the limit position of the
@@ -508,6 +510,9 @@ different modes of operation:
 \end{enumerate}
 
 \subsection{Dock Interface}\label{sec:dock_interface}
+
+The docks in a module should be controlled by the module control unit. There are
+usually multiple docks in a single module.
 
 The dock provides SPI slave interface on 3.3 \si{\volt} level to control the
 dock (figure \ref{fig:dock_block}). The chip select pin (CS) also serves as an

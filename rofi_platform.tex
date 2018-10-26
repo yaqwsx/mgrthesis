@@ -372,7 +372,7 @@ to the HiGen dock.
 
 \subsection{Mutual Orientation of the Docks}\label{sec:mutual_orientation}
 
-To be able to describe system made out of modules in the section
+To be able to describe system made out of modules in section
 \ref{sec:configuration} we define the \emph{mutual orientation} of the docks. As
 shown in figure \ref{fig:dock_description}, there is an orientation vector on
 the dock. When two docks connect, there can be an angle of $0^\circ$,
@@ -390,7 +390,7 @@ vector aims either:
     \item \emph{south} or
     \item \emph{west}
 \end{enumerate*}
-as shown on figure \ref{fig:dock_orientation}. Therefore we define the mutual
+as shown in figure \ref{fig:dock_orientation}. Therefore we define the mutual
 orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
 
 \begin{figure}[!ht]
@@ -430,10 +430,10 @@ mating site is still attached.
 \end{figure}
 
 Mutual orientation detection works by permanently pulling sense 1 low and sense
-2 high (over a protection resistor) as shown in the figure
-\ref{fig:dock_block}. Exactly one of the pins sense A and sense B will be either
-pulled low or pulled high; the other one will float. The mutual orientation can
-be determined by the table in figure \ref{fig:dock_pins}.
+2 high (over a protection resistor) as shown in figure \ref{fig:dock_block}.
+Exactly one of the pins sense A and sense B will be either pulled low or pulled
+high; the other one will float. The mutual orientation can be determined by the
+table in figure \ref{fig:dock_pins}.
 
 The docks communicate over UART with 8 bits, no parity and a 1.5 stop bit at 6
 Mbaud/s\footnote{The communication speed is easily achievable due to a short
@@ -481,9 +481,9 @@ EXT line is required to be directly connected to all EXT lines of the other
 docks in a module. The purpose of the EXT line is to share power between
 connected devices. The INT line is supposed to power the module and, e.g.,
 charge an internal accumulator. See example of dock connection in the universal
-module in the figure \ref{fig:um_internal}. Both of these lines can be connected
+module in figure \ref{fig:um_internal}. Both of these lines can be connected
 to or disconnected from the source independently. The hardware implementation of
-the switch is shown in the figure \ref{fig:dock_biswitch}. A simple transistor
+the switch is shown in figure \ref{fig:dock_biswitch}. A simple transistor
 switch is not enough as the current can flow both directions. The switch also
 monitors line voltage and measures current via electromagnetic coupling.
 
@@ -679,9 +679,9 @@ follows the format:
 
 \subsection{Docks in the Grid System}\label{sec:dock_in_grid}
 
-The shape requirements in the section \ref{sec:aware} omitted the placement of
-the docks. As we have already defined the RoFI in this section, we can complete
-the shape requirements with possible dock placements.
+The shape requirements in section \ref{sec:aware} omitted the placement of the
+docks. As we have already defined the RoFI in this section, we can complete the
+shape requirements with possible dock placements.
 
 Consider a shoe, the basic abstract building block of modules (figure
 \ref{fig:dock_positions}). We define the origin of the shoe in the middle of the
@@ -692,7 +692,7 @@ name after an axe direction. We name it $\mathcal{P} = \left\{+X, -X, +Y, -Y,
 \ref{fig:dock_positions}).
 
 Therefore, each RoFI module can specify a subset of docks it features for each
-cell it occupies. Once we introduce module descriptors in the section
+cell it occupies. Once we introduce module descriptors in section
 \ref{sec:capabilities}, we will be able to name each dock unambiguously.
 
 \begin{figure}[t]
@@ -704,9 +704,9 @@ cell it occupies. Once we introduce module descriptors in the section
     \label{fig:dock_positions}
 \end{figure}
 
-\section{Intermodule Communication}\label{sec:communication}
+\section{Inter-module Communication}\label{sec:communication}
 
-Intermodule communication is an essential part of a modular robotic system.
+Inter-module communication is an essential part of a modular robotic system.
 Without it, there is no space for emergent behavior to form. There are two
 possible means of communication: wireless one and wired one. Both of them
 has its advantages and disadvantages.
@@ -857,7 +857,7 @@ positions of the docks. A descriptor of a single shoe can be constructed in the
 same manner a descriptor for any other module (figure
 \ref{fig:shoe_descriptor}). The transformations for docks are constant
 functions. The coordinate system is transformed such that the axis orientation
-is the same as in the figure \ref{fig:dock_description} -- the Z axe is
+is the same as in figure \ref{fig:dock_description} -- the Z axe is
 perpendicular to the docks, and the X axe is coincident with the orientation
 vector. We do not consider the docks to be a part of the shape descriptor as
 they are the same for each shoe and therefore for the sake of simplicity, they
@@ -876,7 +876,7 @@ So far, we considered descriptors only in the context of a single module. We can
 further extend it to multiple modules. Two descriptors can be joined by adding
 edges between connected docks. The relative position of any two shoes in the
 system can be computed using this graph. The construction of the connection is
-illustrated in the figure \ref{fig:connection_descriptor}. We will refer to this
+illustrated in figure \ref{fig:connection_descriptor}. We will refer to this
 operation as \emph{shape descriptor union}.
 
 \begin{figure}[t]

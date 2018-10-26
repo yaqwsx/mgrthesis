@@ -1,18 +1,18 @@
 \chapter{Universal Module}\label{chap:universal_module}
 
-The chapter \ref{chap:rofi} gives the specification for modules in the RoFI
+Chapter \ref{chap:rofi} gives the specification for modules in the RoFI
 platform. In this chapter, we present the RoFI \emph{universal module}. This
 module is supposed to be the primary building block of RoFI systems. It should
 provide enough versatility to build a broader range of systems.
 
 This chapter provides an overview of the design of the universal module and
 gives a specification to implement it. The current state of implementation is
-discussed in the chapter \ref{chap:prototypes}.
+discussed in chapter \ref{chap:prototypes}.
 
 \section{Universal Module Shape}
 
 The universal RoFI module occupies two adjacent cells of the grid as can be seen
-in the figure \ref{fig:um_reference}. Please note that this drawing gives a
+in figure \ref{fig:um_reference}. Please note that this drawing gives a
 simplified model in which many technical details are omitted. The arrangement of
 the module is inspired by the M-TRAN \cite{kurokawa_distributed_2008}. Unlike
 M-TRAN, the universal module is grid-aware. The module composes of four parts:
@@ -64,8 +64,8 @@ torque for each axe.
 \end{figure}
 
 There are 3 docks on each shoe -- docks $X+, X-$ and $Z-$. The position of the
-docks is captured in the figure \ref{fig:um_docks}. The shape descriptor in the
-figure \ref{fig:um_descriptor} captures the universal module arrangement.
+docks is captured in figure \ref{fig:um_docks}. The shape descriptor in figure
+\ref{fig:um_descriptor} captures the universal module arrangement.
 
 \begin{figure}
     \centering
@@ -119,9 +119,16 @@ this procedure.
 
 Each universal module is an autonomous unit. A single \emph{control unit}
 controls the module. This unit controls all the other components of the module
-as can be seen in the figure \ref{fig:um_internal}. The unit controls smart
+as can be seen in figure \ref{fig:um_internal}. The unit controls smart
 servomotors over a bus built on top UART, docks over SPI bus and directly
 controls charging and power management circuits.
+
+\begin{figure}
+    \centering
+    \includegraphics[]{figures/um_internal.pdf}
+    \caption{Block diagram of internal architecture of the module.}
+    \label{fig:um_internal}
+\end{figure}
 
 \subsection{Control Unit}
 
@@ -143,7 +150,7 @@ while it still preserves real-time nature and easy access to low-level
 peripherals. The POSIX compatibility allow the developers to leverage existing
 libraries and port them to the universal module without a significant effort.
 The support for lwIP is a benefit as the control unit serves as network
-switch (as defined in the section \ref{sec:communication}) and therefore, we can
+switch (as defined in section \ref{sec:communication}) and therefore, we can
 use it. The only necessary part of implementing is the custom device driver for the
 docks.
 
@@ -185,19 +192,47 @@ is also mechanically compatible with Lewansoul LX-16A
 \cite{noauthor_lx-16a_2018}, which is a low-cost alternative for possible future
 mass production.
 
-\subsection{Accumulator and Power Management}
+\subsection{Power Management}
 
+The module is supposed to be powered from a two cell li-ion accumulator pack.
+The motors can directly operate from the accumulator at their rated voltage and
+can drain sufficient current. The control unit is also powered from the
+accumulator.
 
+The internal connection of power rails is captured in figure
+\ref{fig:um_internal}. There is a charger circuit to allow for charging from the
+INT line. The charger is controlled by the control unit -- it can be either
+disabled or it can charge the accumulator with given power limit. There is also
+a step-up convertor used to source power to other modules. The used step-up
+convertors must be parallelizable (denoted by a diode in the block diagram). The
+step-up module is also controlled by the control unit and can be disabled when
+not needed.
 
-\begin{figure}
-    \centering
-    \includegraphics[]{figures/um_internal.pdf}
-    \caption{Block diagram of internal architecture of the module.}
-    \label{fig:um_internal}
-\end{figure}
+Provided this power sharing setup, the module can operate in four modes:
 
+\paragraph{Self-powered mode} The module runs on its own accumulator (charger is
+disabled and convertor is disabled).
 
-\section{The RoFI "BIOS" \todo{Proper naming}}
+\paragraph{Power sourcing mode} The module provides energy to the network
+(charger is disabled and convertor is enabled).
+
+\paragraph{Power draining mode} The module charges its accumulator and drains
+power from other modules.
+
+\paragraph{Survivor mode} The module disables motors, disables converter and
+limits the charging power roughly to cover energy consumption of the control
+module. Therefore, no charging occurs and the charger is acts as a step-down
+converter for the control unit.
+
+The communication in the RoFI platform requires an activity from the control
+unit as it routes packets between the docks. If a module shuts down due to
+discharged accumulator, there cannot be any communication across the module.
+Dead module might lead to a separation of the system into two independent
+networks in some configurations. Charging the dead module might not be strategic
+in many cases. Therefore, survivor mode can be applied to keep the communication
+going without waisting power on charging the dead module.
+
+\section{The RoFI "BIOS"}
 
 \section{RoFI lib}
 

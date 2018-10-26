@@ -2,12 +2,12 @@
 
 The chapter \ref{chap:rofi} gives the specification for modules in the RoFI
 platform. In this chapter, we present the RoFI \emph{universal module}. This
-module is supposed to be the main building block of RoFI systems. It should
-provide enough versatility to build wide range of systems.
+module is supposed to be the primary building block of RoFI systems. It should
+provide enough versatility to build a broader range of systems.
 
-This chapter provides overview of the design of the universal module and gives a
-specification to implement it. The current state of implementation is discussed
-in the chapter \ref{chap:prototypes}.
+This chapter provides an overview of the design of the universal module and
+gives a specification to implement it. The current state of implementation is
+discussed in the chapter \ref{chap:prototypes}.
 
 \section{Universal Module Shape}
 
@@ -15,16 +15,15 @@ The universal RoFI module occupies two adjacent cells of the grid as can be seen
 in the figure \ref{fig:um_reference}. Please note that this drawing gives a
 simplified model in which many technical details are omitted. The arrangement of
 the module is inspired by the M-TRAN \cite{kurokawa_distributed_2008}. Unlike
-M-TRAN, the universal module is grid-aware. There are four parts from which the
-module is composed:
+M-TRAN, the universal module is grid-aware. The module composes of four parts:
 \begin{enumerate*}
     \item \emph{body A},
     \item \emph{body B},
-    \item \emph{shoe A} and
+    \item \emph{shoe A}, and
     \item \emph{shoe B}.
 \end{enumerate*}
 See figure \ref{fig:um_body_parts}. Bodies are supposed to encapsulate
-actuators, electronics and accumulators; shoes are meant to provide connection
+actuators, electronics, and accumulators; shoes are meant to provide connection
 to other modules and provide movement.
 
 \begin{figure}[t]
@@ -47,12 +46,12 @@ There are 3 degrees of freedom (figure \ref{fig:um_axis}):
 \begin{enumerate}
     \item shoe A can rotate against body A along the $\alpha$ axe in a range
     $\langle -90^\circ; +90^\circ\rangle$,
-    \item shoe B can rorate against body B along the $\beta$ axe in a range
-    $\langle -90^\circ; +90^\circ\rangle$ and
+    \item shoe B can rotate against body B along the $\beta$ axe in a range
+    $\langle -90^\circ; +90^\circ\rangle$, and
     \item body A can rotate against body B along the $\gamma$ axe in $\langle
     -180^\circ; +180^\circ\rangle$ with an overflow\footnote{First prototypes
-    feature a limitation on a number of overflows in one direction the $\gamma$
-    axe due to technical limitations. }.
+    feature a limitation on a number of overflows in one direction on the
+    $\gamma$ axe due to technical limitations. }.
 \end{enumerate}
 The module should be able to provide at least 1.5 $\text{N}\cdot\text{m}$ of
 torque for each axe.
@@ -64,9 +63,9 @@ torque for each axe.
     \label{fig:um_axis}
 \end{figure}
 
-There are 3 docks on each each shoe -- docks $X+, X-$ and $Z-$. The position of
-the docks is captured in the figure \ref{fig:um_docks}. This module arrangement
-is captured in the figure \ref{fig:um_descriptor}.
+There are 3 docks on each shoe -- docks $X+, X-$ and $Z-$. The position of the
+docks is captured in the figure \ref{fig:um_docks}. The shape descriptor in the
+figure \ref{fig:um_descriptor} captures the universal module arrangement.
 
 \begin{figure}
     \centering
@@ -75,7 +74,17 @@ is captured in the figure \ref{fig:um_descriptor}.
     \label{fig:um_docks}
 \end{figure}
 
-\todo{We can turn!}
+Such a module arrangement is more versatile than to the M-TRA arrangement.
+Addition of the third axe, the $\gamma$ axe, overcomes two limitations of
+M-TRAN-like arrangement:
+\begin{enumerate*}
+    \item given a chain configuration with all joints parallel to each other,
+    the system can span only in two dimensions; it cannot expand into the third
+    dimension.
+    \item Also, given a ring configuration which can roll forward, the M-TRAN
+    module cannot steer and only moves forward.
+\end{enumerate*}
+
 
 \section{Universal Module Sensors}
 
@@ -91,49 +100,52 @@ There are two types of sensors in each universal module:
     \item distance sensors in the middle of each dock.
 \end{enumerate*}
 The IMU provides a basic notion of the module orientation in the space. Data
-from IMU can be used in algorithms to e.g. determine a common direction in space
-among all modules using the Earth's gravitational force. A good solution for the
-IMU IC is MPU-9250\todo{cite} due to large community support and
-all-in-one-package solution (accelerometer, gyroscope and magnetometer).
+from IMU can be used in algorithms to, e.g., determine a common direction in
+space among all modules using the Earth's gravitational force. A good solution
+for the IMU IC is MPU-9250 \cite{noauthor_mpu-9250_2016} due to broad community
+support and all-in-one-package solution (accelerometer, gyroscope, and
+magnetometer).
 
-We plan to use the VL53L1X\todo{cite} time-of-flight distance sensor in each
-dock. The sensors allow the universal module to detect obstacles in front of the
-module, help to establish correct alignment of two docks when connecting and can
-be also used to scan the environment. The scanning of the environment is
-performed by moving a shoe and building a depth map. This provides a primitive
-input to computer vision. For example when the RoFI system is supposed to climb
-the stairs it can measure their geometry by this procedure.
+We plan to use the VL53L1X \cite{noauthor_new_2018} time-of-flight distance
+sensor in each dock. The sensors allow the universal module to detect obstacles
+in front of the module, help to establish correct alignment of two docks when
+connecting and can also be used to scan the environment. The scanning of the
+environment is performed by moving a shoe and building a depth map. The depth
+map can be used as a simple input for computer vision. For example, when the
+RoFI system is supposed to climb the stairs, it can measure their geometry by
+this procedure.
 
-\section{Intramodule Architecture}
+\section{Intra-module Architecture}
 
-Each universal module is an autonomous unit. The module is controlled by a
-single \emph{control unit}. This unit controls all the other components of the
-module as can be seen in the figure \ref{fig:um_internal}. The unit controls
-smart servomotors over a bus built on top UART, docks over SPI bus and directly
+Each universal module is an autonomous unit. A single \emph{control unit}
+controls the module. This unit controls all the other components of the module
+as can be seen in the figure \ref{fig:um_internal}. The unit controls smart
+servomotors over a bus built on top UART, docks over SPI bus and directly
 controls charging and power management circuits.
 
 \subsection{Control Unit}
 
 The control unit is designed to be powered by the ESP32 microcontroller
-\todo{cite}. This microcontroller provides enough computational power, provides
-rich peripherals including Bluetooth 4 Low Energy and WiFi 802.11 b/g/n, and
-most importantly the vendor provides great software support. We are mainly
-concerned by three aspects of the software support:
+\cite{noauthor_esp32_2018}. This microcontroller provides enough computational
+power, provides rich peripherals including Bluetooth 4 Low Energy and WiFi
+802.11 b/g/n, and most importantly, the vendor provides excellent software
+support. We are mainly concerned by three aspects of the software support:
 \begin{enumerate*}
     \item there is support for modern C/C++ compilers with full support for the
     C++ standard library (including exception handling and concurrency),
-    \item the development framework provides POSIX compatible interface and
+    \item the development framework provides POSIX compatible interface, and
     \item there is a vendor maintained port of the lwIP library.
 \end{enumerate*}
 
-First two aspects are crucial for easy development of software. From practical
+First two aspects are crucial for easy development of software. From a practical
 aspect, the ESP32 is nearly indistinguishable from a desktop POSIX environment
 while it still preserves real-time nature and easy access to low-level
-peripherals. The POSIX compabilit allow the developers to leverage existing
-libraries and port the to the universal module without a big effort. The support
-for lwIP is great benefit as the control unit serves as network switch (as
-defined in the section \ref{sec:communication}) and therefore, we can use it.
-The only necessary part to implement is the custom device driver for the docks.
+peripherals. The POSIX compatibility allow the developers to leverage existing
+libraries and port them to the universal module without a significant effort.
+The support for lwIP is a benefit as the control unit serves as network
+switch (as defined in the section \ref{sec:communication}) and therefore, we can
+use it. The only necessary part of implementing is the custom device driver for the
+docks.
 
 The control unit is not supposed to provide any sensors except the IMU since the
 placement of IMU in the robot is not crucial. The distance sensors on the docks
@@ -150,28 +162,28 @@ difference between these two is that smart servos provide a digital bus for
 sending commands (unlike pulse-width modulation communication used in hobby
 servos) and offer several advanced features. The hobby servo can be controlled
 only in position mode without any feedback to the control system. The smart
-servos usually allow for multiple control modes (torque, speed and position),
+servos usually allow for multiple control modes (torque, speed, and position),
 allow continuous rotation and also provide feedback to the control system.
-Therefore, the system is able to detect when the motor reaches a commanded
+Therefore, the system can detect when the motor reaches a commanded
 position or if the motor is overloaded.
 
 The usage of smart servos simplifies both, the mechanical construction and the
-control unit, as we can ommit motor driver, custom gearing and encoders. In our
-design, we use HerkuleX DRS-0101\todo{cite} servomotors. These servomotors are
-designed to be powered directly from a two cell li-ion accumulator and provide
-1.2 N$\cdot$m of torque. The servos communicate over UART bus, where the control
-unit serves as master and the servos are slaves. The servomotors can be
-daisy-chained and therefore, only t wo wires are requied for the communication.
-The command set provides means to perform synchronized movement.
+control unit, as we can omit motor driver, custom gearing and encoders. In our
+design, we use HerkuleX DRS-0101 \cite{noauthor_herkulex_nodate} servos. These
+servos are designed to be powered directly from a two cell li-ion accumulator
+and provide 1.2 N$\cdot$m of torque at maximal speed one turn per second. The
+servos communicate over UART bus, where the control unit serves as a master and
+the servos are slaves. The servos can be daisy-chained and therefore, only two
+wires are required for the communication. The command set provides means to
+perform a synchronized movement.
 
-\todo{Shady}
 We choose the DRS-0101 servos for several reasons: they feature slightly smaller
-mechanical size compared to the Dynamixel AX-12A\todo{cite} (a comparable
-servo), they are mechanically compatible with DRS-0201 \todo{cite} servos, which
-feature twice the power and are also mechanically compatible with Lewansoul
-LX-16A \todo{cite}, which is an low-cost variant.
-
-\subsection{Dock Implementation}
+mechanical size compared to the Dynamixel AX-12A \cite{noauthor_dynamixel_2006}
+(a comparable servo), they are mechanically compatible with DRS-0201
+\cite{noauthor_herkulex_nodate} servos, which feature twice the power. The servo
+is also mechanically compatible with Lewansoul LX-16A
+\cite{noauthor_lx-16a_2018}, which is a low-cost alternative for possible future
+mass production.
 
 \subsection{Accumulator and Power Management}
 

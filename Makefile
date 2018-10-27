@@ -5,7 +5,7 @@ src = $(wildcard *.tex)
 all: thesis
 
 thesis: $(src) $(pdffigures)
-	latexmk -halt-on-error -pdf --shell-escape thesis.tex 2>&1 | ./silence.py
+	texfot latexmk -halt-on-error -pdf --shell-escape thesis.tex 2>&1
 
 .PHONY: clean
 clean:

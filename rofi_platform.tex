@@ -509,6 +509,12 @@ different modes of operation:
     another dock.
 \end{enumerate}
 
+The RoFI modules are expected not to share power by default. The power sharing
+mechanism should not by default connect all the modules in a system. The modules
+should run on their own accumulator and only if a module in the module requires
+external power, the circuit from the EXT lines should be established and the
+energy should be transferred.
+
 \subsection{Dock Interface}\label{sec:dock_interface}
 
 The docks in a module should be controlled by the module control unit. There are

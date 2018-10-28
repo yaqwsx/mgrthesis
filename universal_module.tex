@@ -59,7 +59,8 @@ torque for each axe.
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/um_axis.pdf}
-    \caption{Degrees of freedom of the universal module. The figure represents neutral position of each joint.}
+    \caption{Degrees of freedom of the universal module. The figure represents
+    neutral position of each joint.}
     \label{fig:um_axis}
 \end{figure}
 
@@ -232,8 +233,244 @@ networks in some configurations. Charging the dead module might not be strategic
 in many cases. Therefore, survivor mode can be applied to keep the communication
 going without waisting power on charging the dead module.
 
-\section{The RoFI "BIOS"}
+\section{RoFI Program Interface}
 
-\section{RoFI lib}
+We expect the firmware to be developed using standard programming means for the
+ESP32 microcontroller. That is the firmware is developed using C++ facilitated
+by the ESP-IDF \cite{noauthor_esp-idf_nodate} framework. The framework provides
+drivers for MCU peripherals, FreeRTOS, the standard C and C++ libraries, and
+also offers several useful libraries (lwIP for network communication, Bluetooth
+library or library for virtual file system). The framework exposes its
+functionality as a plain C interface. In addition, many of the provided
+functionality is also wrapped in POSIX-compatible interface. E.g, sockets are
+accessible by both, lwIP interface and POSIX interface. The same follows for
+threading; user can use FreeRTOS API or can leverage POSIX interface or can even
+use C++ STL API.
 
-\todo{Something here}
+The ESP32 provides sufficient tools for software development using stand modern
+means. However, this means only cover general software development needs. We do
+not want the user to write a custom library for controlling the motors, docks
+and other. Therefore, the universal module should also provide \emph{RoFI
+Driver}, a software library which provides interface to RoFI specific tasks.
+
+The RoFi Driver consists of three parts: \todo{XXX}.
+
+\subsection{The RoFI "BIOS"}
+
+\subsection{Reactive Blocks Library}
+
+Software development for robots and embedded systems is considered to be more
+challenging than a classical software development. There are several reasons
+why the development is challenging:
+\begin{enumerate*}
+    \item the microcontroller peripherals have to be mastered,
+    \item testing and debugging is harder as the system is not self-contained a
+    interacts with the environment, and
+    \item the code has to deal with numerous asynchronous events and there task
+    which needs to be distributed in time.
+\end{enumerate*}
+
+The challenge of mastering complicated peripherals can be mitigated by writing a
+suitable high level drivers. Such drivers provide abstraction and hide
+implementation on the hardware level. Therefore the user does not need to toggle
+individual bits in configuration registers. Also the peripherals of modern
+microcontrollers are more powerful and general and therefore, allow for good
+abstraction. ESP-IDF provides such drivers for ESP32.
+
+The burden of testing robotic software can be partially mitigated by splitting
+the software into two layers -- the control layer operating on top an
+input/output layer. The I/O layer interacts with peripherals drivers, interacts
+with the environment and provide rather high level inputs to the control layer.
+With setup it is possible to mock-up the I/O layer and perform standard software
+testing of the control layer. However, testing is still rather challenging and
+we do not bring any innovation in this field.
+
+There are currently two classical approaches to tackle the burden of handling
+asynchronous events in languages like C or C++. First, a real-time operating
+system (RTOS) can be used with several tasks. Each task handles events in
+synchronous, blocking, manner. This approach leads to a readable code as the
+logic for handling events is kept close together and follows chronological flow
+of the events. However, it might not preserve the lowest possible latency due to
+RTOS task switching and also does not scale well as each the number of tasks is
+usually limited. The second approach uses callback functions which are called to
+handle an event. This approach scales well, however it leads to hard-to read
+code as the callbacks do not preserve context and are spread all over the source
+code. This phenomenon is usually referred as ``callback hell''. Also, code
+complexity increases tremendously when error handling is added.
+
+We designed a new solution for handling asynchronous events for the RoFI
+platform. We call it \emph{reactive blocks}. The idea behind reactive blocks is
+simple -- we use the same principle as callbacks, however, we provide a
+syntactical sugar to write them in a chain-like structure to preserve the
+chronological flow of event handling. Reactive blocks are inspired by the
+ReactiveX library \cite{noauthor_reactivex_nodate} and the ranges-v3 library
+\cite{noauthor_range-v3_nodate}.
+
+The reactive blocks will be implemented as a stand-alone RoFi independent C++
+library -- \emph{Ractive Blocks Library} (RBL). The library targets all
+platforms with C++17 support and STL support. This includes standard variants of
+x64, ARM and also embedded platform like ESP32 a or ARM COrtex-M. As the library
+implementation is a subject of another thesis, we provide only a brief
+description of its core functionality and omit the implementation details.
+
+Consider following (rather artificial) scenario: when a noisy distance sensor
+overcomes a given threshold (generates edge), the robot notifies several other
+robots (judges) over a network. The judges vote and if a majority votes yes, the
+robot flashes a LED. For simplicity, consider a line-based text communication
+protocol between the robots and numerous reasonably named functions.
+
+Standard implementation using blocking interface might look like this:
+\begin{minted}{cpp}
+while ( true ) {
+    // Wait rising edge debounced by 10 samples
+    ring_buffer< int > samples( 10, 0 );
+    while ( !all( samples,
+                  []( int x ){ return x > threshold; } ) )
+    {
+        samples.push( sensor.read() );
+        delay( 10_ms );
+    }
+    int sensorValue = average( samples );
+
+    // Perform voting
+    std::vector< bool > votes;
+    for ( auto& judge : judges ) {
+        judge.send( "value: " + std::to_string( sensorValue ) )
+        vote = judge.receiveLine() == "yes";
+        votes.push_back( vote );
+    }
+
+    // Flash an LED
+    if ( majority( votes, []( bool vote ){ return vote; } ) ) {
+        led.on();
+        delay( 200_ms );
+        led.off();
+    }
+}
+\end{minted}
+
+The sample code is straightforward and easily readable. By putting the code in a
+separate task, we can handle multiple asynchronous events simultaneously.
+However, the code does is not efficient as possible as the network communication
+is synchronous.
+
+Each asynchronous function traditionally takes a callback function as its
+argument. The callback is called, when the operation is finished. The result
+value or error is passed to the callback. The task from our example scenario
+could be implemented like this using asynchronous interface:
+
+\begin{minted}{cpp}
+std::vector< bool > votes;
+template < typename Callback >
+void onJudgeResponse( const std::string& resp, Callback c ) {
+    votes.push_back( resp == "yes" );
+    if ( votes.size() == judges.size() &&
+         majority( votes, []( bool vote ){ return vote; } ) )
+    {
+        c();
+    }
+}
+
+template < typename Callback >
+void vote( int value, Callback c ) {
+    for ( auto& judge : judges ) {
+        judge.send( "value: " + std::to_string( sensorValue ), [=] {
+            judge.receiveLine( [=]( const std::string& s ) {
+                onJudgeResponse( resp, s, c );
+            } );
+        } );
+    }
+}
+
+ring_buffer< int > samples( 10, 0 );
+timer.every( 10_ms. [&ring_buffer]() {
+    samples.push( sensor.read() );
+    if ( all( samples,
+        []( int x ){ return x > threshold; } ) )
+    {
+        vote( average( samples ), judges, []{
+            led.on();
+            timer.after( 200_ms, []{
+                led.off();
+            });
+        });
+    }
+});
+\end{minted}
+
+The code is now fully asynchronous, but is hard to read -- it does not preserve
+the chronological order of event handling, the user have to think about shared
+states and has a lot of nested sections. The need for a shared state arises from
+the absence of information in the control flow of the program. E.g, the function
+\texttt{onJudgeResponse} has to check if it is the last call of the function. In
+the first example there is no such need as the the control captures the
+information -- once the if-clause is reached, it is clear all judges voted.
+
+The solution we provide is shown in code snippet below. We do not expect the
+reader to immediately understand all the details of the code:
+
+\begin{minted}{cpp}
+auto overThreshold( std::pair< int, int > value ) {
+    return value.first > threshold;
+}
+
+auto is( const std::string& what ) {
+    return [=]( const std::string& s ) { return s == what; }
+}
+
+auto setLed( bool value ) {
+    return [=]() { led.set( value ) };
+}
+
+auto sensorStream = timer.every( 20_ms ) >> sensor.read;
+auto sensorAverage = sensorStream >> slidingAverage( 10 );
+zip( sensorStream, sensorAverage)
+    >> debounceOn( overThreshold )
+    >> std::get< 1 >
+    >> [&]( int value ) {
+        return for_each( judges, [=]( auto& judge ) {
+            std::string msg =
+                "value: " + std::to_string( sensorValue );
+            return judge.send( message )
+                    >> judge.receiveLine >> is( "yes" );
+        } ) >> majority;
+    }
+    >> setLed( true ) >> wait( 200_ms ) >> setLed( false );
+\end{minted}
+
+The reactive blocks follow similar idea as the range-v3 library -- we describe a
+pipeline for data transformation, however unlike ranges-v3, the data might be
+scattered over time. By describing the pipeline the user can preserve
+chronological ordering of the event handling in the code but also preserves
+asynchronicity at the same time.
+
+Reactive blocks allow to chain data transformation operations. Each operation is
+represented by a block. There are two type of blocks:
+\mintinline[breaklines]{cpp}{template < typename T > Puslisher< T > } and
+\mintinline[breaklines]{cpp}{template < typename T > Subscriber< T > }. Single
+block can be both publisher and subscriber.
+
+\noindent The publisher can:
+\begin{enumerate}
+    \item emit an arbitrary number of values of type \texttt{T} at any time,
+    \item emit an error (object inheriting from
+    \mintinline[breaklines]{cpp}{std::exception}), and
+    \item close itself. After closing no more values nor errors can be emitted.
+\end{enumerate}
+
+\noindent The subscriber can subscribe to a to publisher. After subscribing it
+\begin{enumerate}
+    \item receives values of type \texttt{T} emitted by the publisher and
+    \item can unsubscribe.
+\end{enumerate}
+
+These operations are sufficient to implement chaining of the blocks. Consider
+following, low level code snipper:
+\begin{minted}{cpp}
+
+\end{minted}
+
+
+\subsection{RoFI Driver}
+
+\subsection{Remote Procedure Call}

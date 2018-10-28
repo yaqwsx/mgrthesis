@@ -311,7 +311,8 @@ library -- \emph{Ractive Blocks Library} (RBL). The library targets all
 platforms with C++17 support and STL support. This includes standard variants of
 x64, ARM and also embedded platform like ESP32 a or ARM COrtex-M. As the library
 implementation is a subject of another thesis, we provide only a brief
-description of its core functionality and omit the implementation details.
+description of its core functionality and omit some semantical nuances and the
+implementation details.
 
 Consider following (rather artificial) scenario: when a noisy distance sensor
 overcomes a given threshold (generates edge), the robot notifies several other
@@ -407,7 +408,9 @@ the first example there is no such need as the the control captures the
 information -- once the if-clause is reached, it is clear all judges voted.
 
 The solution we provide is shown in code snippet below. We do not expect the
-reader to immediately understand all the details of the code:
+reader to immediately understand all details of the code as explanation
+follows. We advise the reader to return to this example during the rest of
+this section.
 
 \begin{minted}{cpp}
 auto overThreshold( std::pair< int, int > value ) {
@@ -427,8 +430,8 @@ auto sensorAverage = sensorStream >> slidingAverage( 10 );
 zip( sensorStream, sensorAverage)
     >> debounceOn( overThreshold )
     >> std::get< 1 >
-    >> [&]( int value ) {
-        return for_each( judges, [=]( auto& judge ) {
+    >> [&]( int sensorValue ) {
+        return interleave( judges, [=]( auto& judge ) {
             std::string msg =
                 "value: " + std::to_string( sensorValue );
             return judge.send( message )
@@ -442,20 +445,25 @@ The reactive blocks follow similar idea as the range-v3 library -- we describe a
 pipeline for data transformation, however unlike ranges-v3, the data might be
 scattered over time. By describing the pipeline the user can preserve
 chronological ordering of the event handling in the code but also preserves
-asynchronicity at the same time.
+asynchronicity at the same time. In the traditional future concept, which also
+allows to describe a pipeline, the pipeline is only linear and allows only a
+single value to pass. The reactive blocks allow for non-linear pipelines and
+also allows multiple values to pass through it.
 
-Reactive blocks allow to chain data transformation operations. Each operation is
-represented by a block. There are two type of blocks:
-\mintinline[breaklines]{cpp}{template < typename T > Puslisher< T > } and
-\mintinline[breaklines]{cpp}{template < typename T > Subscriber< T > }. Single
-block can be both publisher and subscriber.
+Reactive blocks allow to chain data transformation operations -- just like UNIX
+pipe operator. Each operation is represented by a block. There are two type of
+blocks: \mintinline[breaklines]{cpp}{template < typename T > Puslisher< T > }
+and \mintinline[breaklines]{cpp}{template < typename T > Subscriber< T > }.
+Single block can be both publisher and subscriber.
 
 \noindent The publisher can:
 \begin{enumerate}
-    \item emit an arbitrary number of values of type \texttt{T} at any time,
+    \item emit an arbitrary number of values of type \texttt{T} at any time (we
+    say it generates a \emph{stream} of values),
     \item emit an error (object inheriting from
     \mintinline[breaklines]{cpp}{std::exception}), and
-    \item close itself. After closing no more values nor errors can be emitted.
+    \item close itself (mark the end of its stream). After closing no more
+    values nor errors can be emitted.
 \end{enumerate}
 
 \noindent The subscriber can subscribe to a to publisher. After subscribing it
@@ -464,12 +472,147 @@ block can be both publisher and subscriber.
     \item can unsubscribe.
 \end{enumerate}
 
-These operations are sufficient to implement chaining of the blocks. Consider
-following, low level code snipper:
+The simplified implementation of subscriber and publisher is provided in the
+following snipped. Note that the implementation omit all technical aspects like
+management of object life-time and only shows the bare minimum of functionality.
 \begin{minted}{cpp}
+template < typename T >
+class Publisher {
+public:
+    void subscribe( Subscriber< T >* s ) {
+        _subscribers.push_back( s );
+    }
+    void unsubscribe( Subscriber< T >* s ) {
+        _subscribers.erase(
+            std::remove( _subscribers.begin(),
+            _subscribers.end(), s ), _subscribers.end() );
+    }
+protected:
+    void publish( T t ) {
+        for ( auto& s : _subscribers )  s->onvalue( t );
+    }
 
+    void publishError( const std::exception& e ) {
+        for ( auto& s : _subscribers )  s->onError( e );
+    }
+
+    void close() {
+        for ( auto& s : _subscribers )  s->onClose();
+    }
+private:
+    std::vector< Subscriber< T >* > _subscribers;
+};
+
+template < typename T >
+class Subscriber {
+protected:
+    virtual void onValue( T t ) = 0;
+    virtual void onError( const std::exception& e ) = 0;
+    virtual void onClose() = 0;
+};
 \end{minted}
 
+With these base classes we can derive any other reactive block. For example we
+can build a block which converts a number to string:
+\begin{minted}{cpp}
+class N2S: public Publisher< std::string >,
+    public Subscriber< int >
+{
+    virtual void onValue( int i ) override {
+        publish( std::to_string( i ) );
+    }
+    virtual void onError( const std::exception& e ) override {
+        publishError( e );
+    }
+    virtual void onClose() override {
+        close();
+    }
+};
+\end{minted}
+
+Or, given a classical callback-based asynchronous interface in form of function
+\mintinline[breaklines]{cpp}{errorCode asyncFoo( int param, Callback c )} we can
+wrap it inside a block which accepts the input for the asynchronous function and
+produces the output.
+\begin{minted}{cpp}
+class AsyncFoo: public Publisher< int >,
+    public Subscriber< int >
+{
+    virtual void onValue( int i ) override {
+        errorCode = asyncFoo( i, [&]( int retval ) {
+            this->publish( retval );
+        } );
+        if ( errorCode == ERROR )
+            publishError(
+                std::runtime_exception( "Something wrong" ) );
+    }
+    virtual void onError( const std::exception& e ) override {
+        publishError( e );
+    }
+    virtual void onClose() override {
+        close();
+    }
+};
+\end{minted}
+
+In similar manner all asynchronous events can be wrapped inside a reactive block
+-- including interrupts or possibly, but not preferably, busy waiting. Note,
+that the reactive blocks does not bring asynchonicity in the system, they just
+provide a new interface for it. The blocks can also wrap synchronous tasks as
+shown in the example of the \texttt{N2S} class. The only requirement is that the
+code inside a block should not block for a long time as it might delay other
+pending blocks. Also, there can be $m$-to-$n$ mapping of incoming values to the
+block, not just 1:1 mapping as we showed in the examples. The block can emit
+multiple values from a single input value (e.g., block splitting string
+according to a delimiter or timer producing values at a given period).
+
+When multiple block are linked together via the subscribe relation, we call the
+final structure chain. Therefore, we will refer to the operation as
+\emph{chaining blocks}. Chains are first-class citizens just like blocks.
+Therefore we can store them in variable or chain multiple chains together.
+
+However, building the block manually by defining classes is verbose and leads to
+hard-to-read code. Therefore, the library provides operator
+\mintinline[breaklines]{cpp}{>>} (chain). The operator is similar to Haskell's
+bind operator -- it build the subscribe relation between chains. The operator
+comes in many overloads and provides implicit creation of blocks out of
+functions. This functionality provides a syntactical sugar, which allows to make
+the code less verbose and also allows to keep the code in a chronological order.
+
+To further simplify the code, the library should provide predefined blocks like:
+zip (takes two stream of values and combines them together in pairs), interleave
+which takes multiple streams and joins them together, simple waiting, etc.
+
+The last advantage of reactive blocks we present is error handling. The
+publishers can publish value or an error. By default, the error goes through the
+pipeline until some block stops it and handles it. This provides a monadic- and
+exception-like behavior. See following example:
+\begin{minted}{cpp}
+a >> b >> c >> onError( []( std::exception& e ) {
+    std::cerr "Error a-c: " << e.what() << std::endl();
+} ) >> d >> e >> onError( []( std::exception& e ) {
+    std::cerr "Error d-e: " << e.what() << std::endl();
+} );
+\end{minted}
+The code defines a linear chain of blocks \texttt{a} to \texttt{e}. If any of
+the block fails, the error is captured by one the two error handlers. Also, the
+chain operator by default captures exception thrown out of functions and sends
+them down the chain:
+\begin{minted}{cpp}
+a >> [] {
+    throw std::runtime_error( "Inevidable error" );
+} >> b >> onError( []( std::exception& e ) {
+    std::cerr "Inevidable error follows:  "
+        << e.what() << std::endl();
+} );
+\end{minted}
+
+In the text above, we presented the library using a runtime polymorphism, which
+might not be suitable for embedded platforms. However, for chains with a type
+known in the compile time the runtime polymorphism could be eliminated in the
+future releases of the library. The runtime polymorphism elimination also allow
+for further optimization and reducing the cost of the reactive blocks
+abstraction.
 
 \subsection{RoFI Driver}
 

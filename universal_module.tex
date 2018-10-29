@@ -448,7 +448,15 @@ chronological ordering of the event handling in the code but also preserves
 asynchronicity at the same time. In the traditional future concept, which also
 allows to describe a pipeline, the pipeline is only linear and allows only a
 single value to pass. The reactive blocks allow for non-linear pipelines and
-also allows multiple values to pass through it.
+also allows multiple values to pass through it. Visualization of the pipeline
+for the example above is shown in figure \ref{fig:rbl_example_1}.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[]{figures/rbl_pipeline_1.pdf}
+    \caption{Pipeline visualization for sensor and voting code snippet.}
+    \label{fig:rbl_example_1}
+\end{figure}
 
 Reactive blocks allow to chain data transformation operations -- just like UNIX
 pipe operator. Each operation is represented by a block. There are two type of

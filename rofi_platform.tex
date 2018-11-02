@@ -425,7 +425,7 @@ mating site is still attached.
 \begin{figure}[t]
     \centering
     \includegraphics[]{figures/dock_pins.pdf}
-    \caption{Pin arrangement on dock skirt. }
+    \caption{Pin arrangement on a dock skirt. }
     \label{fig:dock_pins}
 \end{figure}
 
@@ -447,20 +447,26 @@ are wrapped in a frame with the following format:
     \bitheader{0,7,8,15, 16, 31} \\
     \bitbox{8}{\texttt{0xAA}}
     \bitbox{8}{\textit{reserved}}
-    \bitbox{16}{payload length} \\
-    \wordbox{2}{payload} \\
+    \bitbox{16}{content type} \\
+    \bitbox{16}{payload length} & \bitbox[r]{16}{} \\
+    \wordbox[lbr]{2}{payload} \\
     \bitbox{32}{CRC}
 \end{bytefield}
+\medskip
 
-The frame is transmitted to the mating dock over UART. If the mating dock is
-unable to handle the incoming frame or the frame is corrupted (CRC mismatch),
-the dock can discard the frame\footnote{This behavior mimics the Ethernet
-interface.}. Bytes of the outcoming frame are required to be sent consequently
-with no additional delay. There is a silent period of 8 bytes (14
+\noindent The frame is transmitted to the mating dock over UART. If the mating
+dock is unable to handle the incoming frame or the frame is corrupted (CRC
+mismatch), the dock can discard the frame\footnote{This behavior mimics the
+Ethernet interface.}. Bytes of the outcoming frame are required to be sent
+consequently with no additional delay. There is a silent period of 8 bytes (14
 \si{\micro\second}) after each frame. The receiver should discard incomplete
 frame after the silent period and prepare for next incoming frame. The hardware
 can implement baud rate correction algorithms and leverage the constant header
-0xAA for this purpose.
+0xAA for this purpose. The content type field identifies the content in payload
+and allows to transmit various protocols over the docks, (e.g., IP datagrams,
+RoFI debug messages, RoFI firmware upgrades etc.). The dock is allowed to treat
+different content differently (e.g. rearrange them in send buffer, drop them,
+etc.).
 
 \begin{figure}[t]
     \centering
@@ -651,6 +657,7 @@ formatted as follows:
 \bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}
     \bitheader{0, 15} \\
+    \bitbox{16}{content type} \\
     \bitbox{16}{blob length} \\
     \wordbox{2}{blob data}
 \end{bytefield}
@@ -677,6 +684,7 @@ follows the format:
 \bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}
     \bitheader{0, 15} \\
+    \bitbox{16}{content type} \\
     \bitbox{16}{blob length} \\
     \wordbox{2}{blob data}
 \end{bytefield}

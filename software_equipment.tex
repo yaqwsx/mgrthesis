@@ -1,92 +1,91 @@
-\chapter{RoFi Driver}\label{chap:software}
+\chapter{RoFI Driver}\label{chap:software}
 
 The RoFI platform does not give any restrictions on the implementation of
 modules. However, having all the modules based on the same platform is an
-advantage. Therefore, we consider implementation of universal module to be a
-reference implementation of the other modules and we expect all the other
-modules to reuse it as much as possibly. In this chapter we present several
-tools and concepts designed for the implementation of the universal module.
-
-We expect the firmware for modules to be developed using standard programming
-means for the ESP32 microcontroller. That is the firmware is developed using C++
-facilitated by the ESP-IDF \cite{noauthor_esp-idf_nodate} framework. The
-framework provides drivers for MCU peripherals, FreeRTOS, the standard C and C++
-libraries, and also offers several useful libraries (lwIP for network
-communication, Bluetooth library or library for virtual file system). The
-framework exposes its functionality as a plain C interface. In addition, many of
-the provided functionality is also wrapped in POSIX-compatible interface. E.g,
-sockets are accessible by both, lwIP interface and POSIX interface. The same
-follows for threading; user can use FreeRTOS API or can leverage POSIX interface
-or can even use C++ STL API.
-
-The ESP32 provides sufficient tools for software development using stand modern
-means. However, this means only cover general software development needs. We do
-not want the user to write a custom library for controlling the motors, docks
-and other. Therefore, we also provide \emph{RoFI Driver}, a software library
-which provides interface to RoFI specific tasks.
-
-The RoFi Driver consists of three parts: \todo{XXX}.
-
-\section{The RoFI "BIOS"}
-
-\section{Reactive Blocks Library}
+advantage. Therefore, we consider the implementation of the universal module to
+be a reference implementation of the other modules, and we expect the other
+modules to reuse it as much as possibly.
 
 Software development for robots and embedded systems is considered to be more
-challenging than a classical software development. There are several reasons
-why the development is challenging:
+challenging than traditional software development. There are several reasons why
+the development is challenging:
 \begin{enumerate*}
     \item the microcontroller peripherals have to be mastered,
-    \item testing and debugging is harder as the system is not self-contained a
-    interacts with the environment, and
-    \item the code has to deal with numerous asynchronous events and there task
-    which needs to be distributed in time.
+    \item testing and debugging is harder as the system is not self-contained
+    and interacts with the environment, and
+    \item the code has to deal with numerous asynchronous events, and there are
+    tasks which need to be distributed in time.
 \end{enumerate*}
 
-The challenge of mastering complicated peripherals can be mitigated by writing a
-suitable high level drivers. Such drivers provide abstraction and hide
-implementation on the hardware level. Therefore the user does not need to toggle
-individual bits in configuration registers. Also the peripherals of modern
-microcontrollers are more powerful and general and therefore, allow for good
-abstraction. ESP-IDF provides such drivers for ESP32.
+We designed several tools and concepts to tackle these aspects of firmware
+development and to make the development more convenient. We call them \emph{RoFI
+Driver}. The driver is built on top of the software suite provided for the ESP32
+microcontroller, which we sum up in section \ref{sec:hardware}. The driver
+provides the following functionality:
+\begin{itemize}
+    \item it seamlessly integrates the docks into the software environment such
+    that TCP/IP networking is available,
+    \item the modules can distribute firmware updates automatically, and
+    \item there is a low-level inter-module logging for debugging purposes.
+    \item The driver also provides a high-level interface for controlling the
+    motors and sensor. The interface allows for an easy handling of asynchronous
+    events; and
+    \item it is possible to do remote interface calls (i.e. to control another
+    module).
+\end{itemize}
 
-The burden of testing robotic software can be partially mitigated by splitting
-the software into two layers -- the control layer operating on top an
-input/output layer. The I/O layer interacts with peripherals drivers, interacts
-with the environment and provide rather high level inputs to the control layer.
-With setup it is possible to mock-up the I/O layer and perform standard software
-testing of the control layer. However, testing is still rather challenging and
-we do not bring any innovation in this field.
+\section{ESP32 Software Suite} \label{sec:hardware}
+
+We expect the firmware for modules to be developed using standard programming
+means for the ESP32 microcontroller. The firmware is developed using C++
+facilitated by the ESP-IDF framework \cite{noauthor_esp-idf_nodate}. The
+framework provides drivers for microcontroller peripherals. Therefore, the user
+does not need to toggle individual bits in peripherals' registers. The framework
+also includes FreeRTOS, the standard C and C++ libraries, and offers several
+useful libraries (lwIP, Bluetooth library or library for a virtual file
+system).
+
+The framework exposes its functionality as a plain C interface. Also, many of
+the provided functionality is wrapped in a POSIX-compatible interface. E.g.,
+sockets are accessible by both, lwIP interface and POSIX interface. The same
+follows for threading; the user can use FreeRTOS API or POSIX interface or can
+even leverage C++ STL API.
+
+\section{Networking} \label{sec:networking}
+
+\section{Reactive Blocks Library} \label{sec:rbl}
 
 There are currently two classical approaches to tackle the burden of handling
 asynchronous events in languages like C or C++. First, a real-time operating
 system (RTOS) can be used with several tasks. Each task handles events in
 synchronous, blocking, manner. This approach leads to a readable code as the
-logic for handling events is kept close together and follows chronological flow
-of the events. However, it might not preserve the lowest possible latency due to
-RTOS task switching and also does not scale well as each the number of tasks is
-usually limited. The second approach uses callback functions which are called to
-handle an event. This approach scales well, however it leads to hard-to read
-code as the callbacks do not preserve context and are spread all over the source
-code. This phenomenon is usually referred as ``callback hell''. Also, code
-complexity increases tremendously when error handling is added.
+logic for processing events is kept close together and follows the chronological
+flow of the events. However, it might not preserve the lowest possible latency
+due to RTOS task switching and also does not scale well as each the number of
+tasks is usually limited. The second approach uses callback functions which are
+called to handle an event. This approach scales well; however it leads to a
+hard-to-read code as the callbacks do not preserve context and are spread all
+over the source code. This phenomenon is usually referred to as ``callback
+hell''. Also, code complexity increases tremendously when error handling is
+added.
 
 We designed a new solution for handling asynchronous events for the RoFI
 platform. We call it \emph{reactive blocks}. The idea behind reactive blocks is
-simple -- we use the same principle as callbacks, however, we provide a
+simple -- we use the same principle as callbacks; however, we provide a
 syntactical sugar to write them in a chain-like structure to preserve the
 chronological flow of event handling. Reactive blocks are inspired by the
 ReactiveX library \cite{noauthor_reactivex_nodate} and the ranges-v3 library
 \cite{noauthor_range-v3_nodate}.
 
 The reactive blocks will be implemented as a stand-alone RoFi independent C++
-library -- \emph{Ractive Blocks Library} (RBL). The library targets all
-platforms with C++17 support and STL support. This includes standard variants of
-x64, ARM and also embedded platform like ESP32 a or ARM COrtex-M. As the library
-implementation is a subject of another thesis, we provide only a brief
-description of its core functionality and omit some semantical nuances and the
-implementation details.
+library -- \emph{Reactive Blocks Library} (RBL). The library targets all
+platforms with C++17 and STL support. The target platforms include standard
+variants of x64, ARM and also embedded platforms like ESP32 or ARM COrtex-M. As
+the library implementation is a subject of another thesis, we provide only a
+brief description of its core functionality and omit some semantical nuances and
+the implementation details.
 
-Consider following (rather artificial) scenario: when a noisy distance sensor
+Consider following (somewhat artificial) scenario: when a noisy distance sensor
 overcomes a given threshold (generates edge), the robot notifies several other
 robots (judges) over a network. The judges vote and if a majority votes yes, the
 robot flashes a LED. For simplicity, consider a line-based text communication
@@ -124,8 +123,8 @@ while ( true ) {
 
 The sample code is straightforward and easily readable. By putting the code in a
 separate task, we can handle multiple asynchronous events simultaneously.
-However, the code does is not efficient as possible as the network communication
-is synchronous.
+However, the code does is not as efficient as possible as the network
+communication is synchronous.
 
 Each asynchronous function traditionally takes a callback function as its
 argument. The callback is called, when the operation is finished. The result
@@ -230,11 +229,11 @@ for the example above is shown in figure \ref{fig:rbl_example_1}.
     \label{fig:rbl_example_1}
 \end{figure}
 
-Reactive blocks allow to chain data transformation operations -- just like UNIX
-pipe operator. Each operation is represented by a block. There are two type of
-blocks: \mintinline[breaklines]{cpp}{template < typename T > Puslisher< T > }
-and \mintinline[breaklines]{cpp}{template < typename T > Subscriber< T > }.
-Single block can be both publisher and subscriber.
+Reactive blocks allow chaining data transformation operations -- just like UNIX
+pipe operator. A block represents each operation. There are two type of blocks:
+\mintinline[breaklines]{cpp}{template < typename T > Puslisher< T > } and
+\mintinline[breaklines]{cpp}{template < typename T > Subscriber< T > }. Single
+block can be both publisher and subscriber.
 
 \noindent The publisher can:
 \begin{enumerate}
@@ -246,41 +245,24 @@ Single block can be both publisher and subscriber.
     values nor errors can be emitted.
 \end{enumerate}
 
-\noindent The subscriber can subscribe to a to publisher. After subscribing it
+\noindent The subscriber can subscribe to a publisher. After subscribing it
 \begin{enumerate}
     \item receives values of type \texttt{T} emitted by the publisher and
     \item can unsubscribe.
 \end{enumerate}
 
-The simplified implementation of subscriber and publisher is provided in the
-following snipped. Note that the implementation omit all technical aspects like
-management of object life-time and only shows the bare minimum of functionality.
+The interface of subscriber and publisher is provided in the
+following snipped:
 \begin{minted}{cpp}
 template < typename T >
 class Publisher {
 public:
-    void subscribe( Subscriber< T >* s ) {
-        _subscribers.push_back( s );
-    }
-    void unsubscribe( Subscriber< T >* s ) {
-        _subscribers.erase(
-            std::remove( _subscribers.begin(),
-            _subscribers.end(), s ), _subscribers.end() );
-    }
+    void subscribe( Subscriber< T >* s );
+    void unsubscribe( Subscriber< T >* s );
 protected:
-    void publish( T t ) {
-        for ( auto& s : _subscribers )  s->onvalue( t );
-    }
-
-    void publishError( const std::exception& e ) {
-        for ( auto& s : _subscribers )  s->onError( e );
-    }
-
-    void close() {
-        for ( auto& s : _subscribers )  s->onClose();
-    }
-private:
-    std::vector< Subscriber< T >* > _subscribers;
+    void publish( T t );
+    void publishError( const std::exception& e );
+    void close();
 };
 
 template < typename T >
@@ -293,7 +275,7 @@ protected:
 \end{minted}
 
 With these base classes we can derive any other reactive block. For example we
-can build a block which converts a number to string:
+can build a block which converts a number to a string:
 \begin{minted}{cpp}
 class N2S: public Publisher< std::string >,
     public Subscriber< int >
@@ -313,7 +295,7 @@ class N2S: public Publisher< std::string >,
 Or, given a classical callback-based asynchronous interface in form of function
 \mintinline[breaklines]{cpp}{errorCode asyncFoo( int param, Callback c )} we can
 wrap it inside a block which accepts the input for the asynchronous function and
-produces the output.
+produces an output.
 \begin{minted}{cpp}
 class AsyncFoo: public Publisher< int >,
     public Subscriber< int >
@@ -335,18 +317,18 @@ class AsyncFoo: public Publisher< int >,
 };
 \end{minted}
 
-In similar manner all asynchronous events can be wrapped inside a reactive block
--- including interrupts or possibly, but not preferably, busy waiting. Note,
-that the reactive blocks does not bring asynchonicity in the system, they just
-provide a new interface for it. The blocks can also wrap synchronous tasks as
-shown in the example of the \texttt{N2S} class. The only requirement is that the
-code inside a block should not block for a long time as it might delay other
+In similar manner, all asynchronous events can be wrapped inside a reactive
+block -- including interrupts or possibly, but not preferably, busy waiting.
+Note, that the reactive blocks does not bring asynchonicity in the system, they
+just provide a new interface for it. The blocks can also wrap synchronous tasks
+as shown in the example of the \texttt{N2S} class. The only requirement is that
+the code inside a block should not block for a long time as it might delay other
 pending blocks. Also, there can be $m$-to-$n$ mapping of incoming values to the
 block, not just 1:1 mapping as we showed in the examples. The block can emit
 multiple values from a single input value (e.g., block splitting string
 according to a delimiter or timer producing values at a given period).
 
-When multiple block are linked together via the subscribe relation, we call the
+When multiple blocks are linked together via the subscribe relation, we call the
 final structure chain. Therefore, we will refer to the operation as
 \emph{chaining blocks}. Chains are first-class citizens just like blocks.
 Therefore we can store them in variable or chain multiple chains together.
@@ -354,14 +336,15 @@ Therefore we can store them in variable or chain multiple chains together.
 However, building the block manually by defining classes is verbose and leads to
 hard-to-read code. Therefore, the library provides operator
 \mintinline[breaklines]{cpp}{>>} (chain). The operator is similar to Haskell's
-bind operator -- it build the subscribe relation between chains. The operator
+bind operator -- it builds the subscribe relation between chains. The operator
 comes in many overloads and provides implicit creation of blocks out of
 functions. This functionality provides a syntactical sugar, which allows to make
-the code less verbose and also allows to keep the code in a chronological order.
+the code less verbose and also allows to keep the code in chronological order.
 
-To further simplify the code, the library should provide predefined blocks like:
-zip (takes two stream of values and combines them together in pairs), interleave
-which takes multiple streams and joins them together, simple waiting, etc.
+To further simplify the code, the library should provide predefined blocks like
+zip (takes two streams of values and combines them together in pairs),
+interleave which takes multiple streams and joins them together, simple waiting,
+and so forth.
 
 The last advantage of reactive blocks we present is error handling. The
 publishers can publish value or an error. By default, the error goes through the
@@ -395,5 +378,3 @@ for further optimization and reducing the cost of the reactive blocks
 abstraction.
 
 \section{RoFI Driver Interface}
-
-\section{Remote Procedure Call}

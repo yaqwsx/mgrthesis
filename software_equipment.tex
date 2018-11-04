@@ -114,7 +114,7 @@ mapping call follows the format:
 
 \bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}
-    \bitheader{0-15} \\
+    \bitheader{0,7} \\
     \bitbox{8}{command (0)}
 \end{bytefield}
 
@@ -122,7 +122,7 @@ mapping call follows the format:
 
 \bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}
-    \bitheader{0-15} \\
+    \bitheader{0,7,8,15} \\
     \bitbox{8}{command (1)} & \bitbox{8}{IP address size} \\
     \bitbox{8}{GUID size} & \bitbox{8}{number of entries ($n$)} \\
     \wordbox{2}{IP address 1} \\
@@ -199,7 +199,7 @@ The low level debugging uses content type specifier 2 (section
 
 \bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}
-    \bitheader{0-15} \\
+    \bitheader{0,15} \\
     \wordbox{2}{message string}
 \end{bytefield}
 
@@ -248,24 +248,107 @@ a piece of firmware, and one for committing the changes.
 The HTTP server update is an example of a central update. We find it unsuitable
 for the RoFI systems for following reasons:
 \begin{enumerate*}
-    \item each module downloads the firmware separately and therefore the
+    \item each module downloads the firmware separaMožná jo, tely and therefore the
     protocol does not scale well, and
     \item it relies on working TCP/IP connection and routing. If a firmware
     update breaks routing, the firmware update stops working.
 \end{enumerate*}
 Therefore, we introduce a decentralized \emph{firmware update protocol} relying
-only on dock connection. By flashing a single module, its firmware should
-distribute among the other modules in system. We do not restrict the flashing
-procedure -- it can be either flashed by a cable from PC or the module can
-download its firmware from a central authority (therefore, a hybrid approach can
-be achieved).
+only on dock connection. By flashing a single module, its firmware distributes
+among the other modules in a system. We do not restrict the flashing procedure
+-- it can be either flashed by a cable from a PC or the module can download its
+firmware from a central authority (therefore, a hybrid approach can be
+achieved).
 
 The protocol works as follows. Each firmware has built in two symbols in the
 binary: \texttt{ROFI\_FW\_TYPE} and \texttt{ROFI\_FW\_TIMESTAMP}. Firmware type
-is specified by the user, timestamp is automatically added during build. A
-module updates only to the same firmware type as it already is and to a newer
-timestamp. The firmware type allow the system can consist of various type of
-modules.
+is specified by the user, timestamp is automatically added during build.
+Firmware type is a 16-bit unsigned integer, timestamp is a 64-bit unsigned
+integer. There are no restrictions on meaning of the numbers; it is recommended
+that the timestamp are milliseconds since UNIX time epoch. A module updates only
+to the same firmware type as it already is and to a newer timestamp. The
+firmware type allow the system can consist of various type of modules.
+
+The firmware update protocol uses content type specifier 3 (section
+\ref{sec:dock_interface}). There are four type of messages:
+
+\paragraph{Firmware request} is sent by a module to find out firmware version of
+its neighbors. The answer is firmware announcement. The message has the
+following format:
+
+\bigskip
+\begin{bytefield}{32}
+    \bitheader{0, 7} \\
+    \bitbox{8}{command (0)}
+\end{bytefield}
+
+\paragraph{Firmware announcement} is broadcasted by a module to its direct
+neighbors, when it knows new firmware. The firmware might not be completely
+known to the module and therefore, there is a field known size in the message.
+If more of the firmware code is known, new message is broadcasted. The message
+has the following format:
+
+\bigskip
+\begin{bytefield}{32}
+    \bitheader{0, 7, 8, 15, 16, 31} \\
+    \bitbox{8}{command (1)} & \bitbox{8}{\textit{reserved}} & \bitbox{16}{firmware type} \\
+    \wordbox{2}{firmware timestamp} \\
+    \bitbox{32}{firmware size} \\
+    \bitbox{32}{known size}
+\end{bytefield}
+
+\paragraph{Firmware chunk request} is sent by a module to obtain a new chunk of
+the firmware. It is usually a response to firmware announcement. The chunks are
+1024 bytes in length (except the last one) and the allowed offsets are also in
+multiplies of 1024. The message has the following format:
+
+\bigskip
+\begin{bytefield}{32}
+    \bitheader{0, 7, 8, 15, 16, 31} \\
+    \bitbox{8}{command (2)} & \bitbox{8}{\textit{reserved}} & \bitbox{16}{firmware type} \\
+    \wordbox{2}{firmware timestamp} \\
+    \bitbox{32}{chunk offset}
+\end{bytefield}
+
+\paragraph{Firmware chunk response} is a response to firmware chunk request. The
+message has the following format:
+
+\bigskip
+\begin{bytefield}{32}
+    \bitheader{0, 7, 8, 15, 16, 31} \\
+    \bitbox{8}{command (3)} & \bitbox{8}{\textit{reserved}} & \bitbox{16}{firmware type} \\
+    \wordbox{2}{firmware timestamp} \\
+    \bitbox{32}{chunk offset} \\
+    \bitbox{32}{chunk length} \\
+    \wordbox{2}{chunk data}
+\end{bytefield}
+
+\noindent First, we illustrate the protocol operation in a system composed of
+single module type. Then, we extend it to an arbitrary RoFI systems.
+
+When a first module receives a new firmware, it broadcast the firmware
+announcement. Each module keeps a record of the source of newest firmware
+available. It can be either the module itself, or one of its neighbors. The
+firmware sources are ordered by timestamp and known size and for now, we ignore
+firmware types. If a module receives firmware announcement, it checks if it is
+newer. If not, the message is ignored. Otherwise it updates the firmware source.
+When a firmware source contains newer firmware than the firmware the module
+currently runs, it starts the upgrade procedure. It uses firmware chunk request
+to ask the firmware source for a new firmware chunk. If newer source of firmware
+appears, the current firmware update is aborted and new update is started.
+During the update, the module itself broadcasts firmware announcement message as
+new chunks of firmware are received. In this fashion, the new firmware spreads
+like a wave in the system. Note, that messages can loose in the system as docks
+are allowed to drop datagrams. Therefore, if message response times out, the
+module broadcasts firmware request to find a new firmware source.
+
+To support multiple firmware types, the module keeps track of newest firmware
+available for each type. If firmware announcement updates other type of firmware
+than module type, it broadcasts the announcement to all neighbors. If firmware
+chunk request for other firmware is received, it is redirected to the the source
+of that type of firmware and remembers the request. When a response in form of
+firmware chunk is received, the module redirects the message to the author of
+the request.
 
 \section{Reactive Blocks Library} \label{sec:rbl}
 

@@ -4,7 +4,7 @@ The RoFI platform does not give any restrictions on the implementation of
 modules. However, having all the modules based on the same platform is an
 advantage. Therefore, we consider the implementation of the universal module to
 be a reference implementation of the other modules, and we expect the other
-modules to reuse it as much as possibly.
+modules to reuse it as much as possible.
 
 Software development for robots and embedded systems is considered to be more
 challenging than traditional software development. There are several reasons why
@@ -26,11 +26,11 @@ provides the following functionality:
     \item it seamlessly integrates the docks into the software environment such
     that TCP/IP networking is available,
     \item the modules can distribute firmware updates automatically, and
-    \item there is a low-level inter-module logging for debugging purposes.
+    \item there is low-level inter-module logging for debugging purposes.
     \item The driver also provides a high-level interface for controlling the
-    motors and sensor. The interface allows for an easy handling of asynchronous
-    events; and
-    \item it is possible to do remote interface calls (i.e. to control another
+    motors and sensor. The interface allows for easy handling of asynchronous
+    events, and
+    \item it is possible to do remote interface calls (i.e., to control another
     module).
 \end{itemize}
 
@@ -53,15 +53,15 @@ even leverage C++ STL API.
 
 \section{Networking} \label{sec:networking}
 
-We leverage the lwIP library on the ESP32 to implement networking. This is
-achieved by implementing a new network interface. All the docks in the module
-appear as a single interface, therefore the interface performs simple switching
-to determine the destination dock.
+We leverage the lwIP library on the ESP32 to implement networking. To make lwIP
+compatible with the docks we have to provide a new network interface.
+All the docks in the module appear as a single interface. Therefore, the
+interface performs simple switching to determine the destination dock.
 
 \subsection{Dock Integration}
 
-Technically speaking, we have to provide following function to lwIP to implement
-a new network interface:
+Technically speaking, we have to provide the following function to lwIP to
+implement a new network interface:
 \begin{itemize}
     \item \mintinline[breaklines]{c}{err_t rofi_if_init(struct netif *netif)}:
     to initialize the \texttt{nettif} structure,
@@ -71,15 +71,15 @@ a new network interface:
     to wrap a datagram in custom headers and to transmit the datagram to the
     docks.
 \end{itemize}
-After system start, the RoFI driver calls \texttt{netif\_add}. The call register
-a new network interface. After the setup, all the incoming datagrams are passed
-to the \texttt{rofi\_netif->input} callback. The callback is set in the
-structure by \texttt{netif\_add}. This is all, what is needed to integrate docks
-to the lwIP library.
+After system start, the RoFI driver calls \texttt{netif\_add}. The call
+registers a new network interface. After the setup, all the incoming datagrams
+are passed to the \texttt{rofi\_netif->input} callback. The callback is set in
+the structure by \texttt{netif\_add}. Providing these functions is all, what is
+needed to integrate docks to the lwIP library.
 
 \subsection{Network Interface Implementation}
 
-The implementation of the network interface is straightforward and rather
+The implementation of the network interface is straightforward and somewhat
 technical. There are only several aspects worth further comment:
 \begin{enumerate*}
     \item mapping to content type and binary blobs of the dock interface defined
@@ -88,16 +88,15 @@ technical. There are only several aspects worth further comment:
     \item the relation between switching and routing.
 \end{enumerate*}
 
-The docks can pass an arbitrary binary blobs to the mating side. The blobs are
-marked by the content type specifier. The specifier allow us to transmit
-multiple protocols through the same interface. In the RoFI driver, there are so
-far 4 content type specifiers: 0 -- IP datagrams, 1 -- address mapping protocol
-(defined further in this section), 2 -- low level logging (section
-\ref{sec:logging}), and 3 -- firmware update protocol
-(\ref{sec:firmware_distribution}).
+The docks can pass arbitrary binary blobs to the mating side. The content type
+specifier marks the blobs. The specifier allows to transmit multiple protocols
+through the same interface. In the RoFI driver, there are so far four content
+type specifiers: 0 -- IP datagrams, 1 -- address mapping protocol (defined
+further in this section), 2 -- low-level logging (section \ref{sec:logging}),
+and 3 -- firmware update protocol (\ref{sec:firmware_distribution}).
 
 In order to determine which dock should be used for a datagram transmission, a
-mapping between destination IP addresses and outcoming dock is needed. The
+mapping between destination IP addresses and the outcoming dock is needed. The
 mapping is performed by the ARP protocol \cite{plummer_ethernet_1982} in the
 ethernet based networks. However, the ARP protocol is not a good choice in the
 RoFI environment for the following reasons:
@@ -138,61 +137,63 @@ following reasons to do that that: it allows to cluster modules in a system and
 perform packet switching in the cluster if the further development finds it
 suitable (e.g., packet switching has lower latency), and there can be simple
 modules in the system not capable of routing (e.g., battery module). The
-overhead caused by extended packet format is negligible and is worth further
+overhead caused by the extended packet format is negligible and is worth further
 extensibility.
 
-On dock connection, the module actively sends the mapping response message to
-the mating side. If there is a change making the information sent previously
-invalid, a new message is sent (e.g. the module has changed its IP address). The
-event driven approach allows to establish the mapping quickly. To avoid the
-table to contain out-of-date information, the module should periodically use the
-mapping call to update it. Note that under normal conditions the table cannot go
-out-of-date; it can happen only when malfunction occurs (e.g., module resets).
+On the dock connection, the module actively sends the mapping response message
+to the mating side. If there is a change making the information sent previously
+invalid, a new message is sent (e.g., the module has changed its IP address).
+The event-driven approach allows establishing the mapping quickly. The module
+should periodically use the mapping call to update entries in the table to avoid
+the entries to go out-of-data. Note that under normal conditions the table
+cannot go out-of-date; it can happen only when a malfunction occurs (e.g.,
+module resets).
 
 \subsection{Module Address Configuration and Routing}
 
-To communicate in the IP network, each module has to have a unique and valid IP
-address. The modules have their own unique GUIDs, however, GUID is not a good
+Each module has to have a unique and valid IP address to communicate in the IP
+network. The modules have their unique GUIDs. However, GUID is not a good
 candidate for an IP address. First, it is longer than IPv4 address, second, it
-does not follow standard format of IPv6 address, which reflects the structure of
-the network, and therefore, GUID does not allow for efficient routing. There is
-no central authority in the network of RoFIs, like there is a router in
-traditional network. Traditional solutions for network address obtaining, like
-DHCP server, cannot be used. Both, address configuration and routing in large
-networks with unstable topology are still an area of active research and there
-is no wide spread solution (\cite{baccelli_ip_2010} and
+does not follow the standard format of IPv6 address, which reflects the
+structure of the network, and therefore, GUID does not allow for efficient
+routing. There is no central authority in the network of RoFIs like there is a
+router in a traditional network. Traditional solutions for network address
+obtaining, like DHCP server, cannot be used. Both, address configuration and
+routing in large networks with unstable topology are still an area of active
+research, and there is no wide-spread solution (\cite{baccelli_ip_2010} and
 \cite{ezzouhairi_ip_2005}).
 
 As the RoFI is built on top the TCP/IP networking, nearly all newly proposed
 algorithms for routing (e.g., APM \cite{ezzouhairi_ip_2005}) can be adopted as
 their experimental implementation relies on TCP/IP. The same goes for IP address
-configuration, e.g, in form od Distributed DHCP server
+configuration, e.g., in form of Distributed DHCP server
 \cite{nesargi_manetconf:_2002}. However, in the first versions of RoFI driver,
-we rely on the basic address auto configuration and basic routing implemented in
+we rely on the basic address autoconfiguration and basic routing implemented in
 lwIP. These algorithms work fine in small networks. In the future, we plan to
 adopt the Distributed DHCP server and the APM routing algorithm.
 
-\section{Low Level Logging} \label{sec:logging}
+\section{Low-Level Logging} \label{sec:logging}
 
 When a firmware for a microcontroller is developed, programmers usually use a
 simple communication interface, typically UART, to print debugging messages.
-This is useful, as most systems cannot be paused by a debugger as it is
-impossible to pause surrounding environment. UART is usually used as it is
-stateless, has nearly no code dependencies and is easy to setup.
+Using print-based debugging is useful, as a debugger cannot pause most most
+systems as it is impossible to pause the surrounding environment. UART is
+usually used as it is stateless, has nearly no code dependencies and is easy to
+setup.
 
-The same approach can be used for a debugging of a single unit, however
+The same approach can be used for a debugging of a single unit, however,
 collecting data from multiple UART on multiple modules is rather impractical.
 TCP/IP sockets can be used, however, in case of routing malfunction or system
-crash a message cannot be delivered. Therefore, we introduce \emph{low level
+crash, a message cannot be delivered. Therefore, we introduce \emph{low-level
 logging} in the RoFI driver -- a simple and robust protocol for sending messages
 in a RoFI system.
 
-The low level logging is implemented directly on top of the dock interface and
-does not rely on TCP/IP networking. The goal is to emmit a string and propagate
-it to all modules or a special debugging adapter in a form of dock, where it can
-be transmitted to the programmer. The protocol should be used only for debugging
-purposes and should be disabled in release builds as it is build on a naive
-flooding algorithm.
+The low-level logging is implemented directly on top of the dock interface and
+does not rely on TCP/IP networking. The goal is to emit a string and propagate
+it to all modules or a special debugging adapter in the form of a dock, where it
+can be transmitted to the programmer. The protocol should be used only for
+debugging purposes and should be disabled in release builds as it is built on a
+naive flooding algorithm.
 
 The low level debugging uses content type specifier 2 (section
 \ref{sec:dock_interface}). There is only one type of message:
@@ -203,77 +204,79 @@ The low level debugging uses content type specifier 2 (section
     \wordbox{2}{message string}
 \end{bytefield}
 
-\noindent The string can have length up to 65535 bytes. There is a set of string
-hashes in each modules. The set keeps hashes of all received messages. When a
-module receives a string it calculates its hash. If the hash is not present in
-the set, it is inserted and the string is resend to all other docks in the
-module. The hashes in the set expire after a given period of time. Expired
-hashes are removed from the set. This algorithm ensures all emitted messages are
-spread into the whole system. Note, that if the expiration period is too short,
-is is possible to create a message going through the system indefinitely.
-However, for the debugging purposes we do not perceive it as a limitation.
+\noindent The string can have a length up to 65535 bytes. There is a set of
+string hashes in each module. The set keeps hashes of all received messages.
+When a module receives a string, it calculates its hash. If the hash is not
+present in the set, it is inserted, and the string is resent to all other docks
+in the module. The hashes in the set expire after a given period. Expired hashes
+are removed from the set. This algorithm ensures all emitted messages are spread
+into the whole system. Note, that if the expiration period is too short, it is
+possible to create a message going through the system indefinitely. However, for
+the debugging purposes, we do not perceive it as a limitation.
 
 \section{Automatic Firmware Distribution} \label{sec:firmware_distribution}
 
 It is highly desirable that all modules of the same type run the same firmware
-version. If the modules are able to synchronize firmware automatically, the
-development process can be speed up. The firmware distribution can be achieved
-in two ways -- either there is central authority publishing the firmware, or the
-modules check firmware of their neighbors and update the firmware from them.
+version. If the modules can synchronize firmware automatically, the development
+process can speed up. The firmware distribution can be achieved in two ways --
+either there is central authority publishing the firmware, or the modules check
+the firmware of their neighbors and update the firmware from them.
 
 ESP32 is a suitable microcontroller for remote firmware upgrades. Traditional
-microcontrollers can update their firmware only using bootloader, a small
+microcontrollers can update their firmware only using a bootloader, a small
 program in reserved are of flash memory executed after microcontroller boot. If
-there is need for custom update protocol, custom bootloader should be written.
-However, bootloaders have to be self-contained and have restricted binary size,
-therefore sophisticated update protocols are hard implement. This is not the
-case for ESP32 \cite{noauthor_esp-idf_nodate}. The flash memory of ESP32 can be
-divided in partitions (e.g., firmware or virtual file system partition). In the
-default configuration, there are two partition for firmware. These partitions
-are used to implement \emph{over-the-air updates} (OTA). One partition is marked
-as an active an and upon boot, the bootloader loads user firmware from the
-active partition. Then, during a regular operation of the microcontroller,
-firmware can be written in the second, inactive, partition. Once the firmware is
-written and validated, the active flag of the partitions is swapped. When the
-microcontroller reboots, new firmware is used. OTA updates allow to use existing
-codebase in the firmware to perform firmware updates. Therefore complicated
-protocols, like update from an HTTP server can be implemented.
+there is a need for custom update protocol, the custom bootloader should be
+written. However, bootloaders have to be self-contained and have restricted
+binary size. Therefore sophisticated update protocols are hard to implement.
+This is not the case for ESP32 \cite{noauthor_esp-idf_nodate}. The flash memory
+of ESP32 can be divided into partitions (e.g., firmware or virtual file system
+partition). In the default configuration, there are two partitions for firmware.
+These partitions are used to implement \emph{over-the-air updates} (OTA). One
+partition is marked as an active, and upon boot, the bootloader loads user
+firmware from the active partition. Then, during regular operation of the
+microcontroller, firmware can be written in the second, inactive, partition.
+Once the firmware is written and validated, the active flag of the partitions is
+swapped. When the microcontroller reboots, the new firmware is used. OTA updates
+allow using existing codebase in the firmware to perform firmware updates.
+Therefore complicated protocols, like an update from an HTTP server can be
+implemented.
 
-ESP-IDF provides implementation of OTA update from HTTP server and interface for
-implementing custom updates. The update from HTTP server works by specifying URL
-and periodical polling for new firmware version. The interface consists of three
-functions -- one for starting the update, one for processing a binary blob with
-a piece of firmware, and one for committing the changes.
+ESP-IDF provides an implementation of OTA update from HTTP server and an
+interface for implementing custom updates. The update from HTTP server works by
+specifying URL and periodical polling for new firmware version. The interface
+consists of three functions -- one for starting the update, one for processing a
+binary blob with a piece of firmware, and one for committing the changes.
 
 The HTTP server update is an example of a central update. We find it unsuitable
 for the RoFI systems for following reasons:
 \begin{enumerate*}
-    \item each module downloads the firmware separaMožná jo, tely and therefore the
+    \item each module downloads the firmware separately and therefore the
     protocol does not scale well, and
     \item it relies on working TCP/IP connection and routing. If a firmware
     update breaks routing, the firmware update stops working.
 \end{enumerate*}
 Therefore, we introduce a decentralized \emph{firmware update protocol} relying
-only on dock connection. By flashing a single module, its firmware distributes
+only on a dock connection. By flashing a single module, its firmware distributes
 among the other modules in a system. We do not restrict the flashing procedure
--- it can be either flashed by a cable from a PC or the module can download its
+-- it can be either flashed by a cable from a PC, or the module can download its
 firmware from a central authority (therefore, a hybrid approach can be
 achieved).
 
 The protocol works as follows. Each firmware has built in two symbols in the
-binary: \texttt{ROFI\_FW\_TYPE} and \texttt{ROFI\_FW\_TIMESTAMP}. Firmware type
-is specified by the user, timestamp is automatically added during build.
-Firmware type is a 16-bit unsigned integer, timestamp is a 64-bit unsigned
-integer. There are no restrictions on meaning of the numbers; it is recommended
-that the timestamp are milliseconds since UNIX time epoch. A module updates only
-to the same firmware type as it already is and to a newer timestamp. The
-firmware type allow the system can consist of various type of modules.
+binary: \texttt{ROFI\_FW\_TYPE} and \texttt{ROFI\_FW\_TIMESTAMP}. The user
+specifies the firmware type, the timestamp is automatically added during a
+build. Firmware type is a 16-bit unsigned integer, the timestamp is a 64-bit
+unsigned integer. There are no restrictions on the meaning of the numbers; it is
+recommended that the timestamp are milliseconds since UNIX time epoch. A module
+updates only to the same firmware type as it already is and to a newer
+timestamp. The firmware type allows the system can consist of various type of
+modules.
 
 The firmware update protocol uses content type specifier 3 (section
 \ref{sec:dock_interface}). There are four type of messages:
 
 \paragraph{Firmware request} is sent by a module to find out firmware version of
-its neighbors. The answer is firmware announcement. The message has the
+its neighbors. The answer is the firmware announcement. The message has the
 following format:
 
 \bigskip
@@ -283,9 +286,9 @@ following format:
 \end{bytefield}
 
 \paragraph{Firmware announcement} is broadcasted by a module to its direct
-neighbors, when it knows new firmware. The firmware might not be completely
-known to the module and therefore, there is a field known size in the message.
-If more of the firmware code is known, new message is broadcasted. The message
+neighbors when it knows new firmware. The firmware might not be completely known
+to the module, and therefore, there is a field known size in the message. If
+more of the firmware code is known, a new message is broadcasted. The message
 has the following format:
 
 \bigskip
@@ -299,8 +302,8 @@ has the following format:
 
 \paragraph{Firmware chunk request} is sent by a module to obtain a new chunk of
 the firmware. It is usually a response to firmware announcement. The chunks are
-1024 bytes in length (except the last one) and the allowed offsets are also in
-multiplies of 1024. The message has the following format:
+1024 bytes in length (except the last one), and the allowed offsets are also in
+multiples of 1024. The message has the following format:
 
 \bigskip
 \begin{bytefield}{32}
@@ -323,32 +326,33 @@ message has the following format:
     \wordbox{2}{chunk data}
 \end{bytefield}
 
-\noindent First, we illustrate the protocol operation in a system composed of
-single module type. Then, we extend it to an arbitrary RoFI systems.
+\noindent First, we illustrate the protocol operation in a system composed of a
+single module type. Then, we extend it to arbitrary RoFI systems.
 
 When a first module receives a new firmware, it broadcast the firmware
 announcement. Each module keeps a record of the source of newest firmware
-available. It can be either the module itself, or one of its neighbors. The
-firmware sources are ordered by timestamp and known size and for now, we ignore
+available. It can be either the module itself or one of its neighbors. The
+firmware sources are ordered by timestamp and known size, and for now, we ignore
 firmware types. If a module receives firmware announcement, it checks if it is
-newer. If not, the message is ignored. Otherwise it updates the firmware source.
-When a firmware source contains newer firmware than the firmware the module
-currently runs, it starts the upgrade procedure. It uses firmware chunk request
-to ask the firmware source for a new firmware chunk. If newer source of firmware
-appears, the current firmware update is aborted and new update is started.
-During the update, the module itself broadcasts firmware announcement message as
-new chunks of firmware are received. In this fashion, the new firmware spreads
-like a wave in the system. Note, that messages can loose in the system as docks
-are allowed to drop datagrams. Therefore, if message response times out, the
-module broadcasts firmware request to find a new firmware source.
+newer than any source known so far. If not, the message is ignored. Otherwise,
+it updates the firmware source. When a firmware source contains newer firmware
+than the firmware the module currently runs, it starts the upgrade procedure. It
+uses firmware chunk request to ask the firmware source for a new firmware chunk.
+If a newer source of firmware appears, the current firmware update is aborted
+and a new update is started. During the update, the module itself broadcasts
+firmware announcement message as new chunks of firmware are received. In this
+fashion, the new firmware spreads like a wave in the system. Note, that messages
+can lose in the system as docks are allowed to drop datagrams. Therefore, if
+message response times out, the module broadcasts firmware request to find a new
+firmware source.
 
 To support multiple firmware types, the module keeps track of newest firmware
-available for each type. If firmware announcement updates other type of firmware
-than module type, it broadcasts the announcement to all neighbors. If firmware
-chunk request for other firmware is received, it is redirected to the the source
-of that type of firmware and remembers the request. When a response in form of
-firmware chunk is received, the module redirects the message to the author of
-the request.
+available for each type. If firmware announcement updates another type of
+firmware than the module type, it broadcasts the announcement to all neighbors.
+If firmware chunk request for other firmware is received, it is redirected to
+the source of that type of firmware and remembers the request. When a response
+in the form of firmware chunk is received, the module redirects the message to
+the author of the request.
 
 \section{Reactive Blocks Library} \label{sec:rbl}
 
@@ -360,7 +364,7 @@ logic for processing events is kept close together and follows the chronological
 flow of the events. However, it might not preserve the lowest possible latency
 due to RTOS task switching and also does not scale well as each the number of
 tasks is usually limited. The second approach uses callback functions which are
-called to handle an event. This approach scales well; however it leads to a
+called to handle an event. This approach scales well; however, it leads to a
 hard-to-read code as the callbacks do not preserve context and are spread all
 over the source code. This phenomenon is usually referred to as ``callback
 hell''. Also, code complexity increases tremendously when error handling is
@@ -467,12 +471,12 @@ timer.every( 10_ms. [&ring_buffer]() {
 });
 \end{minted}
 
-The code is now fully asynchronous, but is hard to read -- it does not preserve
-the chronological order of event handling, the user have to think about shared
+The code is now fully asynchronous but is hard to read -- it does not preserve
+the chronological order of event handling, the user has to think about shared
 states and has a lot of nested sections. The need for a shared state arises from
-the absence of information in the control flow of the program. E.g, the function
-\texttt{onJudgeResponse} has to check if it is the last call of the function. In
-the first example there is no such need as the the control captures the
+the absence of information in the control flow of the program. E.g., the
+function \texttt{onJudgeResponse} has to check if it is the last call of the
+function. In the first example there is no such need as the control captures the
 information -- once the if-clause is reached, it is clear all judges voted.
 
 The solution we provide is shown in code snippet below. We do not expect the
@@ -509,12 +513,12 @@ zip( sensorStream, sensorAverage)
     >> setLed( true ) >> wait( 200_ms ) >> setLed( false );
 \end{minted}
 
-The reactive blocks follow similar idea as the range-v3 library -- we describe a
-pipeline for data transformation, however unlike ranges-v3, the data might be
+The reactive blocks follow a similar idea as the range-v3 library -- we describe
+a pipeline for data transformation, however, unlike ranges-v3, the data might be
 scattered over time. By describing the pipeline the user can preserve
 chronological ordering of the event handling in the code but also preserves
 asynchronicity at the same time. In the traditional future concept, which also
-allows to describe a pipeline, the pipeline is only linear and allows only a
+allows describing a pipeline, the pipeline is only linear and allows only a
 single value to pass. The reactive blocks allow for non-linear pipelines and
 also allows multiple values to pass through it. Visualization of the pipeline
 for the example above is shown in figure \ref{fig:rbl_example_1}.
@@ -571,7 +575,7 @@ protected:
 };
 \end{minted}
 
-With these base classes we can derive any other reactive block. For example we
+With these base classes we can derive any other reactive block. For example, we
 can build a block which converts a number to a string:
 \begin{minted}{cpp}
 class N2S: public Publisher< std::string >,
@@ -614,16 +618,16 @@ class AsyncFoo: public Publisher< int >,
 };
 \end{minted}
 
-In similar manner, all asynchronous events can be wrapped inside a reactive
-block -- including interrupts or possibly, but not preferably, busy waiting.
-Note, that the reactive blocks does not bring asynchonicity in the system, they
-just provide a new interface for it. The blocks can also wrap synchronous tasks
-as shown in the example of the \texttt{N2S} class. The only requirement is that
-the code inside a block should not block for a long time as it might delay other
-pending blocks. Also, there can be $m$-to-$n$ mapping of incoming values to the
-block, not just 1:1 mapping as we showed in the examples. The block can emit
-multiple values from a single input value (e.g., block splitting string
-according to a delimiter or timer producing values at a given period).
+Similarly, all asynchronous events can be wrapped inside a reactive block --
+including interrupts or possibly, but not preferably, busy waiting. Note, that
+the reactive blocks do not bring asynchronicity in the system, they provide
+a new interface for it. The blocks can also wrap synchronous tasks as shown in
+the example of the \texttt{N2S} class. The only requirement is that the code
+inside a block should not block for a long time as it might delay other pending
+blocks. Also, there can be $m$-to-$n$ mapping of incoming values to the block,
+not just 1:1 mapping as we showed in the examples. The block can emit multiple
+values from a single input value (e.g., block splitting string according to a
+delimiter or timer producing values at a given period).
 
 When multiple blocks are linked together via the subscribe relation, we call the
 final structure chain. Therefore, we will refer to the operation as
@@ -639,9 +643,8 @@ functions. This functionality provides a syntactical sugar, which allows to make
 the code less verbose and also allows to keep the code in chronological order.
 
 To further simplify the code, the library should provide predefined blocks like
-zip (takes two streams of values and combines them together in pairs),
-interleave which takes multiple streams and joins them together, simple waiting,
-and so forth.
+zip (takes two streams of values and combines them in pairs), interleave which
+takes multiple streams and joins them together, simple waiting, and so forth.
 
 The last advantage of reactive blocks we present is error handling. The
 publishers can publish value or an error. By default, the error goes through the
@@ -669,25 +672,25 @@ a >> [] {
 
 In the text above, we presented the library using a runtime polymorphism, which
 might not be suitable for embedded platforms. However, for chains with a type
-known in the compile time the runtime polymorphism could be eliminated in the
-future releases of the library. The runtime polymorphism elimination also allow
+known in the compile time, the runtime polymorphism could be eliminated in the
+future releases of the library. The runtime polymorphism elimination also allows
 for further optimization and reducing the cost of the reactive blocks
 abstraction.
 
 \section{RoFI Driver Interface}
 
-The RoFI interface is provide through an proxy object. The proxy object allows
+The RoFI interface is provided through a proxy object. The proxy object allows
 the user to access various control objects (motors, docks, sensors, \ldots)
 
-The control objects are facades, therefore they can be copied, which makes
+The control objects are facades, therefore, they can be copied, which makes
 passing them to functions much more convenient. The control objects rely on the
 RBL library to implement asynchronous events. E.g., when a joint is commanded to
 a position, it returns a publisher; docks provide method \cpp{onConnect()} which
-also returns a publisher which emits a value when the the dock connects.
+also returns a publisher which emits a value when the dock connects.
 Implementing the interface as a proxy bring the possibility to seamlessly
-provide remotes interface (one module directly controls the other). This is an
-advantage for centrally controlled system as there is no difference between
-controlling itself and any other module.
+provide remotes interface (one module directly controls the other). Such proxy
+is an advantage for a centrally controlled system as there is no difference
+between controlling itself and any other module.
 
 The reference for the proxy object and control objects can be found in appendix
 \ref{chap:rofi_interface}.

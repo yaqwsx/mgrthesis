@@ -675,3 +675,19 @@ for further optimization and reducing the cost of the reactive blocks
 abstraction.
 
 \section{RoFI Driver Interface}
+
+The RoFI interface is provide through an proxy object. The proxy object allows
+the user to access various control objects (motors, docks, sensors, \ldots)
+
+The control objects are facades, therefore they can be copied, which makes
+passing them to functions much more convenient. The control objects rely on the
+RBL library to implement asynchronous events. E.g., when a joint is commanded to
+a position, it returns a publisher; docks provide method \cpp{onConnect()} which
+also returns a publisher which emits a value when the the dock connects.
+Implementing the interface as a proxy bring the possibility to seamlessly
+provide remotes interface (one module directly controls the other). This is an
+advantage for centrally controlled system as there is no difference between
+controlling itself and any other module.
+
+The reference for the proxy object and control objects can be found in appendix
+\ref{chap:rofi_interface}.

@@ -250,7 +250,7 @@ the hooks slide under each other and finish the locking process (situation 4).
     \includegraphics[width=\textwidth]{figures/locking_process.pdf}
     \caption{Illustration of connection of two dock. Clip of the upper dock is
     shown red, skirt of the upper dock is shown blue, clip of the bottom dock is
-    shown is as green, skirt of the bottom dock is shown yellow.  Situation 1 is
+    shown as green, skirt of the bottom dock is shown yellow.  Situation 1 is
     the retracted state. The dock pass by the lock plane (2), then continue
     expansion (3) and finish by purely rotational movement(4). }
     \label{fig:dock_locking_process}
@@ -318,7 +318,7 @@ diameter, connection distance and material thickness, and generate a new model.
 The depth of the dock $h$ is equal to $h=l+6w$, where $l$ is the connection
 distance (in our model 6~mm) and $w$ is wall thickness (in our model 1.5~mm).
 Note that the parameters for the model cannot be chosen arbitrarily as there
-some limitation (e.g., motor size).
+some limitations (e.g., in motor size).
 
 The dock composes of 5 custom components:
 \begin{enumerate*}
@@ -406,7 +406,8 @@ orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
 When to docks are connected, they can exchange binary blobs and share power. The
 communication and power sharing is accomplished by mechanical contact using pogo
 pins placed in the inner part of the skirt. The communication between two docks
-is implemented as a simple UART.
+is implemented as a simple UART (Universal Synchronous Receiver and
+Transmitter).
 
 To allow docks to connect in four different mutual orientations, we use a
 similar pin arrangement as the HiGen dock \cite{parrott_higen:_2014}. Figure
@@ -432,12 +433,12 @@ Exactly one of the pins sense A and sense B will be either pulled low or pulled
 high; the other one will float. The mutual orientation can be determined by the
 table in figure \ref{fig:dock_pins}.
 
-The docks communicate over UART with 8 bits, no parity and a 1.5 stop bit at 6
-Mbaud/s\footnote{The communication speed is easily achievable due to a short
-physical communication distance.}. The words are transmitted in little-endian
-byte order. The communication protocol between two docks is simple as the only
-allowed operation is to pass one binary blob from one dock to another. The blobs
-are wrapped in a frame with the following format:
+The docks communicate over UART \footnote{The communication speed is easily
+achievable due to a short physical communication distance.} with 8 bits, no
+parity and a 1.5 stop bit at 6 Mbaud/s. The words are transmitted in
+little-endian byte order. The communication protocol between two docks is simple
+as the only allowed operation is to pass one binary blob from one dock to
+another. The blobs are wrapped in a frame with the following format:
 
 \bigskip
 \begin{bytefield}{32}
@@ -476,7 +477,7 @@ etc.).
 
 The connection of two docks is direct with no galvanic isolation. Therefore the
 modules in the RoFI systems are required to share the same ground potential or
-float before the connection is performed. The power is shared on a single 48 V
+float before the connection is performed. The power is shared on a single 48~V
 line. We choose a 48 V line to mitigate the power losses on the conductors.
 
 The dock exposes two power lines to the module -- \emph{EXT} and \emph{INT}. The
@@ -550,8 +551,8 @@ transactions must have no observable effect. Each transaction follows the format
 
 \noindent No padding of the command data or dock response is required. The
 commands 0--127 are reserved for the base dock, and all dock types are required
-to support them. The commands 128-255 are dock type specific. The basic commands
-are:
+to support them. The commands 128--255 are dock type specific. The basic
+commands are:
 
 \paragraph{Version command (0):} has no command data. The response is in the
 format:
@@ -606,7 +607,7 @@ Amperes. The format is following:
     \bitbox{1}{P} &
     \bitbox{1}{I} &
     \bitbox{1}{E} &
-    \bitbox{5}{\textit{resserved}} &
+    \bitbox{5}{\textit{reserved}} &
     \bitbox{1}{C} &
     \bitbox{2}{O}
     \bitbox{5}{\textit{reserved}}\\
@@ -631,7 +632,7 @@ The data command is a bitmask with enabled interrupts:
     \bitheader{0-15} \\
     \bitbox{1}{C} &
     \bitbox{1}{I} &
-    \bitbox{14}{\textit{resserved}}
+    \bitbox{14}{\textit{reserved}}
 \end{bytefield}
 
 \noindent The response follows the same format:
@@ -641,7 +642,7 @@ The data command is a bitmask with enabled interrupts:
     \bitheader{0-15} \\
     \bitbox{1}{C} &
     \bitbox{1}{I} &
-    \bitbox{14}{\textit{resserved}}
+    \bitbox{14}{\textit{reserved}}
 \end{bytefield}
 
 \noindent Bits set to 1 signal interrupt reason. After the response is sent, all
@@ -761,7 +762,7 @@ Therefore, the RoFI platform leverages traditional computer network based on the
 TCP/IP protocol and stack. The TCP/IP protocol allows for seamless operation
 with existing computer networks and services. The users can use traditional
 sockets, port OpenMPI to their projects or use the network for sending debug
-logs from the distributed environment. It potentially open doors for global
+logs from the distributed environment. It potentially opens doors for global
 communication of the RoFI systems. Using TCP/IP also makes indistinguishable
 wired and wireless connection from each other. Routing and robustness also come
 for free. The downside of the TCP/IP stack is its complexity; however, this is

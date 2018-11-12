@@ -62,15 +62,18 @@ interface performs simple switching to determine the destination dock.
 
 Technically speaking, we have to provide the following function to lwIP to
 implement a new network interface:
+\begingroup
+\setlength{\rightskip}{0pt plus 1 fil}
 \begin{itemize}
-    \item \mintinline[breaklines]{c}{err_t rofi_if_init(struct netif *netif)}:
+    \item \cpp{err_t rofi_if_init(struct netif *netif)}:
     to initialize the \texttt{nettif} structure,
-    \item \mintinline[breaklines]{c}{err_t rofi_link_output(struct netif *netif, struct pbuf *p)}
+    \item \cpp{err_t rofi_link_output(struct netif *netif, struct pbuf *p)} \\
     to transmit a complete datagram to the docks,
-    \item \texttt{err\_t rofi\_if\_output(struct netif *netif, struct pbuf *p, ip\_addr\_t *ipaddr)}
+    \item \cpp{err_t rofi_if_output(struct netif *netif, struct pbuf *p,} \\ \cpp{ip_addr_t *ipaddr)}
     to wrap a datagram in custom headers and to transmit the datagram to the
     docks.
 \end{itemize}
+\endgroup
 After system start, the RoFI driver calls \texttt{netif\_add}. The call
 registers a new network interface. After the setup, all the incoming datagrams
 are passed to the \texttt{rofi\_netif->input} callback. The callback is set in
@@ -176,7 +179,7 @@ adopt the Distributed DHCP server and the APM routing algorithm.
 
 When a firmware for a microcontroller is developed, programmers usually use a
 simple communication interface, typically UART, to print debugging messages.
-Using print-based debugging is useful, as a debugger cannot pause most most
+Using print-based debugging is useful, as a debugger cannot pause most
 systems as it is impossible to pause the surrounding environment. UART is
 usually used as it is stateless, has nearly no code dependencies and is easy to
 setup.
@@ -224,7 +227,7 @@ the firmware of their neighbors and update the firmware from them.
 
 ESP32 is a suitable microcontroller for remote firmware upgrades. Traditional
 microcontrollers can update their firmware only using a bootloader, a small
-program in reserved are of flash memory executed after microcontroller boot. If
+program in reserved area of flash memory executed after microcontroller boot. If
 there is a need for custom update protocol, the custom bootloader should be
 written. However, bootloaders have to be self-contained and have restricted
 binary size. Therefore sophisticated update protocols are hard to implement.

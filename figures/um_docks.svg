@@ -15,7 +15,7 @@
    version="1.1"
    id="svg1430"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="rofi_locks.svg"
+   sodipodi:docname="um_docks.svg"
    style="enable-background:new">
   <defs
      id="defs1424">
@@ -230,7 +230,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="389.9962"
+     inkscape:cx="201.42477"
      inkscape:cy="207.38205"
      inkscape:document-units="mm"
      inkscape:current-layer="g985"
@@ -748,7 +748,7 @@
            style="stroke-width:147.69918823px"
            id="tspan1902-6-7-8-0">Dock B<tspan
    style="font-size:2679.42749023px;baseline-shift:sub;stroke-width:147.69918823px"
-   id="tspan10564">Z+</tspan></tspan></text>
+   id="tspan10564">Z-</tspan></tspan></text>
       <path
          style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:390.76358032;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 364555.78,222288.69 -6122.02,-15057.1 20307.19,3"

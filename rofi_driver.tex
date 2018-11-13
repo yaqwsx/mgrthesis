@@ -1,23 +1,23 @@
 \chapter{RoFI Driver}\label{chap:software}
 
-The RoFI platform does not give any restrictions on the implementation of
+The RoFI platform does not put any restrictions on the implementation of
 modules. However, having all the modules based on the same platform is an
 advantage. Therefore, we consider the implementation of the universal module to
-be a reference implementation of the other modules, and we expect the other
-modules to reuse it as much as possible.
+be a reference implementation other modules, and we expect the other modules to
+reuse it as much as possible.
 
 Software development for robots and embedded systems is considered to be more
-challenging than traditional software development. There are several reasons why
-the development is challenging:
+challenging than traditional software development. There are several reasons
+why is it so:
 \begin{enumerate*}
     \item the microcontroller peripherals have to be mastered,
     \item testing and debugging is harder as the system is not self-contained
     and interacts with the environment, and
-    \item the code has to deal with numerous asynchronous events, and there are
-    tasks which need to be distributed in time.
+    \item the code has to deal with numerous asynchronous events, as tasks have
+    to be distributed in time.
 \end{enumerate*}
 
-We designed several tools and concepts to tackle these aspects of firmware
+We designed several tools and libraries to tackle these aspects of firmware
 development and to make the development more convenient. We call them \emph{RoFI
 Driver}. The driver is built on top of the software suite provided for the ESP32
 microcontroller, which we sum up in section \ref{sec:hardware}. The driver
@@ -56,7 +56,7 @@ even leverage C++ STL API.
 We leverage the lwIP library on the ESP32 to implement networking. To make lwIP
 compatible with the docks we have to provide a new network interface.
 All the docks in the module appear as a single interface. Therefore, the
-interface performs simple switching to determine the destination dock.
+implementation performs simple switching to determine the destination dock.
 
 \subsection{Dock Integration}
 
@@ -85,23 +85,22 @@ needed to integrate docks to the lwIP library.
 The implementation of the network interface is straightforward and somewhat
 technical. There are only several aspects worth further comment:
 \begin{enumerate*}
-    \item mapping to content type and binary blobs of the dock interface defined
-    in section \ref{sec:dock_interface},
+    \item mapping IP datagrams to the dock interface,
     \item pairing destination address to docks, and
     \item the relation between switching and routing.
 \end{enumerate*}
 
-The docks can pass arbitrary binary blobs to the mating side. The content type
-specifier marks the blobs. The specifier allows to transmit multiple protocols
-through the same interface. In the RoFI driver, there are so far four content
-type specifiers: 0 -- IP datagrams, 1 -- address mapping protocol (defined
-further in this section), 2 -- low-level logging (section \ref{sec:logging}),
-and 3 -- firmware update protocol (\ref{sec:firmware_distribution}).
+The docks can pass arbitrary binary blobs marked by the content type specifier
+to the mating side. The specifier allows to transmit multiple protocols through
+the same interface. In the RoFI driver, there are so far four content type
+specifiers: 0 -- IP datagrams, 1 -- address mapping protocol (defined further in
+this section), 2 -- low-level logging (section \ref{sec:logging}), and 3 --
+firmware update protocol (section \ref{sec:firmware_distribution}).
 
-In order to determine which dock should be used for a datagram transmission, a
+In order to determine which dock should be used for datagram transmission, a
 mapping between destination IP addresses and the outcoming dock is needed. The
 mapping is performed by the ARP protocol \cite{plummer_ethernet_1982} in the
-ethernet based networks. However, the ARP protocol is not a good choice in the
+ethernet based networks; however, the ARP protocol is not a good choice in the
 RoFI environment for the following reasons:
 \begin{enumerate*}
     \item the connection between docks is point-to-point and
@@ -109,18 +108,12 @@ RoFI environment for the following reasons:
     docks do not provide.
 \end{enumerate*}
 
-Therefore, we design a simple \emph{address mapping protocol}. The protocol is
-used to find IP addresses and GUIDs of the module neighbors. There are two
-messages in the protocol: \emph{mapping call} and \emph{mapping response}. The
-mapping call follows the format:
+Therefore, we design a simple \emph{address mapping protocol} instead. The
+protocol is used to find IP addresses and GUIDs of the module neighbors. There
+are two messages in the protocol: \emph{mapping call} and \emph{mapping
+response}.
 
-\bigskip
-\begin{bytefield}[bitwidth=1.75em]{16}
-    \bitheader{0,7} \\
-    \bitbox{8}{command (0)}
-\end{bytefield}
-
-\noindent The response follows the format:
+\noindent The \emph{mapping response} follows the format:
 
 \bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}
@@ -134,37 +127,46 @@ mapping call follows the format:
     \wordbox{2}{module GUID $n$} \\
 \end{bytefield}
 
-Each module keeps a table for each dock with IP addresses and module GUIDs. Even
-there is point-to-point communication, we allow for several entries. There are
-following reasons to do that that: it allows to cluster modules in a system and
-perform packet switching in the cluster if the further development finds it
-suitable (e.g., packet switching has lower latency), and there can be simple
-modules in the system not capable of routing (e.g., battery module). The
-overhead caused by the extended packet format is negligible and is worth further
-extensibility.
+Each module keeps for each dock a table with IP addresses and module GUIDs. The
+table can contain multiple entries for each dock even the docks provide only
+point-to-point communication. There are following reasons to do that that: it
+allows to cluster modules in a system and perform packet switching in the
+cluster if the further development finds it suitable (e.g., packet switching has
+lower latency), and there can be simple modules in the system not capable of
+routing (e.g., battery module). The overhead caused by the extended packet
+format is negligible and is worth further extensibility.
 
 On the dock connection, the module actively sends the mapping response message
 to the mating side. If there is a change making the information sent previously
-invalid, a new message is sent (e.g., the module has changed its IP address).
-The event-driven approach allows establishing the mapping quickly. The module
-should periodically use the mapping call to update entries in the table to avoid
-the entries to go out-of-data. Note that under normal conditions the table
-cannot go out-of-date; it can happen only when a malfunction occurs (e.g.,
-module resets).
+invalid, a mapping response is sent (e.g., the module has changed its IP
+address). Such event-driven approach allows establishing the mapping quickly,
+however the module should periodically use the \emph{mapping call} to update
+entries in the table to avoid the entries to go out-of-data.
+
+\noindent The \emph{mapping call} follows the format:
+
+\bigskip
+\begin{bytefield}[bitwidth=1.75em]{16}
+    \bitheader{0,7} \\
+    \bitbox{8}{command (0)}
+\end{bytefield}
+
+Note that under normal conditions the table cannot go out-of-date; this can only
+happen when a malfunction occurs (e.g., module resets).
 
 \subsection{Module Address Configuration and Routing}
 
 Each module has to have a unique and valid IP address to communicate in the IP
-network. The modules have their unique GUIDs. However, GUID is not a good
-candidate for an IP address. First, it is longer than IPv4 address, second, it
-does not follow the standard format of IPv6 address, which reflects the
-structure of the network, and therefore, GUID does not allow for efficient
-routing. There is no central authority in the network of RoFIs like there is a
-router in a traditional network. Traditional solutions for network address
-obtaining, like DHCP server, cannot be used. Both, address configuration and
-routing in large networks with unstable topology are still an area of active
-research, and there is no wide-spread solution (\cite{baccelli_ip_2010} and
-\cite{ezzouhairi_ip_2005}).
+network. The modules have their unique GUIDs, however, GUID is not a good
+candidate for an IP address for several reasons. First, it is longer than IPv4
+address, second, it does not follow the standard format of IPv6 address, which
+reflects the structure of the network, and therefore, GUID does not allow for
+efficient routing. There is no central authority in the network of RoFIs like
+there is a router in a traditional network, therefore traditional solutions for
+network address obtaining, like DHCP server, cannot be used. Both, address
+configuration and routing in large networks with unstable topology are still an
+area of active research, and there is no available solution
+(\cite{baccelli_ip_2010} and \cite{ezzouhairi_ip_2005}).
 
 As the RoFI is built on top the TCP/IP networking, nearly all newly proposed
 algorithms for routing (e.g., APM \cite{ezzouhairi_ip_2005}) can be adopted as
@@ -179,17 +181,17 @@ adopt the Distributed DHCP server and the APM routing algorithm.
 
 When a firmware for a microcontroller is developed, programmers usually use a
 simple communication interface, typically UART, to print debugging messages.
-Using print-based debugging is useful, as a debugger cannot pause most
+Using print-based debugging is useful, since a debugger cannot pause most
 systems as it is impossible to pause the surrounding environment. UART is
 usually used as it is stateless, has nearly no code dependencies and is easy to
 setup.
 
-The same approach can be used for a debugging of a single unit, however,
-collecting data from multiple UART on multiple modules is rather impractical.
-TCP/IP sockets can be used, however, in case of routing malfunction or system
-crash, a message cannot be delivered. Therefore, we introduce \emph{low-level
-logging} in the RoFI driver -- a simple and robust protocol for sending messages
-in a RoFI system.
+The same approach can be used to debug a single unit, however, collecting data
+from multiple UART on multiple modules is rather impractical. TCP/IP sockets can
+be used instead of UART, however, since they rely on networking in case of
+routing malfunction or system crash, a debug message cannot be delivered.
+Therefore, we introduce \emph{low-level logging} in the RoFI driver -- a simple
+and robust protocol for sending messages in a RoFI system.
 
 The low-level logging is implemented directly on top of the dock interface and
 does not rely on TCP/IP networking. The goal is to emit a string and propagate
@@ -227,22 +229,22 @@ the firmware of their neighbors and update the firmware from them.
 
 ESP32 is a suitable microcontroller for remote firmware upgrades. Traditional
 microcontrollers can update their firmware only using a bootloader, a small
-program in reserved area of flash memory executed after microcontroller boot. If
-there is a need for custom update protocol, the custom bootloader should be
-written. However, bootloaders have to be self-contained and have restricted
-binary size. Therefore sophisticated update protocols are hard to implement.
-This is not the case for ESP32 \cite{noauthor_esp-idf_nodate}. The flash memory
-of ESP32 can be divided into partitions (e.g., firmware or virtual file system
-partition). In the default configuration, there are two partitions for firmware.
-These partitions are used to implement \emph{over-the-air updates} (OTA). One
-partition is marked as an active, and upon boot, the bootloader loads user
-firmware from the active partition. Then, during regular operation of the
-microcontroller, firmware can be written in the second, inactive, partition.
-Once the firmware is written and validated, the active flag of the partitions is
-swapped. When the microcontroller reboots, the new firmware is used. OTA updates
-allow using existing codebase in the firmware to perform firmware updates.
-Therefore complicated protocols, like an update from an HTTP server can be
-implemented.
+program residing in reserved area of flash memory, which is executed after
+microcontroller boot. If there is a need for custom update protocol, the custom
+bootloader have to be written. However, bootloaders have to be self-contained
+and have restricted binary size. Therefore sophisticated update protocols are
+hard to implement. This is not the case for ESP32
+\cite{noauthor_esp-idf_nodate}. The flash memory of ESP32 can be divided into
+partitions (e.g., firmware or virtual file system partition). In the default
+configuration, there are two partitions for firmware. These partitions are used
+to implement \emph{over-the-air updates} (OTA). One partition is marked as an
+active, and upon boot, the bootloader loads user firmware from the active
+partition. Then, during regular operation of the microcontroller, firmware can
+be written in the second, inactive, partition. Once the firmware is written and
+validated, the active flag of the partitions is swapped. When the
+microcontroller reboots, the new firmware is used. OTA updates allow using
+existing codebase in the firmware to perform firmware updates. Therefore
+complicated protocols, like an update from an HTTP server can be implemented.
 
 ESP-IDF provides an implementation of OTA update from HTTP server and an
 interface for implementing custom updates. The update from HTTP server works by
@@ -265,7 +267,7 @@ among the other modules in a system. We do not restrict the flashing procedure
 firmware from a central authority (therefore, a hybrid approach can be
 achieved).
 
-The protocol works as follows. Each firmware has built in two symbols in the
+The protocol works as follows. Each firmware has two symbols built in in the
 binary: \texttt{ROFI\_FW\_TYPE} and \texttt{ROFI\_FW\_TIMESTAMP}. The user
 specifies the firmware type, the timestamp is automatically added during a
 build. Firmware type is a 16-bit unsigned integer, the timestamp is a 64-bit
@@ -351,11 +353,11 @@ firmware source.
 
 To support multiple firmware types, the module keeps track of newest firmware
 available for each type. If firmware announcement updates another type of
-firmware than the module type, it broadcasts the announcement to all neighbors.
-If firmware chunk request for other firmware is received, it is redirected to
-the source of that type of firmware and remembers the request. When a response
-in the form of firmware chunk is received, the module redirects the message to
-the author of the request.
+firmware than the is module type, it broadcasts the announcement to all
+neighbors. If firmware chunk request for other firmware is received, it is
+redirected to the source of that type of firmware and the module remembers the
+request. When a response in the form of a firmware chunk is received, the module
+redirects the message to the author of the request.
 
 \section{Reactive Blocks Library} \label{sec:rbl}
 
@@ -365,9 +367,9 @@ system (RTOS) can be used with several tasks. Each task handles events in
 synchronous, blocking, manner. This approach leads to a readable code as the
 logic for processing events is kept close together and follows the chronological
 flow of the events. However, it might not preserve the lowest possible latency
-due to RTOS task switching and also does not scale well as each the number of
-tasks is usually limited. The second approach uses callback functions which are
-called to handle an event. This approach scales well; however, it leads to a
+due to RTOS task switching and also does not scale well as the number of tasks
+is usually limited. The second approach uses callback functions which are called
+to handle an event. This approach scales well; however, it leads to a
 hard-to-read code as the callbacks do not preserve context and are spread all
 over the source code. This phenomenon is usually referred to as ``callback
 hell''. Also, code complexity increases tremendously when error handling is
@@ -427,8 +429,8 @@ while ( true ) {
 
 The sample code is straightforward and easily readable. By putting the code in a
 separate task, we can handle multiple asynchronous events simultaneously.
-However, the code does is not as efficient as possible as the network
-communication is synchronous.
+However, the code does not utilize the whole potential of the underlying
+hardware as the network communication is synchronous.
 
 Each asynchronous function traditionally takes a callback function as its
 argument. The callback is called, when the operation is finished. The result

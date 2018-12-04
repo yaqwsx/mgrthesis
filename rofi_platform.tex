@@ -1,4 +1,4 @@
-\chapter{The RoFI platform}\label{chap:rofi}
+\chapter{The RoFI Platform}\label{chap:rofi}
 
 The RoFI platform is expected to allow construction of reconfigurable robotic
 systems using small autonomous units. A typical use case for the platform is to
@@ -545,15 +545,14 @@ transactions must have no observable effect. Each transaction follows the format
 \begin{bytefield}{32}
     \bitheader{0,7,8} \\
     \bitbox{8}{command} & \bitbox{24}{command data} \\
-    \bitbox{32}{\textit{padding}} \\
     \wordbox[tb]{2}{pause at least 8 bytes (no clock)}  \\
     \wordbox{2}{dock response/extended data}
 \end{bytefield}
 
-\noindent Command data (including the command itself) are padded by zeroes to 32
-bits. The dock response requires no padding. The commands 0--127 are reserved
-for the base dock, and all dock types are required to support them. The commands
-128--255 are dock type specific. The basic commands are:
+\noindent Both, command data and the dock response, require no padding. The
+commands 0--127 are reserved for the base dock, and all dock types are required
+to support them. The commands 128--255 are dock type specific. The basic
+commands are:
 
 \paragraph{Version command (0):} has no command data. The response is in the
 format:
@@ -650,8 +649,8 @@ The data command is a bitmask with enabled interrupts:
 interrupt reasons are cleared. Therefore, the mask returns all interrupts
 reasons from the last query.
 
-\paragraph{Send blob (3)} is used to send a binary blob. The extended data are
-formatted as follows:
+\paragraph{Send blob (3)} is used to send a binary blob. There are no command
+data. The extended data are formatted as follows:
 
 \bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}

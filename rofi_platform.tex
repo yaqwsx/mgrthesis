@@ -791,7 +791,7 @@ consider:
 
 \emph{RoFI descriptors} cover both of these aspects. Descriptors can be
 exchanged by the modules when they connect to build a notion of the system which
-is essential for any reconfiguration. We distinguish two type of descriptors:
+is essential for any reconfiguration. We distinguish two types of descriptors:
 \begin{enumerate*}
     \item \emph{shape descriptor} ($\mathcal{D}_S$) and
     \item \emph{capability descriptor} ($\mathcal{D}_C$).
@@ -829,7 +829,7 @@ an example of such a descriptor for a universal module in figure
     \label{fig:um_descriptor}
 \end{figure}
 
-Each edge with a non-constant function represents a joint. In the further text
+Each edge with a non-constant function represents a joint. Further in the text
 we will abuse the notation a little and name the edges, arguments of the
 corresponding transformation functions and corresponding joints by the same name
 -- usually by a small Greek letter. The type of the object represented by the
@@ -854,7 +854,7 @@ connected by definition.}.
 
 It is possible to extend the idea of module descriptors further to find
 positions of the docks. A descriptor of a single shoe can be constructed in the
-same manner a descriptor for any other module (figure
+same manner as a descriptor for any other module (figure
 \ref{fig:shoe_descriptor}). The transformations for docks are constant
 functions. The coordinate system is transformed such that the axis orientation
 is the same as in figure \ref{fig:dock_description} -- the Z axe is
@@ -891,8 +891,8 @@ operation as \emph{shape descriptor union}.
     \label{fig:connection_descriptor}
 \end{figure}
 
-To allow algorithms take various sensors present on modules in an account,
-simple sensor enumeration is not enough as the position of sensor matters.
+To allow algorithms take various sensors present on modules into an account,
+simple sensor enumeration is not enough as the position of the sensor matters.
 Therefore, the RoFI platform allows sensors to be placed on faces of the shoe.
 The faces are named as the corresponding docks (figure
 \ref{fig:dock_positions}). The capability descriptor $\mathcal{D}_C$ is a
@@ -924,13 +924,14 @@ Formally, we define a topology $\mathcal{T}$ as a tuple $(M, E, d)$:
     \item M is a finite set of modules represented by GUID, formally $M\subset
     G$, where $G$ is a set of all GUIDs.
     \item E is a finite set of undirected edges (connections) between the
-    modules, formally $E\subset M\times M$. Note that the undirected edges
-    forces that both modules have to actively participate in a connection.
-    \item $d$ is a labeling function for edges. The labels are tuples in form
-    $(o, d_a, d_b)$, whrere $o\in\mathcal{O}$ is a mutual orientation of
-    connected docks, $d_a$ and $d_b$ from modules in the edge. The docks are
-    sorted lexicographically on module, shoe and dock. Therefore the labels are
-    canonical.
+    modules. Note that the undirected edges forces that both modules have to
+    actively participate in a connection.
+    \item $d$ is a labeling function for edges. The function assign set of
+    labels to an edge. The labels are tuples in form $(o, d_a, d_b)$, where
+    $o\in\mathcal{O}$ is a mutual orientation of connected docks, $d_a$ and
+    $d_b$ from modules in the edge. The order of docks in the tuple is given
+    lexicographically (first by module GUID, second by the dock name). Therefore
+    the labels are canonical.
 \end{itemize}
 
 \begin{figure}[t]

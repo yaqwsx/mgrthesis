@@ -11,10 +11,114 @@ of the RoFI project. We would like to show that:
     hardware layer is possible; and
     \item the universal module can be built.
 \end{itemize}
-All the source codes and CAD models of results presented here can be found in a
-Git repository \url{https://github.com/paradise-fi/RoFi}.
+All the source codes and CAD models of results presented here available at
+\url{https://github.com/paradise-fi/RoFi}.
 
 \section{Docking Mechanism}
+
+To test the properties of the docking mechanism proposed in section
+\ref{sec:dock} we successfully built several copies of the mechanism and tested
+its properties.
+
+The docks can be easily printed on a commonly available 3D printer. In our
+setting, the dock was printed on Prusa i3 MK3 using the PLA filament and
+standard settings with layer height of 0.15~mm. We prepared the model for
+printing by splitting some complicated components into several bodies, which
+were printed separately, and after printing they were glued together using a
+cyanoacrylate glue. As our experiences show, such procedure yields better and
+faster results as our model does not need any support material, which needs to
+been manually removed. Removing the support material is time consuming and in
+our observation, glueing components together is much faster. Also, surfaces
+relying on a support material always yields much worse surface finish than
+surfaces with no supports. This is crucial for our model, as a bad surface
+finish on the helix slot negatively affects the dock.
+
+Overall, to build a single dock following material is needed: eight meters of
+filament, four M2$\times$6~mm screws with countersunk head, two 2$\times$16~mm
+steel pins, four 2$\times$10~mm,four 2$\times$8~mm stell pins and a motor.
+Single dock takes about 4 hours to print and with a little bit of practice it
+can be assembled in 30 minutes. Due to tweaks in the design there is practically
+no manual deburring necessary, which is usually required with 3D printed parts.
+
+We tried to evaluate the features of the dock. However, please note that the
+results we present are not as thorough as could should be as we do not feature
+the equipment and skills to evaluate the mechanical properties of the docks
+properly.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/dock_test_setups.jpg}
+    \caption{Evolution of the universal module. First paper prototype (left),
+    first 3D printed version (middle), and the current state (right).}
+    \label{fig:dock_test_setup}
+\end{figure}
+
+To properly evaluate the docks, we 3D printed a stand on which a single dock was
+mounted. The docks we used for testing were manually controlled. A photo of our
+setup can be found in figure \ref{fig:dock_test_setup}. This setup was used for
+testing of connection repeatability and load capacity.
+
+\subsection{Connection repeatability}
+
+Two docking mechanism were brought together in a various arrangements and a
+series of 10 connects was performed. The docks were placed on grid to arrange
+them in the initial position with one dock being strongly fixed in its position,
+the other one being able to move.
+
+First, we performed analysis of perfectly aligned docks (see figure \todo{}).
+The connection was established in all 10 cases for both, simultaneous and
+sequential docking procedure.
+
+Second, we varied the docking distance (see figure \todo{}). By decreasing the
+docking distance by 6~mm, the docks were able to push themselves apart and
+connect properly in all 10 cases. When the docks were brought together by more
+than 6~mm, we observed that the docks are not able to connect simultaneously --
+their hooks collide and they do not align properly. However, when the connection
+was performed sequentially, the docks connected reliably event when they were
+touching as the rotated hooks no longer collide. By increasing the distance by
+2~mm, dock were able to connect in 9 out of 10 cases. When we increased the
+distance by 4~mm docks were able to connect in 5 cases. For displacement larger
+than 5~mm the docs were not able to connect.
+
+Third, we varied the parallel alignment (see figure \todo{}). By misaligning the
+docks by 2~mm we got 9 successfully connections. By inscreasing the
+misalignemnet to 4~mm the docks connected in 6 cases, for the 6~mm it was only 3
+cases. We did not observed ony difference between simultaneous and sequential
+attempts.
+
+Last, we varied the rotation of the docks (see figure \todo{}). We performed
+only rotation in horizontal plane as the docs are symmetric and therefore, they
+should perform the same for other orientations. By rotating less than $5^\circ$
+the docks connected in all 10 cases. When we increased the rotation to
+$10^\circ$ we got 7 successful connections for sequential connection and 5 for
+the simultaneous connection. For displacement of $15^\circ$ we got only 1
+connection of 10 tries for the sequential connection and no success for
+simultaneous procedure.
+
+When the connection was not successful it was mainly due to the hooks colliding
+into each other. The collision usually caused a motor stall, which can be easily
+detected by increase current flow into the motor. This fact could be used by the
+robots to detect such collision and the robots could retry the connection.
+
+\subsection{Load capacity}
+
+We tested load capacity in two different setups -- in a tangential and a normal
+direction (see figure \todo{}) -- by attaching weights to a carabiner hooked to
+one of the connected docks. The mating dock was fixed to a support.
+
+In the normal way we were able to repeatably attach weight of 4.5~kg until the
+docks disconnected. The disconnection left no harm on the docks. We assume the
+plastic hooks bent under the load as the plastic is quite flexible, the skirts
+got loose and therefore, the the dock were able to slip from the connection.
+
+In the tangential way we were able to attach weight of 8~kg until the
+malfunction of connection happened. In this case, the connection mechanism was
+damaged -- two hooks on one dock and one hooks on the other dock broke. For a
+photo of the damage see figure \todo{}. The pieces were broken between two
+layers of the 3D printed component. The form of the damage leads us to
+suggestion for a future experiments -- printing the hooks such that the layers
+of a 3D print are oriented differently.
+
 
 \section{Inter-module Communication}
 
@@ -105,7 +209,7 @@ example codes can be found in the project repository.
 Replication of our results should be fairly straightforward as we ship all the
 code as PlatformIO\footnote{\url{https://platformio.org/}} projects, therefore
 no complicated toolchain setup is necessary; and also, the hardware we use is
-commonly available.However, during testing of our firmware we encountered a bug
+commonly available. However, during testing of our firmware we encountered a bug
 in lwIP implementation preventing a TCP connection from being opened. The bug
 has been already fixed in the lwIP upstream repository, however at the time of
 writing this thesis, the lwIP library shipped with ESP-IDF was not updated.
@@ -113,3 +217,58 @@ Therefore, to successfully run the TCP example, manual update of the library is
 necessary.
 
 \section{Universal Module}
+
+So far, we have built several prototypes of the universal module; some of the
+key iterations are shown in figure \ref{fig:um_evolution}. There were several
+challenges during the design of the module; first the module should be as rigid
+as possible to be able to support large structures of RoFI systems (this is
+challenging mainly due to the presence of the $\gamma$-axis), second the
+internal arrangement of components have to be compact to fit in the 10cm cube
+grid and third the module should be strong to lift at least two other robots.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/um_evolution.jpg}
+    \caption{Evolution of the universal module. First paper prototype (left),
+    first 3D printed version (middle), and the current state (right).}
+    \label{fig:um_evolution}
+\end{figure}
+
+The last prototype (figures \ref{fig:um_photo_side} and \ref{fig:um_photo_top})
+fulfills our goals -- it features rigid construction and we were able to fit
+sufficiently strong servomotors (Heculex DRS-0101) inside the body while still
+leaving reasonable amount of space for the control electronics and an
+accumulator. The electronics and accumulator are supposed to fit in the central
+part of the robot; some small components can be also placed in the cavity below
+and above motors for $\alpha$- and $\beta$-axes.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/um_side.jpg}
+    \caption{Universal module -- side view.}
+    \label{fig:um_photo_side}
+\end{figure}
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/um_top.jpg}
+    \caption{Universal module -- top view.}
+    \label{fig:um_photo_top}
+\end{figure}
+
+The prototype was 3D printed using the same settings as the docking mechanism.
+The CAD models are available in the project repository.CHAPTER 5. THE ROFI PROTOTYPES To produce all
+components for a single module 65 meters of fillament are needed with the print
+time of 20 hours (docks are excluded from this list). The additional components
+needed for assembling the robots are: 3 motors DRS-0101, 1 ball bearing
+$25\times32\times4$~mm, 4 ball bearings $15\times20\times4$~mm, 4
+M$2\times18$~mm screws with countersunk head, 18 M$2\times12$~mm screws with
+countersunk head, 42 M$2\times6$~mm screws with countersunk head and 4
+M$2\times12$~mm screws with a regular head. Assembling the modules takes about 1
+to 2 hours of work, most of the time taking manual thread tapping.
+
+We designed the components not to only be easily 3D printable but also to be
+reasonably manufacturable by other techniques -- specifically milling (the body)
+or sheet metal bending (the shoes). Such techniques could not only produce
+stronger components from stronger materials, but also, speed up the
+manufacturing process.

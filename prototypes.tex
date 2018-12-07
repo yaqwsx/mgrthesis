@@ -47,10 +47,40 @@ properly.
 
 \begin{figure}[!t]
     \centering
-    \includegraphics[width=\textwidth]{figures/dock_test_setups.jpg}
-    \caption{Evolution of the universal module. First paper prototype (left),
-    first 3D printed version (middle), and the current state (right).}
+    \includegraphics[width=\textwidth]{figures/dock_test_setup.jpg}
+    \caption{The test setup. A stand was mounted on the docks to easily position
+    them and a printed grid was used to create various setups.}
     \label{fig:dock_test_setup}
+\end{figure}
+
+\begin{figure}[!t]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/docks_aligned.jpg}
+        \caption{Perfect alignment}
+        \label{fig:dock_test_aligned}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/docks_distance.jpg}
+        \caption{Distance misplacement}
+        \label{fig:dock_test_distance}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/docks_shift.jpg}
+        \caption{Parallel misplacement}
+        \label{fig:dock_test_parallel}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/docks_rot.jpg}
+        \caption{Rotational alignment}
+        \label{fig:dock_test_rot}
+    \end{subfigure}
+
+    \caption{Types of displacement.}
+    \label{fig:dock_diplacement}
 \end{figure}
 
 To properly evaluate the docks, we 3D printed a stand on which a single dock was
@@ -65,34 +95,35 @@ series of 10 connects was performed. The docks were placed on grid to arrange
 them in the initial position with one dock being strongly fixed in its position,
 the other one being able to move.
 
-First, we performed analysis of perfectly aligned docks (see figure \todo{}).
-The connection was established in all 10 cases for both, simultaneous and
-sequential docking procedure.
+First, we performed analysis of perfectly aligned docks (see figure
+\ref{fig:dock_test_aligned}). The connection was established in all 10 cases for
+both, simultaneous and sequential docking procedure.
 
-Second, we varied the docking distance (see figure \todo{}). By decreasing the
-docking distance by 6~mm, the docks were able to push themselves apart and
-connect properly in all 10 cases. When the docks were brought together by more
-than 6~mm, we observed that the docks are not able to connect simultaneously --
-their hooks collide and they do not align properly. However, when the connection
-was performed sequentially, the docks connected reliably event when they were
-touching as the rotated hooks no longer collide. By increasing the distance by
-2~mm, dock were able to connect in 9 out of 10 cases. When we increased the
-distance by 4~mm docks were able to connect in 5 cases. For displacement larger
-than 5~mm the docs were not able to connect.
+Second, we varied the docking distance (see figure
+\ref{fig:dock_test_distance}). By decreasing the docking distance by 6~mm, the
+docks were able to push themselves apart and connect properly in all 10 cases.
+When the docks were brought together by more than 6~mm, we observed that the
+docks are not able to connect simultaneously -- their hooks collide and they do
+not align properly. However, when the connection was performed sequentially, the
+docks connected reliably event when they were touching as the rotated hooks no
+longer collide. By increasing the distance by 2~mm, dock were able to connect in
+9 out of 10 cases. When we increased the distance by 4~mm docks were able to
+connect in 5 cases. For displacement larger than 5~mm the docs were not able to
+connect.
 
-Third, we varied the parallel alignment (see figure \todo{}). By misaligning the
-docks by 2~mm we got 9 successfully connections. By inscreasing the
-misalignemnet to 4~mm the docks connected in 6 cases, for the 6~mm it was only 3
-cases. We did not observed ony difference between simultaneous and sequential
-attempts.
+Third, we varied the parallel alignment (see figure
+\ref{fig:dock_test_parallel}). By misaligning the docks by 2~mm we got 9
+successfully connections. By inscreasing the misalignemnet to 4~mm the docks
+connected in 6 cases, for the 6~mm it was only 3 cases. We did not observed ony
+difference between simultaneous and sequential attempts.
 
-Last, we varied the rotation of the docks (see figure \todo{}). We performed
-only rotation in horizontal plane as the docs are symmetric and therefore, they
-should perform the same for other orientations. By rotating less than $5^\circ$
-the docks connected in all 10 cases. When we increased the rotation to
-$10^\circ$ we got 7 successful connections for sequential connection and 5 for
-the simultaneous connection. For displacement of $15^\circ$ we got only 1
-connection of 10 tries for the sequential connection and no success for
+Last, we varied the rotation of the docks (see figure \ref{fig:dock_test_rot}).
+We performed only rotation in horizontal plane as the docs are symmetric and
+therefore, they should perform the same for other orientations. By rotating less
+than $5^\circ$ the docks connected in all 10 cases. When we increased the
+rotation to $10^\circ$ we got 7 successful connections for sequential connection
+and 5 for the simultaneous connection. For displacement of $15^\circ$ we got
+only 1 connection of 10 tries for the sequential connection and no success for
 simultaneous procedure.
 
 When the connection was not successful it was mainly due to the hooks colliding
@@ -102,22 +133,56 @@ robots to detect such collision and the robots could retry the connection.
 
 \subsection{Load capacity}
 
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/dock_tang_load.jpg}
+        \caption{Tangential stress}
+        \label{fig:dock_test_tang}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/dock_norm_load.jpg}
+        \caption{Normal stress}
+        \label{fig:dock_test_norm}
+    \end{subfigure}
+    \caption{Testing load capacity of the docks. The arrow shows direction of
+    the load, hatched ares shows rigid part of the setup.}
+    \label{fig:dock_test_load}
+\end{figure}
+
 We tested load capacity in two different setups -- in a tangential and a normal
-direction (see figure \todo{}) -- by attaching weights to a carabiner hooked to
-one of the connected docks. The mating dock was fixed to a support.
+direction (see figure \ref{fig:dock_test_load}) -- by attaching weights to a
+carabiner hooked to one of the connected docks. The mating dock was fixed to a
+support.
 
 In the normal way we were able to repeatably attach weight of 4.5~kg until the
 docks disconnected. The disconnection left no harm on the docks. We assume the
 plastic hooks bent under the load as the plastic is quite flexible, the skirts
 got loose and therefore, the the dock were able to slip from the connection.
 
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/dock_damage_1.jpg}
+        \caption{Dock hooks}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/dock_damage_2.jpg}
+        \caption{Pieces of the hooks broken apart}
+    \end{subfigure}
+    \caption{Damage caused by load testing on the docks.}
+    \label{fig:dock_damage}
+\end{figure}
+
 In the tangential way we were able to attach weight of 8~kg until the
 malfunction of connection happened. In this case, the connection mechanism was
 damaged -- two hooks on one dock and one hooks on the other dock broke. For a
-photo of the damage see figure \todo{}. The pieces were broken between two
-layers of the 3D printed component. The form of the damage leads us to
-suggestion for a future experiments -- printing the hooks such that the layers
-of a 3D print are oriented differently.
+photo of the damage see figure \ref{fig:dock_damage}. The pieces were broken
+between two layers of the 3D printed component. The form of the damage leads us
+to suggestion for a future experiments -- printing the hooks such that the
+layers of a 3D print are oriented differently.
 
 
 \section{Inter-module Communication}
@@ -257,7 +322,7 @@ and above motors for $\alpha$- and $\beta$-axes.
 \end{figure}
 
 The prototype was 3D printed using the same settings as the docking mechanism.
-The CAD models are available in the project repository.CHAPTER 5. THE ROFI PROTOTYPES To produce all
+The CAD models are available in the project repository. To produce all
 components for a single module 65 meters of fillament are needed with the print
 time of 20 hours (docks are excluded from this list). The additional components
 needed for assembling the robots are: 3 motors DRS-0101, 1 ball bearing

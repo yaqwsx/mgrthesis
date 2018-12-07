@@ -1,7 +1,7 @@
 \chapter{Conclusion}\label{chap:conclusion}
 
 We presented a brand new platform for metamorphic distributed robots -- the RoFI
-platform. The RoFI platform consists of an autonomous modules which can form a
+platform. The RoFI platform consists of autonomous modules which can form a
 firm mechanical connection between the modules and therefore, create larger,
 more sophisticated structures -- RoFI systems.
 
@@ -9,11 +9,11 @@ As the foundational element of the platform, we designed a docking system,
 called RoFI dock, which provides a way to autonomously connect two modules, form
 a firm mechanical connection, establish communication lines and share power
 between the modules. We showed that the RoFI dock can be manufactured by
-commonly available means and that it provides reasonably reliable and strong
+commonly available means and that it provides a reasonably reliable and robust
 connection. Also, we designed the dock such that it is a self-contained device
 which can be easily integrated into various modules.
 
-On top the docking system, we defined a what is a module of the platform. We
+On top of the docking system, we defined a what a module of the platform is. We
 built a formalism to describe the modules and also the whole RoFI systems
 consisting of multiple modules. Together with this formalism we also established
 a terminology concerning the systems and their reconfiguration, so the
@@ -22,16 +22,16 @@ algorithms for reconfiguration can rely on it.
 We also proposed and demonstrated a novel approach for communication between the
 modules by adapting standard TCP/IP networking with a custom physical layer. The
 usage of TCP/IP allows for seamless integration with other networks and possibly
-the Internet, leverages robustness of well tested protocols and also allows for
+the Internet, leverages robustness of well-tested protocols and also allows for
 easy adaptation of state of the art network research.
 
-As an application of the overall platform definition we designed and built the
+As an application of the overall platform definition, we designed and built the
 \emph{universal module}, which should serve as a simple building block of RoFI
 systems. To support the universal module, we designed \emph{RoFI Driver} -- a
 collection of libraries and protocols covering the basic functionality of the
 modules. The library includes implementation of dock driver, network interface
 or remote firmware update through dock native communication channel. We also
-proposed a library to simplify writing of massively aynchronous firmware for
+proposed a library to simplify writing of massively asynchronous firmware for
 microcontrollers.
 
 \section{Future Work}
@@ -41,8 +41,8 @@ thesis. In this thesis we took bottom-up approach -- we started with the design
 the modules and gradually working up to higher levels of abstraction. In the
 near future, we would like to continue in the bottom-up approach and turn the
 RoFI dock into self-contained device ready to embed in modules (this boils down
-mainly to adding a control circuitry); next we would like to equip the universal
-module with control circuitry and accumulators.
+mainly to adding a control circuitry); next, we would like to equip the
+universal module with control circuitry and accumulators.
 
 Having the hardware setup described above opens the possibility to take the
 up-down approach and focus on the algorithmic aspects of the metamorphic modular
@@ -59,7 +59,7 @@ specification (how to encode abstract task like "bring me a ball" into a
 formalism suitable for machine processing) or control synthesis (how to find out
 the sequence of actions to fulfill given task).
 
-With more applications of the platform, it we would like revisit the design
+With more applications of the platform, we would like to revisit the design
 choices we made and iteratively improve the platform. This might concern e.g.,
 the arrangement of the universal module, physical layer for the communication or
 the choice of the microcontroller.

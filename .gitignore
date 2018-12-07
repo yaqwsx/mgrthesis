@@ -30,4 +30,5 @@
 *.bcf
 *.run.xml
 *.txt
+figures/*.jpg
 _minted-thesis

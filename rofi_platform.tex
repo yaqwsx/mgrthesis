@@ -98,7 +98,7 @@ universal module.
 The modules are allowed to change their shape by offering several degrees of
 freedom in the form of \emph{joints}. Joint is a single rotational or linear
 degree of freedom. Intuitively, we can view a module as beads, which can rotate
-against each other along the axis of joints. For a simple example of a double
+against each other along the axes of joints. For a simple example of a double
 cell module movement see figure \ref{fig:grid_aware}.
 
 The motivation for such a restriction of the shape is a property we call
@@ -238,12 +238,13 @@ required to change state.
 \end{figure}
 
 See figure \ref{fig:dock_locking_process} for an example of an interaction of
-two docks. Situation 1 shows the docks in a position they are in two adjacent
-grid cells. By rotation of the shaft ring, the clips and skirts extend
-(situation 2). Situation 3 shows fully expended clips and skirts. The skirts are
-now connected, and no rotational movement of the docks is possible. The clips
-are also at the end of the helical slot. By further rotation of the shaft ring,
-the hooks slide under each other and finish the locking process (situation 4).
+two docks. Situation 1 shows the docks in a position such that the connection
+plane represents the boundary between two adjacent cells. By rotation of the
+shaft ring, the clips and skirts extend (situation 2). Situation 3 shows fully
+expended clips and skirts. The skirts are now connected, and no rotational
+movement of the docks is possible. The clips are also at the end of the helical
+slot. By further rotation of the shaft ring, the hooks slide under each other
+and finish the locking process (situation 4).
 
 \begin{figure}[!ht]
     \centering
@@ -270,7 +271,7 @@ There are two crucial observation to note:
 
 The symmetry of the dock is best shown on the skirt -- see figure
 \ref{fig:dock_skirt_symmetry}. There are four identical blocks on the skirt
-along the horizontal and vertical axis. The blocks allows for four different
+along the horizontal and vertical axes. The blocks allows for four different
 orientation of the docks. When two skirts are facing, there is a mapping of
 blocks from one skirt to the other one. The facing blocks have the property that
 the green circle is always facing a red one. This feature is vital for
@@ -403,10 +404,10 @@ orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
 
 \subsection{Docks Interaction}\label{sec:dock_interaction}
 
-When to docks are connected, they can exchange binary blobs and share power. The
-communication and power sharing is accomplished by mechanical contact using pogo
-pins placed in the inner part of the skirt. The communication between two docks
-is implemented as a simple UART (Universal Synchronous Receiver and
+When two docks are connected, they can exchange binary blobs and share power.
+The communication and power sharing is accomplished by mechanical contact using
+pogo pins placed in the inner part of the skirt. The communication between two
+docks is implemented as a simple UART (Universal Synchronous Receiver and
 Transmitter).
 
 To allow docks to connect in four different mutual orientations, we use a
@@ -686,8 +687,8 @@ shape requirements with possible dock placements.
 Consider a shoe, the basic abstract building block of modules (figure
 \ref{fig:dock_positions}). We define the origin of the shoe in the middle of the
 sphere. There are up to 6 adjacent shoes in the grid (in both direction of all
-axis X, Y, and Z.) The directions define six possible dock positions which we
-name after an axe direction. We name it $\mathcal{P} = \left\{+X, -X, +Y, -Y,
+axes X, Y, and Z.) The directions define six possible dock positions which we
+name after an axis direction. We name it $\mathcal{P} = \left\{+X, -X, +Y, -Y,
 +Z, -Z\right\}$. We also give an orientation of the dock (see figure
 \ref{fig:dock_positions}).
 
@@ -700,7 +701,7 @@ cell it occupies. Once we introduce module descriptors in section
     \includegraphics[width=\textwidth]{figures/dock_positions.pdf}
     \caption{Given a shoe the docks are allowed on 6 positions -- in the
     middles of faces of the corresponding cell cube. The docks are named using
-    the axis names. Small arrows denote orientation vector of each dock.}
+    the axes names. Small arrows denote orientation vector of each dock.}
     \label{fig:dock_positions}
 \end{figure}
 
@@ -822,10 +823,10 @@ an example of such a descriptor for a universal module in figure
     \includegraphics[width=\textwidth]{figures/um_descriptor.pdf}
     \caption{Shape descriptor for an universal module. See figure
     \ref{fig:um_body_parts} and \ref{fig:um_axis} for a visualization of the
-    module and its axis. Function $\text{rot}_A(x)$ returns a 3D rotation matrix
-    along axe $A$ and $x$ radians, $\text{trans}_A(x)$ returns a 3D translation
-    matrix in direction of axe $A$ and distance $x$ units, $\text{sym}$ returns
-    a matrix flipping direction of all axis. $G$ denotes size of the grid.}
+    module and its axes. Function $\text{rot}_A(x)$ returns a 3D rotation matrix
+    along axis $A$ and $x$ radians, $\text{trans}_A(x)$ returns a 3D translation
+    matrix in direction of axis $A$ and distance $x$ units, $\text{sym}$ returns
+    a matrix flipping direction of all axes. $G$ denotes size of the grid.}
     \label{fig:um_descriptor}
 \end{figure}
 
@@ -856,9 +857,9 @@ It is possible to extend the idea of module descriptors further to find
 positions of the docks. A descriptor of a single shoe can be constructed in the
 same manner as a descriptor for any other module (figure
 \ref{fig:shoe_descriptor}). The transformations for docks are constant
-functions. The coordinate system is transformed such that the axis orientation
-is the same as in figure \ref{fig:dock_description} -- the Z axe is
-perpendicular to the docks, and the X axe is coincident with the orientation
+functions. The coordinate system is transformed such that the axes orientation
+is the same as in figure \ref{fig:dock_description} -- the Z axis is
+perpendicular to the docks, and the X axis is coincident with the orientation
 vector. We do not consider the docks to be a part of the shape descriptor as
 they are the same for each shoe and therefore for the sake of simplicity, they
 can be omitted. However, we find them useful to consider the following
@@ -949,7 +950,7 @@ Formally, we define a topology $\mathcal{T}$ as a tuple $(M, E, d)$:
  \begin{itemize}
     \item $T$ is a topology and
     \item $L: M \rightarrow \text{A} \rightarrow \mathds{R}$, where $A$ is a
-    union of axis from all module types, is a function assigning values to all
+    union of axes from all module types, is a function assigning values to all
     joints in the system.
  \end{itemize}
 

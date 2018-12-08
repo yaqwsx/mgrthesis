@@ -6,12 +6,11 @@
 \ifPDFTeX
     \usepackage[utf8]{inputenc}
     \usepackage[T1]{fontenc}
-    % \usepackage{lmodern}
+    \usepackage{lmodern}
 \else
     \RequirePackage{fontspec} % UFT8 fonts for LuaLaTeX
-    % \setmainfont{Latin Modern Roman}
+    \setmainfont{Latin Modern Roman}
 \fi
-\usepackage{csquotes}
 
 \usepackage[ backend=biber
             , style=numeric
@@ -21,29 +20,14 @@
             , maxbibnames=100
             ]{biblatex}
 
+\usepackage{csquotes}
 \usepackage{xcolor}
 \definecolor{dark-red}{rgb}{0.6,0.15,0.15}
 \definecolor{dark-green}{rgb}{0.15,0.4,0.15}
 \definecolor{medium-blue}{rgb}{0,0,0.5}
-\definecolor{paradisegreen}{HTML}{45A931}
 
-\usepackage{amssymb,amsmath}
 \usepackage{minted}
-\usepackage{verbatim}
-\usepackage[final]{listings}
-\lstset{ language=C++ }
-\usepackage{paralist}
-% use upquote for straight quotes in verbatim environments
-\usepackage{upquote}
-\usepackage{booktabs}
-
-\usepackage{xspace}
-\usepackage{pgf}
-\usepackage{tikz}
-\usetikzlibrary{shapes, arrows, shadows, positioning, calc, fit, backgrounds, decorations.pathmorphing, automata, matrix}
-
 \usepackage{pdfpages}
-
 \usepackage{float}
 \makeatletter
 % custom float style, derived from ruled
@@ -60,48 +44,17 @@
 \makeatother
 \floatstyle{botruled}
 \restylefloat{figure}
-% \restylefloat{table}
 \usepackage[labelfont=bf]{caption}
 
-\usepackage{multirow}
-\usepackage{microtype}
-
-\usepackage{tabularx}
-%\newcolumntype{C}{>{\centering\arraybackslash}X}
-%\usepackage{arydshln}
-\newcommand{\dg}{\textsuperscript{\dag}}
 
 \usepackage{graphicx}
-\usepackage{listings}
 \usepackage{xspace}
-\usepackage{bm}
-\usepackage{rotating}
-\usepackage{pbox}
-\usepackage{pdflscape}
-\usepackage{tabu, longtable}
-\usepackage{array}
 \usepackage{siunitx}
 \usepackage{dsfont}
 \usepackage{bytefield}
 \usepackage{subcaption}
 
-\usepackage{silence}
-
-\newcommand{\mcrot}[4]{\multicolumn{#1}{#2}{\rlap{\rotatebox{#3}{#4}~}}}
-\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcommand\bithead[2]{\bitbox[]{#1}{\scriptsize #2}}
-
-
 \newcommand\todo[1]{\noindent\textcolor{red}{(#1)}}
-\newcommand\add[1]{\noindent\textcolor{green}{#1}}
-
-\newcommand\tablecaption{Nothing}
-\newcommand\tablecaptioncont{Nothing}
-\newcommand\tablelabel{tab:todo}
-
-\newcommand{\paradise}{ParaDiSe\xspace}
 
 \newcommand{\FI}{Faculty of Informatics}
 \newcommand{\MU}{Masaryk University}
@@ -113,11 +66,6 @@
 \newcommand{\thesisauthor}{Jan Mrázek}
 \newcommand{\thesisYearCity}{Brno, 2018}
 \newcommand{\thesisadvisor}{\Jirik}
-
-\newcommand{\note}{\textit{Note:}\xspace}
-
-\newcommand{\fieldl}[1]{\multicolumn{2}{|c}{#1}}
-\newcommand{\fieldr}[1]{\multicolumn{2}{|c|}{#1}}
 \newcommand{\cpp}[1]{\mintinline[breaklines]{cpp}{#1}}
 
 \addbibresource{bibliography.bib}
@@ -154,21 +102,6 @@
             , unicode=true
             ]{hyperref}
 
-% \newcommand{\TODO}[1]{\textbf{\color{red}#1}}
-
-% autoref names
-\addto\extrasenglish{
-    \renewcommand{\chapterautorefname}{Chapter}
-    \renewcommand{\sectionautorefname}{Section}
-    \renewcommand{\subsectionautorefname}{Section}
-}
-
-\newcommand{\rot}[1]{\rotatebox{90}{#1\hspace*{0.5em}}}
-
-\newcommand{\antispaceatend}{\vspace*{-\topsep}}
-
-% \setlength{\overfullrule}{5pt} % TODO: remove
-
 \begin{document}
 
 % \DocLength{evensidemargin}
@@ -200,8 +133,42 @@
 
 % only in print version!
 \iffalse %@ifprint
-\includepdf[pages={1}]{zadani.pdf}
-\includepdf[pages={1}]{prohlaseni.pdf}
+\includepdf[pages={1}]{assignment.pdf}
+
+\section*{Statement of an author of a school work}
+
+Student´s Name and UČO: Jan Mrázek, 422279
+
+\vskip1em
+
+I acknowledge that the Masaryk University (MU) is entitled in accordance with
+the law (Article 35 § 3 and 4 of the Copyright Act No. 121/2000 Sb.) to use for
+educational and other internal purposes on a non-commercial basis my thesis or
+my other school work, which I authored to fulfill my study obligations towards
+MU (my work).
+
+The use of my work for internal purposes includes the use of the original work
+as well as of its derivatives and might consists also of assigning of my work
+for additional processing to another student or a member of the MU academic
+community, or of making it available as a basis for a creation of a derivative
+thesis or other school work at MU. Any such use of my work will acknowledge my
+authorship, the original name and source of my work and will be conducted
+exclusively in order to further develop educational and other interests of MU
+related to further development and utilization of my work within its academic
+community.
+
+I also acknowledge my duty to inform MU at the latest upon the submission of my
+work about my intent to further develop or use my work at MU or elsewhere or
+about any other relevant issues related to my work.
+
+\vskip2em
+
+Brno, \today
+
+\vskip2em
+
+\hfill Student´s signature
+
 \cleardoublepage
 \fi
 
@@ -230,7 +197,7 @@ designs.
 
 \section*{Keywords}
 
-robots, docking, modular, networking, C++
+robots, docking, modular, networking, distributed
 
 \cleardoublepage
 

@@ -65,19 +65,19 @@ properly.
     ~
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/docks_distance.jpg}
-        \caption{Distance misplacement}
+        \caption{Distance misalignment}
         \label{fig:dock_test_distance}
     \end{subfigure}
 
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/docks_shift.jpg}
-        \caption{Parallel misplacement}
+        \caption{Parallel misalignment}
         \label{fig:dock_test_parallel}
     \end{subfigure}
     ~
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/docks_rot.jpg}
-        \caption{Rotational alignment}
+        \caption{Rotational misalignment}
         \label{fig:dock_test_rot}
     \end{subfigure}
 
@@ -107,11 +107,11 @@ docks were able to push themselves apart and connect properly in all 10 cases.
 When the docks were brought together by more than 6~mm, we observed that the
 docks are not able to connect simultaneously -- their hooks collide and they do
 not align properly. However, when the connection was performed sequentially, the
-docks connected reliably event when they were touching as the rotated hooks no
-longer collide. By increasing the distance by 2~mm, docks were able to connect
-in 9 out of 10 cases. When we increased the distance by 4~mm docks were able to
-connect in 5 cases. For displacement larger than 5~mm the docs were not able to
-connect.
+docks connected reliably even when they were touching as the rotated hooks no
+longer collide. Then we increased the distance compared to the aligned position.
+By increasing the distance by 2~mm, docks were able to connect in 9 out of 10
+cases. When we increased the distance by 4~mm docks were able to connect in 5
+cases. For displacement larger than 5~mm the docs were not able to connect.
 
 Third, we varied the parallel alignment (see figure
 \ref{fig:dock_test_parallel}). By misaligning the docks by 2~mm we got 9
@@ -139,7 +139,7 @@ the robots to detect such collision, and the robots could retry the connection.
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/dock_tang_load.jpg}
-        \caption{Tangential stress}
+        \caption{Straight stress}
         \label{fig:dock_test_tang}
     \end{subfigure}
     ~
@@ -153,7 +153,7 @@ the robots to detect such collision, and the robots could retry the connection.
     \label{fig:dock_test_load}
 \end{figure}
 
-We tested load capacity in two different setups -- in a tangential and a normal
+We tested load capacity in two different setups -- in a straight and a normal
 direction (see figure \ref{fig:dock_test_load}) -- by attaching weights to a
 carabiner hooked to one of the connected docks. The mating dock was fixed to a
 support.
@@ -175,11 +175,13 @@ connection.
         \includegraphics[width=\textwidth]{figures/dock_damage_2.jpg}
         \caption{Pieces of the hooks broken apart}
     \end{subfigure}
-    \caption{Damage caused by load testing on the docks.}
+    \caption{Damage caused by load testing on the docks. The broken hooks are
+    highlighted using red circles. In the second figure, it can be seen the
+    hooks broke exactly between the 3D printed layers.}
     \label{fig:dock_damage}
 \end{figure}
 
-In a tangential direction, we were able to attach weight of 8~kg until the
+In a straight direction, we were able to attach weight of 8~kg until the
 malfunction of connection happened. In this case, the connection mechanism was
 damaged -- two hooks on one dock and one hook on the other dock broke. For a
 photo of the damage see figure \ref{fig:dock_damage}. The pieces were broken
@@ -221,7 +223,7 @@ classes: \texttt{Dock} (direct interface for a single dock) and \texttt{Roif}
 \texttt{Dock} automatically handles communication with the docks, i.e., hides
 all details of the communication (e.g., interrupt handling) and provides a
 simple interface: user can supply a binary blob (in form of the \texttt{pbuf}
-structure from lwIP) or be notified with an incoming blob via a callback. The
+structure from lwIP) or be notified about an incoming blob via a callback. The
 interface for changing or querying dock state (retracting or expanding of the
 dock, querying the state of the power lines, etc.) is implemented in a similar
 fashion. Our implementation prevents congestion of the shared SPI bus by
@@ -242,22 +244,22 @@ blocking SPI transactions. Our implementation uses the second solution as our
 analysis of the ESP-IDF source code shows that changing already queued
 transactions is not safe and also, the first solution requires non-trivial
 locking. The second solution also produces easier to follow code with no
-explicit locking as all the locking is handled by FreeRTOS and therefore, was
-chosen.
+explicit locking as all the locking is handled by FreeRTOS.
 
 \texttt{Roif} (\emph{Ro}Fi network \emph{in}terface) provides a glue between
 docks and lwIP. It handles registration of a new network interface and all the
-required callbacks (as we mentioned in section \ref{sec:networking}). It also
-features implementation of the address mapping protocol to determine which dock
-should be used for outgoing communication.
+required callbacks as we mentioned in section \ref{sec:networking}. It also
+features an implementation of the address mapping protocol to determine which
+dock should be used for outgoing communication.
 
-As a by-product of the implementation of the RoFI driver, we implemented a set
-of C++ wrappers for the FreeRTOS API. Unlike the already existing C++ wrappers
-we are aware of, we do not simply rename functions and group them in classes
-like these wrappers. Our wrappers respect C++ idioms and also provide proper C++
-copy and move semantics. Such wrapper allows the user to write easier to
-understand and less error-prone code. At the time of writing this thesis, the
-FreeRTOS wrapper was not separated into a stand-alone project.
+As a by-product of the RoFI driver implementation, we implemented a set of C++
+wrappers for the FreeRTOS API. Unlike the already existing C++ wrappers we are
+aware of, we do not simply rename functions and group them in classes like these
+wrappers. Our wrappers respect C++ idioms and also provide proper C++ copy and
+move semantics (i.e., our wrappers support all types, not only primitively
+copyable types). Such wrapper allows the user to write easier to understand and
+less error-prone code. At the time of writing this thesis, the FreeRTOS wrapper
+have not been separated into a~stand-alone project yet.
 
 \begin{figure}[!t]
     \centering
@@ -276,11 +278,12 @@ FreeRTOS wrapper was not separated into a stand-alone project.
 
 We tested our implementation in a simple setup shown at figure
 \ref{fig:comm_setup}. We used three ESP32-DevkitCs simulating module
-controllers, and for Arduino Nanos simulating the docks. We wired them as shown
+controllers, and four Arduino Nanos simulating the docks. We wired them as shown
 in the figure. Then, we were able to successfully establish both, TCP and UDP,
-connections. The codes for establishing the connections are a simple example
-inspired by official demo codes. There are no modifications for our setup. The
-example codes can be found in the project repository.
+connections. The codes for establishing the connections are simple examples
+inspired by official demo codes. There are no modifications specific for our
+setup made to the code. The example codes can be found in the project
+repository.
 
 Replication of our results should be fairly straightforward as we ship all the
 code as PlatformIO\footnote{\url{https://platformio.org/}} projects, therefore
@@ -341,7 +344,7 @@ $25\times32\times4$~mm, 4 ball bearings $15\times20\times4$~mm, 4
 M$2\times18$~mm screws with countersunk head, 18 M$2\times12$~mm screws with
 countersunk head, 42 M$2\times6$~mm screws with countersunk head and 4
 M$2\times12$~mm screws with a regular head. Assembling the modules takes about 1
-to 2 hours of work, most of the time taking manual thread tapping.
+to 2 hours of work, most of the time takes to manual tap the threads.
 
 We designed the components not to only be easily 3D printable but also to be
 reasonably manufacturable by other techniques -- specifically milling (the body)

@@ -69,7 +69,7 @@
      transform="translate(14.669406,-163.69583)">
     <path
        id="path895"
-       style="fill:none;fill-rule:evenodd;stroke:#2167ff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 180,168.69583 v 105.55 m -30,-105.55 v 105.55 m -30,-105.55 v 105.55 m -30.000001,-105.55 v 105.55 m -30.000001,-105.55 v 105.55 M 30,168.69583 v 105.55 m -30,0 v -105.55 m -9.3625,98.30418 H 187.775 M -9.3625,237 H 187.775 M -9.3625,207 H 187.775 M -9.3625,177 H 187.775"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccccccccccccccccc" />

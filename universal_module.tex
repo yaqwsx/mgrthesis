@@ -1,9 +1,9 @@
 \chapter{Universal Module}\label{chap:universal_module}
 
 Chapter \ref{chap:rofi} gives the specification for modules in the RoFI
-platform. In this chapter, we present the RoFI \emph{universal module}. This
-module is supposed to be the primary building block of RoFI systems. It should
-provide enough versatility to build a broader range of systems.
+platform. In this chapter, we present the \emph{universal module}. This module
+is supposed to be the primary building block of RoFI systems. It should provide
+enough versatility to build a broad range of systems.
 
 This chapter provides an overview of the design of the universal module and
 gives a specification to implement it. The current state of implementation is
@@ -13,25 +13,28 @@ discussed in chapter \ref{chap:prototypes}.
 
 The universal RoFI module occupies two adjacent cells of the grid as can be seen
 in figure \ref{fig:um_reference}. Please note that this drawing gives a
-simplified model in which many technical details are omitted. The arrangement of
-the module is inspired by the M-TRAN \cite{kurokawa_distributed_2008}. Unlike
-M-TRAN, the universal module is grid-aware. The module composes of four parts:
+simplified model in which many technical details are omitted\footnote{You can
+compare the simplified model with the physical prototype in chapter
+\ref{chap:prototypes} -- the simplified model keeps the notion of the grid
+spheres.}. The module arrangement is inspired by the M-TRAN
+\cite{kurokawa_distributed_2008}. Unlike M-TRAN, the universal module is
+grid-aware. The module composes of four parts:
 \begin{enumerate*}
     \item \emph{body A},
     \item \emph{body B},
     \item \emph{shoe A}, and
     \item \emph{shoe B}.
 \end{enumerate*}
-See figure \ref{fig:um_body_parts}. Bodies are supposed to encapsulate
+-- see figure \ref{fig:um_body_parts}. Bodies are supposed to encapsulate
 actuators, electronics, and accumulators; shoes are meant to provide connection
 to other modules and provide movement.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/um_reference.pdf}
-    \caption{The universal RoFI module. Blue lines specify the grid, dotted
+    \caption{The universal RoFI module. The lines specify the grid, dotted
     lines marks spheres in which the module in inscribed. Note that we show the
-    module with the Z axis facing right as it better fits  the page layout. }
+    module with the Z axis facing right as it better fits the page layout. }
     \label{fig:um_reference}
 \end{figure}
 
@@ -56,7 +59,7 @@ There are 3 degrees of freedom (figure \ref{fig:um_axis}):
 The module should be able to provide at least 1.5 $\text{N}\cdot\text{m}$ of
 torque for each axis.
 
-\begin{figure}
+\begin{figure}[!t]
     \centering
     \includegraphics[width=0.7\textwidth]{figures/um_axis.pdf}
     \caption{Degrees of freedom of the universal module. The figure represents
@@ -64,11 +67,11 @@ torque for each axis.
     \label{fig:um_axis}
 \end{figure}
 
-There are 3 docks on each shoe -- docks $X+, X-$ and $Z-$. The position of the
+There are 3 docks on each shoe -- dock $X+, X-$ and $Z-$. The position of the
 docks is captured in figure \ref{fig:um_docks}. The shape descriptor in figure
 \ref{fig:um_descriptor} captures the universal module arrangement.
 
-\begin{figure}
+\begin{figure}[!t]
     \centering
     \includegraphics[width=0.7\textwidth]{figures/um_docks.pdf}
     \caption{Docks on the universal module. The arrow on each dock specifies its orientation.}
@@ -87,7 +90,7 @@ arrangement:
     forward.
 \end{enumerate*}
 
-\begin{figure}
+\begin{figure}[!t]
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/ring_example.pdf}
@@ -108,10 +111,10 @@ arrangement:
 \section{Universal Module Sensors}
 
 We design the universal module to be rather sensor-impecunious rather than
-sensor-rich. There should be various RoFI systems with various sensor needs.
-Therefore, we find much useful to implement in the universal module only sensors
-that can be beneficial nearly in all systems. The special sensors for concrete
-systems should be implemented as separate modules.
+sensor-rich. We suppose there will be various RoFI systems with various
+sensor needs. Therefore, we find much useful to implement in the universal
+module only sensors that can be beneficial nearly in all systems. The special
+sensors for concrete systems should be implemented as separate modules.
 
 There are two types of sensors in each universal module:
 \begin{enumerate*}
@@ -130,9 +133,9 @@ sensor in each dock. The sensors allow the universal module to detect obstacles
 in front of the module, help to establish correct alignment of two docks when
 connecting and can also be used to scan the environment. The scanning of the
 environment is performed by moving a shoe and building a depth map. The depth
-map can be used as a simple input for computer vision. For example, when the
-RoFI system is supposed to climb the stairs, it can measure their geometry by
-this procedure.
+map can be used as a simple input for computer vision. For example, when a RoFI
+system is supposed to climb stairs, it can measure their geometry by this
+procedure.
 
 \section{Intra-module Architecture}
 
@@ -142,7 +145,7 @@ as can be seen in figure \ref{fig:um_internal}. The unit controls smart
 servomotors over a bus built on top UART, docks over SPI bus and directly
 controls charging and power management circuits.
 
-\begin{figure}
+\begin{figure}[!t]
     \centering
     \includegraphics[]{figures/um_internal.pdf}
     \caption{Block diagram of internal architecture of the module.}
@@ -225,9 +228,8 @@ disabled or it can charge the accumulator with given power limit. There is also
 a step-up convertor used to source power to other modules. The used step-up
 convertors must be parallelizable (denoted by a diode in the block diagram). The
 step-up module is also controlled by the control unit and can be disabled when
-not needed.
-
-Provided this power sharing setup, the module can operate in four modes:
+not needed. Having this power sharing setup, the module can operate in four
+modes:
 
 \paragraph{Self-powered mode} The module runs on its own accumulator (charger is
 disabled and convertor is disabled).
@@ -247,6 +249,5 @@ The communication in the RoFI platform requires an activity from the control
 unit as it routes packets between the docks. If a module shuts down due to
 discharged accumulator, there cannot be any communication across the module.
 Dead module might lead to a separation of the system into two independent
-networks in some configurations. Charging the dead module might not be strategic
-in many cases. Therefore, survivor mode can be applied to keep the communication
-going without waisting power on charging the dead module.
+networks in some configurations. Therefore, survivor mode can be applied to keep
+the communication going without waisting power on charging the dead module.

@@ -54,7 +54,7 @@ be a single unit following a specification given by the platform. Modules are
 rather high-level pieces with a certain level of self-control instead of
 low-level components like individual actuators or sensors. It might even make
 sense to talk about modules as individual robots, which are used to build other
-robots\cite{brunete_current_2017}.
+robots \cite{brunete_current_2017}.
 
 Each of these modules has a given set of capabilities. By joining multiple
 modules and via their cooperation, new capabilities can emerge. Different
@@ -65,7 +65,7 @@ The mechanical connection of the modules can be done externally, e.g., by an
 operator, or can be performed by the modules on each own. In the latter case, we
 talk about \emph{self-reconfigurable} modules \cite{brunete_current_2017}.
 Depending on the topology of the connection, there is a naming established in
-the literature\cite{brunete_current_2017}:
+the literature \cite{brunete_current_2017}:
 \begin{enumerate*}
     \item \emph{chain type} for a linear, snake-like and tree-like
     configurations,
@@ -73,29 +73,29 @@ the literature\cite{brunete_current_2017}:
     \item \emph{hybrid type} for robots combining both previous approaches.
 \end{enumerate*}
 Further, if there is only a single or a few types of modules in the system, the
-system is called \emph{metamorphic}\cite{brunete_current_2017}. Modules of such
+system is called \emph{metamorphic} \cite{brunete_current_2017}. Modules of such
 a system are also called \emph{cells} as they mimic cells in living organisms.
 
 The system can be \emph{centrally controlled} by a single (and possibly
 external) unit, or the distributed nature of the modules can be leveraged, and
 therefore, the system can feature \emph{distributed control}. The centrally
 controlled approach is considered as an easier one; however, it does not utilize
-all the potential computational power of the modules and is harder to make
-fault-tolerant in case of failure of the control unit compared to the
-distributed control.
+all the potential computational power of the modules and is harder to make it
+fault-tolerant (due to the presence of a single point of failure in the form of
+the control unit) compared to the distributed control.
 
-To help to build an intuition about the modular robots we give an analogy with
+To build an intuition about the modular robots we give an analogy with
 Replicators -- robots present in a sci-fi TV series Stargate
-SG-1\cite{wright_stargate_1997}. Readers unfamiliar with the TV series can skip
+SG-1 \cite{wright_stargate_1997}. Readers unfamiliar with the TV series can skip
 the following paragraph.
 
 Replicators consist of a single Replicator block, which is unable to perform any
-action on its own. Single replicator block maps to a module in terminology given
-above. However, when multiple blocks are combined, they can move and
+action on its own. Single replicator block maps to a module in the terminology
+given above. However, when multiple blocks are combined, they can move and
 self-control. Therefore, Replicators are:
 \begin{enumerate*}
     \item modular (they can be assembled in many configurations from given
-    building blocks)
+    building blocks),
     \item self-reconfigurable (the block can change the configuration on their
     own) and
     \item metamorphic (as there is only a single type of block).
@@ -115,10 +115,10 @@ in current research:
 \cite{haruhisa_kurokawa_m-tran_2003} and the third version in the year 2008
 \cite{kurokawa_distributed_2008}. Since that the project appears dead. M-TRAN
 module shape is a clear inspiration for other projects (including RoFI). The
-project lacks any sources that can be used by a third party. There is an
-attempt of rebuilding the project in an open-source way under name
-\emph{Dtto}\cite{noauthor_dtto_nodate}. However, it does not reach the qualities
-of the original M-TRAN.
+project lacks any sources that can be used by a third party. There is an attempt
+of rebuilding the project in an open-source way under name \emph{Dtto}
+\cite{noauthor_dtto_nodate}. However, it does not reach the qualities of the
+original M-TRAN.
 
 \paragraph{Roombots} \cite{bonardi_locomotion_2012} is a project aiming for
 smart furniture. Roombots feature an original arrangement of their degrees of
@@ -131,4 +131,4 @@ locomotion of individual modules.
 
 \paragraph{HyMod} \cite{gros_hymod:_2018} is a platform similar to SMORES, but
 it focuses on solving several technical imperfections like docking system
-strength or lack of power sharing between the module in the SMORES.
+strength or lack of power sharing between the module in the SMORES project.

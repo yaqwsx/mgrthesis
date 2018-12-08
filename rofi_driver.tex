@@ -67,8 +67,6 @@ implement a new network interface:
 \begin{itemize}
     \item \cpp{err_t rofi_if_init(struct netif *netif)}:
     to initialize the \texttt{nettif} structure,
-    \item \cpp{err_t rofi_link_output(struct netif *netif, struct pbuf *p)} \\
-    to transmit a complete datagram to the docks,
     \item \cpp{err_t rofi_if_output(struct netif *netif, struct pbuf *p,} \\ \cpp{ip_addr_t *ipaddr)}
     to wrap a datagram in custom headers and to transmit the datagram to the
     docks.
@@ -78,7 +76,7 @@ After system start, the RoFI driver calls \texttt{netif\_add}. The call
 registers a new network interface. After the setup, all the incoming datagrams
 are passed to the \texttt{rofi\_netif->input} callback. The callback is set in
 the structure by \texttt{netif\_add}. Providing these functions is all, what is
-needed to integrate docks to the lwIP library.
+needed to integrate docks into the lwIP library.
 
 \subsection{Network Interface Implementation}
 
@@ -151,8 +149,8 @@ entries in the table to avoid the entries to go out-of-data.
     \bitbox{8}{command (0)}
 \end{bytefield}
 
-Note that under normal conditions the table cannot go out-of-date; this can only
-happen when a malfunction occurs (e.g., module resets).
+\noindent Note that under normal conditions the table cannot go out-of-date;
+this can only happen when a malfunction occurs (e.g., module resets).
 
 \subsection{Module Address Configuration and Routing}
 
@@ -165,7 +163,7 @@ efficient routing. There is no central authority in the network of RoFIs like
 there is a router in a traditional network, therefore traditional solutions for
 network address obtaining, like DHCP server, cannot be used. Both, address
 configuration and routing in large networks with unstable topology are still an
-area of active research, and there is no available solution
+area of active research, and there is no standardized solution available
 (\cite{baccelli_ip_2010} and \cite{ezzouhairi_ip_2005}).
 
 As the RoFI is built on top the TCP/IP networking, nearly all newly proposed
@@ -173,9 +171,9 @@ algorithms for routing (e.g., APM \cite{ezzouhairi_ip_2005}) can be adopted as
 their experimental implementation relies on TCP/IP. The same goes for IP address
 configuration, e.g., in form of Distributed DHCP server
 \cite{nesargi_manetconf:_2002}. However, in the first versions of RoFI driver,
-we rely on the basic address autoconfiguration and basic routing implemented in
-lwIP. These algorithms work fine in small networks. In the future, we plan to
-adopt the Distributed DHCP server and the APM routing algorithm.
+we rely on the basic address autoconfiguration implemented in lwIP and a simple
+routing algorithm. These algorithms work fine in small networks. In the future,
+we plan to adopt the Distributed DHCP server and the APM routing algorithm.
 
 \section{Low-Level Logging} \label{sec:logging}
 
@@ -187,8 +185,8 @@ usually used as it is stateless, has nearly no code dependencies and is easy to
 setup.
 
 The same approach can be used to debug a single unit, however, collecting data
-from multiple UART on multiple modules is rather impractical. TCP/IP sockets can
-be used instead of UART, however, since they rely on networking in case of
+from multiple UARTs on multiple modules is rather impractical. TCP/IP sockets
+can be used instead of UART, however, since they rely on networking in case of
 routing malfunction or system crash, a debug message cannot be delivered.
 Therefore, we introduce \emph{low-level logging} in the RoFI driver -- a simple
 and robust protocol for sending messages in a RoFI system.
@@ -206,18 +204,20 @@ The low level debugging uses content type specifier 2 (section
 \bigskip
 \begin{bytefield}[bitwidth=1.75em]{16}
     \bitheader{0,15} \\
+    \bitbox{16}{random salt} \\
     \wordbox{2}{message string}
 \end{bytefield}
 
-\noindent The string can have a length up to 65535 bytes. There is a set of
-string hashes in each module. The set keeps hashes of all received messages.
-When a module receives a string, it calculates its hash. If the hash is not
-present in the set, it is inserted, and the string is resent to all other docks
-in the module. The hashes in the set expire after a given period. Expired hashes
-are removed from the set. This algorithm ensures all emitted messages are spread
-into the whole system. Note, that if the expiration period is too short, it is
-possible to create a message going through the system indefinitely. However, for
-the debugging purposes, we do not perceive it as a limitation.
+\noindent The string can have a length up to 65519 bytes. There is a set of
+message hashes in each module. The set keeps hashes of all received messages.
+When a module receives a message, it calculates its hash. If the hash is not
+present in the set, it is inserted, and the message is resent to all other docks
+in the module. The hashes in the set expire after a given period and afterwards,
+the expired hashes are removed from the set. This algorithm ensures all emitted
+messages are spread into the whole system. Also, the random salt is necessary to
+allow for sending the same messages. Note, that if the expiration period is too
+short, it is possible to create a message going through the system indefinitely.
+However, for the debugging purposes, we do not perceive it as a limitation.
 
 \section{Automatic Firmware Distribution} \label{sec:firmware_distribution}
 
@@ -232,7 +232,7 @@ microcontrollers can update their firmware only using a bootloader, a small
 program residing in reserved area of flash memory, which is executed after
 microcontroller boot. If there is a need for custom update protocol, the custom
 bootloader have to be written. However, bootloaders have to be self-contained
-and have restricted binary size. Therefore sophisticated update protocols are
+and have restricted binary size. Therefore, sophisticated update protocols are
 hard to implement. This is not the case for ESP32
 \cite{noauthor_esp-idf_nodate}. The flash memory of ESP32 can be divided into
 partitions (e.g., firmware or virtual file system partition). In the default
@@ -248,9 +248,10 @@ complicated protocols, like an update from an HTTP server can be implemented.
 
 ESP-IDF provides an implementation of OTA update from HTTP server and an
 interface for implementing custom updates. The update from HTTP server works by
-specifying URL and periodical polling for new firmware version. The interface
-consists of three functions -- one for starting the update, one for processing a
-binary blob with a piece of firmware, and one for committing the changes.
+specifying URL and then the microcontroller periodical polls for new firmware
+version. The interface consists of three functions -- one for starting the
+update, one for processing a binary blob with a piece of firmware, and one for
+committing the changes.
 
 The HTTP server update is an example of a central update. We find it unsuitable
 for the RoFI systems for following reasons:
@@ -274,7 +275,7 @@ build. Firmware type is a 16-bit unsigned integer, the timestamp is a 64-bit
 unsigned integer. There are no restrictions on the meaning of the numbers; it is
 recommended that the timestamp are milliseconds since UNIX time epoch. A module
 updates only to the same firmware type as it already is and to a newer
-timestamp. The firmware type allows the system can consist of various type of
+timestamp. The firmware type allows the system to consist of various type of
 modules.
 
 The firmware update protocol uses content type specifier 3 (section
@@ -383,7 +384,7 @@ chronological flow of event handling. Reactive blocks are inspired by the
 ReactiveX library \cite{noauthor_reactivex_nodate} and the ranges-v3 library
 \cite{noauthor_range-v3_nodate}.
 
-The reactive blocks will be implemented as a stand-alone RoFi independent C++
+The reactive blocks will be implemented as a stand-alone RoFI independent C++
 library -- \emph{Reactive Blocks Library} (RBL). The library targets all
 platforms with C++17 and STL support. The target platforms include standard
 variants of x64, ARM and also embedded platforms like ESP32 or ARM Cortex-M. As
@@ -461,7 +462,7 @@ void vote( int value, Callback c ) {
 }
 
 ring_buffer< int > samples( 10, 0 );
-timer.every( 10_ms. [&ring_buffer]() {
+timer.every( 10_ms, [&ring_buffer]() {
     samples.push( sensor.read() );
     if ( all( samples,
         []( int x ){ return x > threshold; } ) )
@@ -535,11 +536,11 @@ for the example above is shown in figure \ref{fig:rbl_example_1}.
     \label{fig:rbl_example_1}
 \end{figure}
 
-Reactive blocks allow chaining data transformation operations -- just like UNIX
-pipe operator. A block represents each operation. There are two type of blocks:
-\mintinline[breaklines]{cpp}{template < typename T > Puslisher< T > } and
-\mintinline[breaklines]{cpp}{template < typename T > Subscriber< T > }. Single
-block can be both publisher and subscriber.
+Reactive blocks allow chaining data transformation operations -- just like the
+UNIX pipe operator. A block represents operation. There are two type of
+blocks: \mintinline[breaklines]{cpp}{template < typename T > Puslisher< T > }
+and \mintinline[breaklines]{cpp}{template < typename T > Subscriber< T > }.
+Single block can be both publisher and subscriber.
 
 \noindent The publisher can:
 \begin{enumerate}
@@ -625,7 +626,7 @@ class AsyncFoo: public Publisher< int >,
 
 Similarly, all asynchronous events can be wrapped inside a reactive block --
 including interrupts or possibly, but not preferably, busy waiting. Note, that
-the reactive blocks do not bring asynchronicity in the system, they provide
+the reactive blocks do not bring asynchronicity in the system, they only provide
 a new interface for it. The blocks can also wrap synchronous tasks as shown in
 the example of the \texttt{N2S} class. The only requirement is that the code
 inside a block should not block for a long time as it might delay other pending
@@ -636,7 +637,7 @@ delimiter or timer producing values at a given period).
 
 When multiple blocks are linked together via the subscribe relation, we call the
 final structure chain. Therefore, we will refer to the operation as
-\emph{chaining blocks}. Chains are first-class citizens just like blocks.
+\emph{block chaining}. Chains are first-class citizens just like blocks.
 Therefore we can store them in variable or chain multiple chains together.
 
 However, building the block manually by defining classes is verbose and leads to

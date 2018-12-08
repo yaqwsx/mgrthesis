@@ -34,12 +34,11 @@
 % - caption is at the bottom
 % - spaces before and after figure are larger
 % - rules are thinner
-% - bottom rule is missing
 \newcommand\floatc@botruled[2]{{\@fs@cfont #1} #2\par}
 \newcommand\fs@botruled{\def\@fs@cfont{\bfseries}\let\@fs@capt\floatc@botruled
     \def\@fs@pre{\hrule\kern0.5\abovecaptionskip}%
-    \def\@fs@post{}%
-    \def\@fs@mid{\kern0.5\abovecaptionskip\hrule\kern0.5\abovecaptionskip}%
+    \def\@fs@post{\kern0.5\abovecaptionskip\hrule\kern0.5\abovecaptionskip}%
+    \def\@fs@mid{\kern0.5\abovecaptionskip \kern0.5\abovecaptionskip}%
 \let\@fs@iftopcapt\iffalse}
 \makeatother
 \floatstyle{botruled}

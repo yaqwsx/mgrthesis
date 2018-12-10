@@ -3,8 +3,8 @@
 The RoFI platform does not put any restrictions on the implementation of
 modules. However, having all the modules based on the same platform is an
 advantage. Therefore, we consider the implementation of the universal module to
-be a reference implementation other modules, and we expect the other modules to
-reuse it as much as possible.
+be a reference implementation for other modules, and we expect the other modules
+to reuse it as much as possible.
 
 Software development for robots and embedded systems is considered to be more
 challenging than traditional software development. There are several reasons
@@ -28,7 +28,7 @@ provides the following functionality:
     \item the modules can distribute firmware updates automatically, and
     \item there is low-level inter-module logging for debugging purposes.
     \item The driver also provides a high-level interface for controlling the
-    motors and sensor. The interface allows for easy handling of asynchronous
+    motors and sensors. The interface allows for easy handling of asynchronous
     events, and
     \item it is possible to do remote interface calls (i.e., to control another
     module).
@@ -45,7 +45,7 @@ also includes FreeRTOS, the standard C and C++ libraries, and offers several
 useful libraries (lwIP, Bluetooth library or library for a virtual file
 system).
 
-The framework exposes its functionality as a plain C interface. Also, many of
+The framework exposes its functionality as a plain C interface. Also, much of
 the provided functionality is wrapped in a POSIX-compatible interface. E.g.,
 sockets are accessible by both, lwIP interface and POSIX interface. The same
 follows for threading; the user can use FreeRTOS API or POSIX interface or can
@@ -54,8 +54,8 @@ even leverage C++ STL API.
 \section{Networking} \label{sec:networking}
 
 We leverage the lwIP library on the ESP32 to implement networking. To make lwIP
-compatible with the docks we have to provide a new network interface.
-All the docks in the module appear as a single interface. Therefore, the
+compatible with the docks, we have to provide a new network interface.
+All docks in the module appear as a single interface. Therefore, the
 implementation performs simple switching to determine the destination dock.
 
 \subsection{Dock Integration}
@@ -72,10 +72,10 @@ implement a new network interface:
     docks.
 \end{itemize}
 \endgroup
-After system start, the RoFI driver calls \texttt{netif\_add}. The call
+After a system start, the RoFI driver calls \texttt{netif\_add}. The call
 registers a new network interface. After the setup, all the incoming datagrams
 are passed to the \texttt{rofi\_netif->input} callback. The callback is set in
-the structure by \texttt{netif\_add}. Providing these functions is all, what is
+the structure by \texttt{netif\_add}. Providing these functions is all what is
 needed to integrate docks into the lwIP library.
 
 \subsection{Network Interface Implementation}
@@ -91,8 +91,8 @@ technical. There are only several aspects worth further comment:
 The docks can pass arbitrary binary blobs marked by the content type specifier
 to the mating side. The specifier allows to transmit multiple protocols through
 the same interface. In the RoFI driver, there are so far four content type
-specifiers: 0 -- IP datagrams, 1 -- address mapping protocol (defined further in
-this section), 2 -- low-level logging (section \ref{sec:logging}), and 3 --
+specifiers: 0 -- IP datagrams, 1 -- an address mapping protocol (defined further
+in this section), 2 -- low-level logging (section \ref{sec:logging}), and 3 -- a
 firmware update protocol (section \ref{sec:firmware_distribution}).
 
 In order to determine which dock should be used for datagram transmission, a
@@ -102,13 +102,13 @@ ethernet based networks; however, the ARP protocol is not a good choice in the
 RoFI environment for the following reasons:
 \begin{enumerate*}
     \item the connection between docks is point-to-point and
-    \item the ARP protocol relies on MAC addresses of physical interfaces the
-    docks do not provide.
+    \item the ARP protocol relies on MAC addresses of physical interfaces which
+    the docks do not provide.
 \end{enumerate*}
 
 Therefore, we design a simple \emph{address mapping protocol} instead. The
 protocol is used to find IP addresses and GUIDs of the module neighbors. There
-are two messages in the protocol: \emph{mapping call} and \emph{mapping
+are two messages in the protocol: a \emph{mapping call} and a \emph{mapping
 response}.
 
 \noindent The \emph{mapping response} follows the format:
@@ -125,19 +125,19 @@ response}.
     \wordbox{2}{module GUID $n$} \\
 \end{bytefield}
 
-Each module keeps for each dock a table with IP addresses and module GUIDs. The
-table can contain multiple entries for each dock even the docks provide only
-point-to-point communication. There are following reasons to do that that: it
+Each module keeps a table with IP addresses and module GUIDs for each dock. The
+table can contain multiple entries for each dock even though the docks provide
+only point-to-point communication. There are following reasons to do that: it
 allows to cluster modules in a system and perform packet switching in the
 cluster if the further development finds it suitable (e.g., packet switching has
 lower latency), and there can be simple modules in the system not capable of
-routing (e.g., battery module). The overhead caused by the extended packet
-format is negligible and is worth further extensibility.
+routing (e.g., an accumulator module). The overhead caused by the extended
+packet format is negligible and is worth further extensibility.
 
 On the dock connection, the module actively sends the mapping response message
-to the mating side. If there is a change making the information sent previously
-invalid, a mapping response is sent (e.g., the module has changed its IP
-address). Such event-driven approach allows establishing the mapping quickly,
+to the mating side. If there is a change which makes the information sent
+previously invalid, a mapping response is sent (e.g., the module has changed its
+IP address). Such event-driven approach allows establishing the mapping quickly,
 however the module should periodically use the \emph{mapping call} to update
 entries in the table to avoid the entries to go out-of-data.
 
@@ -150,7 +150,7 @@ entries in the table to avoid the entries to go out-of-data.
 \end{bytefield}
 
 \noindent Note that under normal conditions the table cannot go out-of-date;
-this can only happen when a malfunction occurs (e.g., module resets).
+this can only happen when a malfunction occurs (e.g., a module resets).
 
 \subsection{Module Address Configuration and Routing}
 
@@ -161,12 +161,12 @@ address, second, it does not follow the standard format of IPv6 address, which
 reflects the structure of the network, and therefore, GUID does not allow for
 efficient routing. There is no central authority in the network of RoFIs like
 there is a router in a traditional network, therefore traditional solutions for
-network address obtaining, like DHCP server, cannot be used. Both, address
-configuration and routing in large networks with unstable topology are still an
-area of active research, and there is no standardized solution available
+the network address obtaining, like DHCP server, cannot be used. Both, address
+configuration and routing in large networks with unstable topology, are still an
+area of active research, and there is no standardized solution available yet
 (\cite{baccelli_ip_2010} and \cite{ezzouhairi_ip_2005}).
 
-As the RoFI is built on top the TCP/IP networking, nearly all newly proposed
+As the RoFI is built on top of the TCP/IP networking, nearly all newly proposed
 algorithms for routing (e.g., APM \cite{ezzouhairi_ip_2005}) can be adopted as
 their experimental implementation relies on TCP/IP. The same goes for IP address
 configuration, e.g., in form of Distributed DHCP server
@@ -177,19 +177,19 @@ we plan to adopt the Distributed DHCP server and the APM routing algorithm.
 
 \section{Low-Level Logging} \label{sec:logging}
 
-When a firmware for a microcontroller is developed, programmers usually use a
+When firmware for a microcontroller is developed, programmers usually use a
 simple communication interface, typically UART, to print debugging messages.
 Using print-based debugging is useful, since a debugger cannot pause most
 systems as it is impossible to pause the surrounding environment. UART is
 usually used as it is stateless, has nearly no code dependencies and is easy to
-setup.
+set up.
 
 The same approach can be used to debug a single unit, however, collecting data
 from multiple UARTs on multiple modules is rather impractical. TCP/IP sockets
 can be used instead of UART, however, since they rely on networking in case of
-routing malfunction or system crash, a debug message cannot be delivered.
+routing malfunction or a system crash, a debug message cannot be delivered.
 Therefore, we introduce \emph{low-level logging} in the RoFI driver -- a simple
-and robust protocol for sending messages in a RoFI system.
+and robust protocol for sending messages in the RoFI system.
 
 The low-level logging is implemented directly on top of the dock interface and
 does not rely on TCP/IP networking. The goal is to emit a string and propagate
@@ -224,31 +224,31 @@ However, for the debugging purposes, we do not perceive it as a limitation.
 It is highly desirable that all modules of the same type run the same firmware
 version. If the modules can synchronize firmware automatically, the development
 process can speed up. The firmware distribution can be achieved in two ways --
-either there is central authority publishing the firmware, or the modules check
-the firmware of their neighbors and update the firmware from them.
+either there is a central authority publishing the firmware, or the modules
+check the firmware of their neighbors and update the firmware from them.
 
 ESP32 is a suitable microcontroller for remote firmware upgrades. Traditional
 microcontrollers can update their firmware only using a bootloader, a small
 program residing in reserved area of flash memory, which is executed after
 microcontroller boot. If there is a need for custom update protocol, the custom
-bootloader have to be written. However, bootloaders have to be self-contained
-and have restricted binary size. Therefore, sophisticated update protocols are
+bootloader has to be written. However, bootloaders have to be self-contained and
+have a restricted binary size. Therefore, sophisticated update protocols are
 hard to implement. This is not the case for ESP32
 \cite{noauthor_esp-idf_nodate}. The flash memory of ESP32 can be divided into
-partitions (e.g., firmware or virtual file system partition). In the default
+partitions (e.g., a firmware or a virtual file system partition). In the default
 configuration, there are two partitions for firmware. These partitions are used
 to implement \emph{over-the-air updates} (OTA). One partition is marked as an
 active, and upon boot, the bootloader loads user firmware from the active
 partition. Then, during regular operation of the microcontroller, firmware can
 be written in the second, inactive, partition. Once the firmware is written and
 validated, the active flag of the partitions is swapped. When the
-microcontroller reboots, the new firmware is used. OTA updates allow using
+microcontroller reboots, the new firmware is used. OTA updates allow using an
 existing codebase in the firmware to perform firmware updates. Therefore
 complicated protocols, like an update from an HTTP server can be implemented.
 
 ESP-IDF provides an implementation of OTA update from HTTP server and an
 interface for implementing custom updates. The update from HTTP server works by
-specifying URL and then the microcontroller periodical polls for new firmware
+specifying URL and then the microcontroller periodically polls for new firmware
 version. The interface consists of three functions -- one for starting the
 update, one for processing a binary blob with a piece of firmware, and one for
 committing the changes.
@@ -275,14 +275,14 @@ build. Firmware type is a 16-bit unsigned integer, the timestamp is a 64-bit
 unsigned integer. There are no restrictions on the meaning of the numbers; it is
 recommended that the timestamp are milliseconds since UNIX time epoch. A module
 updates only to the same firmware type as it already is and to a newer
-timestamp. The firmware type allows the system to consist of various type of
+timestamp. The firmware type allows the system to consist of various types of
 modules.
 
 The firmware update protocol uses content type specifier 3 (section
-\ref{sec:dock_interface}). There are four type of messages:
+\ref{sec:dock_interface}). There are four types of messages:
 
-\paragraph{Firmware request} is sent by a module to find out firmware version of
-its neighbors. The answer is the firmware announcement. The message has the
+\paragraph{Firmware request} is sent by a module to find out a firmware version
+of its neighbors. The answer is the firmware announcement. The message has the
 following format:
 
 \bigskip
@@ -292,10 +292,10 @@ following format:
 \end{bytefield}
 
 \paragraph{Firmware announcement} is broadcasted by a module to its direct
-neighbors when it knows new firmware. The firmware might not be completely known
-to the module, and therefore, there is a field known size in the message. If
-more of the firmware code is known, a new message is broadcasted. The message
-has the following format:
+neighbors when it knows the new firmware. The firmware might not be completely
+known to the module, and therefore, there is a field of the known size in the
+message. If more of the firmware code is known, a new message is broadcasted.
+The message has the following format:
 
 \bigskip
 \begin{bytefield}{32}
@@ -319,8 +319,8 @@ multiples of 1024. The message has the following format:
     \bitbox{32}{chunk offset}
 \end{bytefield}
 
-\paragraph{Firmware chunk response} is a response to firmware chunk request. The
-message has the following format:
+\paragraph{Firmware chunk response} is a response to a firmware chunk request.
+The message has the following format:
 
 \bigskip
 \begin{bytefield}{32}
@@ -335,27 +335,27 @@ message has the following format:
 \noindent First, we illustrate the protocol operation in a system composed of a
 single module type. Then, we extend it to arbitrary RoFI systems.
 
-When a first module receives a new firmware, it broadcast the firmware
+When a first module receives a new firmware, it broadcasts the firmware
 announcement. Each module keeps a record of the source of newest firmware
 available. It can be either the module itself or one of its neighbors. The
-firmware sources are ordered by timestamp and known size, and for now, we ignore
-firmware types. If a module receives firmware announcement, it checks if it is
-newer than any source known so far. If not, the message is ignored. Otherwise,
-it updates the firmware source. When a firmware source contains newer firmware
-than the firmware the module currently runs, it starts the upgrade procedure. It
-uses firmware chunk request to ask the firmware source for a new firmware chunk.
-If a newer source of firmware appears, the current firmware update is aborted
-and a new update is started. During the update, the module itself broadcasts
-firmware announcement message as new chunks of firmware are received. In this
-fashion, the new firmware spreads like a wave in the system. Note, that messages
-can lose in the system as docks are allowed to drop datagrams. Therefore, if
-message response times out, the module broadcasts firmware request to find a new
-firmware source.
+firmware sources are ordered by the timestamp and the known size, and for now,
+we ignore firmware types. If a module receives a firmware announcement, it
+checks if it is newer than any source known so far. If not, the message is
+ignored. Otherwise, it updates the firmware source. When a firmware source
+contains a newer firmware than the firmware the module currently runs, it starts
+the upgrade procedure. It uses a firmware chunk request to ask the firmware
+source for a new firmware chunk. If a newer source of firmware appears, the
+current firmware update is aborted and a new update is started. During the
+update, the module itself broadcasts a firmware announcement message as new
+chunks of firmware are received. In this fashion, the new firmware spreads like
+a wave in the system. Note that messages can get lost in the system as docks are
+allowed to drop datagrams. Therefore, if the message response times out, the
+module broadcasts a firmware request to find a new firmware source.
 
-To support multiple firmware types, the module keeps track of newest firmware
-available for each type. If firmware announcement updates another type of
-firmware than the is module type, it broadcasts the announcement to all
-neighbors. If firmware chunk request for other firmware is received, it is
+To support multiple firmware types, the module keeps track of the newest
+firmware available for each type. If a firmware announcement updates another
+type of firmware than the module type is, it broadcasts the announcement to all
+neighbors. If a firmware chunk request for other firmware is received, it is
 redirected to the source of that type of firmware and the module remembers the
 request. When a response in the form of a firmware chunk is received, the module
 redirects the message to the author of the request.
@@ -364,8 +364,8 @@ redirects the message to the author of the request.
 
 There are currently two classical approaches to tackle the burden of handling
 asynchronous events in languages like C or C++. First, a real-time operating
-system (RTOS) can be used with several tasks. Each task handles events in
-synchronous, blocking, manner. This approach leads to a readable code as the
+system (RTOS) can be used with several tasks. Each task handles events in a
+synchronous blocking manner. This approach leads to a readable code as the
 logic for processing events is kept close together and follows the chronological
 flow of the events. However, it might not preserve the lowest possible latency
 due to RTOS task switching and also does not scale well as the number of tasks
@@ -373,7 +373,7 @@ is usually limited. The second approach uses callback functions which are called
 to handle an event. This approach scales well; however, it leads to a
 hard-to-read code as the callbacks do not preserve context and are spread all
 over the source code. This phenomenon is usually referred to as ``callback
-hell''. Also, code complexity increases tremendously when error handling is
+hell''. Also, the code complexity increases tremendously when error handling is
 added.
 
 We designed a new solution for handling asynchronous events for the RoFI
@@ -392,13 +392,14 @@ the library implementation is a subject of another thesis, we provide only a
 brief description of its core functionality and omit some semantical nuances and
 the implementation details.
 
-Consider following (somewhat artificial) scenario: when a noisy distance sensor
-overcomes a given threshold (generates edge), the robot notifies several other
-robots (judges) over a network. The judges vote and if a majority votes yes, the
-robot flashes a LED. For simplicity, consider a line-based text communication
-protocol between the robots and numerous reasonably named functions.
+Consider the following (somewhat artificial) scenario: when a noisy distance
+sensor overcomes a given threshold (generates an edge), the robot notifies
+several other robots (judges) over a network. The judges vote and if a majority
+votes yes, the robot flashes a LED. For simplicity, consider a line-based text
+communication protocol between the robots and numerous reasonably named
+functions.
 
-Standard implementation using blocking interface might look like this:
+Standard implementation using a blocking interface might look like this:
 \begin{minted}{cpp}
 while ( true ) {
     // Wait rising edge debounced by 10 samples
@@ -435,8 +436,8 @@ hardware as the network communication is synchronous.
 
 Each asynchronous function traditionally takes a callback function as its
 argument. The callback is called, when the operation is finished. The result
-value or error is passed to the callback. The task from our example scenario
-could be implemented like this using asynchronous interface:
+value or an error is passed to the callback. The task from our example scenario
+could be implemented like this using an asynchronous interface:
 
 \begin{minted}{cpp}
 std::vector< bool > votes;
@@ -482,11 +483,11 @@ the chronological order of event handling, the user has to think about shared
 states and has a lot of nested sections. The need for a shared state arises from
 the absence of information in the control flow of the program. E.g., the
 function \texttt{onJudgeResponse} has to check if it is the last call of the
-function. In the first example there is no such need as the control captures the
-information -- once the if-clause is reached, it is clear all judges voted.
+function. In the first example, there is no such need as the control captures
+the information -- once the if-clause is reached, it is clear all judges voted.
 
 The solution we provide is shown in code snippet below. We do not expect the
-reader to immediately understand all details of the code as explanation
+reader to immediately understand all details of the code as an explanation
 follows. We advise the reader to return to this example during the rest of
 this section.
 
@@ -521,10 +522,10 @@ zip( sensorStream, sensorAverage)
 
 The reactive blocks follow a similar idea as the range-v3 library -- we describe
 a pipeline for data transformation, however, unlike ranges-v3, the data might be
-scattered over time. By describing the pipeline the user can preserve
+scattered over time. By describing the pipeline, the user can preserve
 chronological ordering of the event handling in the code but also preserves
 asynchronicity at the same time. In the traditional future concept, which also
-allows describing a pipeline, the pipeline is only linear and allows only a
+allows for describing a pipeline, the pipeline is only linear and allows only a
 single value to pass. The reactive blocks allow for non-linear pipelines and
 also allows multiple values to pass through it. Visualization of the pipeline
 for the example above is shown in figure \ref{fig:rbl_example_1}.
@@ -532,15 +533,15 @@ for the example above is shown in figure \ref{fig:rbl_example_1}.
 \begin{figure}[!t]
     \centering
     \includegraphics[]{figures/rbl_pipeline_1.pdf}
-    \caption{Pipeline visualization for sensor and voting code snippet.}
+    \caption{Pipeline visualization for a sensor and a voting code snippet.}
     \label{fig:rbl_example_1}
 \end{figure}
 
 Reactive blocks allow chaining data transformation operations -- just like the
-UNIX pipe operator. A block represents operation. There are two type of
+UNIX pipe operator. A block represents an operation. There are two types of
 blocks: \mintinline[breaklines]{cpp}{template < typename T > Puslisher< T > }
 and \mintinline[breaklines]{cpp}{template < typename T > Subscriber< T > }.
-Single block can be both publisher and subscriber.
+A single block can be both publisher and subscriber.
 
 \noindent The publisher can:
 \begin{enumerate}
@@ -558,7 +559,7 @@ Single block can be both publisher and subscriber.
     \item can unsubscribe.
 \end{enumerate}
 
-The interface of subscriber and publisher is provided in the
+The interface of a subscriber and a publisher is provided in the
 following snipped:
 \begin{minted}{cpp}
 template < typename T >
@@ -599,10 +600,10 @@ class N2S: public Publisher< std::string >,
 };
 \end{minted}
 
-Or, given a classical callback-based asynchronous interface in form of function
-\mintinline[breaklines]{cpp}{errorCode asyncFoo( int param, Callback c )} we can
-wrap it inside a block which accepts the input for the asynchronous function and
-produces an output.
+Or, given a classical callback-based asynchronous interface in the form of a
+function \mintinline[breaklines]{cpp}{errorCode asyncFoo( int param, Callback c
+)} we can wrap it inside a block which accepts the input for the asynchronous
+function and produces an output.
 \begin{minted}{cpp}
 class AsyncFoo: public Publisher< int >,
     public Subscriber< int >
@@ -625,37 +626,37 @@ class AsyncFoo: public Publisher< int >,
 \end{minted}
 
 Similarly, all asynchronous events can be wrapped inside a reactive block --
-including interrupts or possibly, but not preferably, busy waiting. Note, that
-the reactive blocks do not bring asynchronicity in the system, they only provide
-a new interface for it. The blocks can also wrap synchronous tasks as shown in
-the example of the \texttt{N2S} class. The only requirement is that the code
-inside a block should not block for a long time as it might delay other pending
-blocks. Also, there can be $m$-to-$n$ mapping of incoming values to the block,
-not just 1:1 mapping as we showed in the examples. The block can emit multiple
-values from a single input value (e.g., block splitting string according to a
-delimiter or timer producing values at a given period).
+including interrupts or possibly, but not preferably, busy waiting. Note that
+the reactive blocks do not bring asynchronicity to the system, they only
+provide a new interface for it. The blocks can also wrap synchronous tasks as
+shown in the example of the \texttt{N2S} class. The only requirement is that the
+code inside a block should not block for a long time as it might delay other
+pending blocks. Also, there can be $m$-to-$n$ mapping of incoming values to the
+block, not just 1:1 mapping as we showed in the examples. The block can emit
+multiple values from a single input value (e.g., a block splitting string
+according to a delimiter or a timer producing values at a given period).
 
 When multiple blocks are linked together via the subscribe relation, we call the
-final structure chain. Therefore, we will refer to the operation as
+final structure a chain. Therefore, we will refer to the operation as
 \emph{block chaining}. Chains are first-class citizens just like blocks.
-Therefore we can store them in variable or chain multiple chains together.
+Therefore we can store them in a variable or chain multiple chains together.
 
 However, building the block manually by defining classes is verbose and leads to
-hard-to-read code. Therefore, the library provides operator
+hard-to-read code. Therefore, the library provides an operator
 \mintinline[breaklines]{cpp}{>>} (chain). The operator is similar to Haskell's
 bind operator -- it builds the subscribe relation between chains. The operator
-comes in many overloads and provides implicit creation of blocks out of
+comes in many overloads and provides an implicit creation of blocks out of
 functions. This functionality provides a syntactical sugar, which allows to make
-the code less verbose and also allows to keep the code in chronological order.
+the code less verbose and also allows to keep the code in a chronological order.
 
 To further simplify the code, the library should provide predefined blocks like
 zip (takes two streams of values and combines them in pairs), interleave which
 takes multiple streams and joins them together, simple waiting, and so forth.
 
 The last advantage of reactive blocks we present is error handling. The
-publishers can publish value or an error. By default, the error goes through the
+publishers can publish a value or an error. By default, the error goes through the
 pipeline until some block stops it and handles it. This provides a monadic- and
-exception-like behavior. See following example:
+exception-like behavior. See the following example:
 \begin{minted}{cpp}
 a >> b >> c >> onError( []( std::exception& e ) {
     std::cerr "Error a-c: " << e.what() << std::endl();
@@ -664,9 +665,9 @@ a >> b >> c >> onError( []( std::exception& e ) {
 } );
 \end{minted}
 The code defines a linear chain of blocks \texttt{a} to \texttt{e}. If any of
-the block fails, the error is captured by one the two error handlers. Also, the
-chain operator by default captures exception thrown out of functions and sends
-them down the chain:
+the block fails, the error is captured by one of the two error handlers. Also,
+the chain operator by default captures an exception thrown out of functions and
+sends them down the chain:
 \begin{minted}{cpp}
 a >> [] {
     throw std::runtime_error( "Inevidable error" );
@@ -693,8 +694,8 @@ passing them to functions much more convenient. The control objects rely on the
 RBL library to implement asynchronous events. E.g., when a joint is commanded to
 a position, it returns a publisher; docks provide method \cpp{onConnect()} which
 also returns a publisher which emits a value when the dock connects.
-Implementing the interface as a proxy bring the possibility to seamlessly
-provide remotes interface (one module directly controls the other). Such proxy
+Implementing the interface as a proxy brings the possibility to seamlessly
+provide remote interface (one module directly controls the other). Such proxy
 is an advantage for a centrally controlled system as there is no difference
 between controlling itself and any other module.
 

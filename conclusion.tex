@@ -6,8 +6,8 @@ firm mechanical connection between the modules and therefore, create larger,
 more sophisticated structures -- RoFI systems.
 
 As the foundational element of the platform, we designed a docking system,
-called RoFI dock, which provides a way to autonomously connect two modules, form
-a firm mechanical connection, establish communication lines and share power
+called the RoFI dock, which provides a way to autonomously connect two modules,
+form a firm mechanical connection, establish communication lines and share power
 between the modules. We showed that the RoFI dock can be manufactured by
 commonly available means and that it provides a reasonably reliable and robust
 connection. Also, we designed the dock such that it is a self-contained device
@@ -15,51 +15,51 @@ which can be easily integrated into various modules.
 
 On top of the docking system, we defined what a module of the platform is. We
 built a formalism to describe the modules and also the whole RoFI systems
-consisting of multiple modules. Together with this formalism we also established
-a terminology concerning the systems and their reconfiguration, so the
-algorithms for reconfiguration can rely on it.
+consisting of multiple modules. Together with this formalism, we also
+established the terminology concerning the systems and their reconfiguration, so
+the algorithms for reconfiguration can rely on it.
 
-We also proposed and demonstrated a novel approach for communication between the
+We proposed and demonstrated a novel approach to communication between the
 modules by adapting standard TCP/IP networking with a custom physical layer. The
 usage of TCP/IP allows for seamless integration with other networks and possibly
 the Internet, leverages robustness of well-tested protocols and also allows for
-easy adaptation of state of the art network research.
+easy adaptation of the state of the art network research.
 
 As an application of the overall platform definition, we designed and built the
 \emph{universal module}, which should serve as a simple building block of RoFI
 systems. To support the universal module, we designed \emph{RoFI Driver} -- a
 collection of libraries and protocols covering the basic functionality of the
-modules. The library includes implementation of dock driver, network interface
-or remote firmware update through dock native communication channel. We also
-proposed a library to simplify writing of massively asynchronous firmware for
-microcontrollers.
+modules. The library includes implementation of the dock driver, the network
+interface or the remote firmware update through the dock native communication
+channel. We also proposed a library to simplify writing of the massively
+asynchronous firmware for microcontrollers.
 
 \section{Future Work}
 
 The RoFI platform is an ambitious project with goals beyond the scope of this
-thesis. In this thesis we took bottom-up approach -- we started with the design
-the modules and gradually working up to higher levels of abstraction. In the
-near future, we would like to continue in the bottom-up approach and turn the
-RoFI dock into self-contained device ready to embed in modules (this boils down
-mainly to adding a control circuitry); next, we would like to equip the
+thesis. In this thesis, we took a bottom-up approach -- we started with the
+design of the modules and gradually worked up to higher levels of abstraction.
+In the near future, we would like to continue in the bottom-up approach and turn
+the RoFI dock into a self-contained device ready to embed in modules (this boils
+down mainly to adding a control circuitry); next, we would like to equip the
 universal module with control circuitry and accumulators.
 
 Having the hardware setup described above opens the possibility to take the
 up-down approach and focus on the algorithmic aspects of the metamorphic modular
-robots -- mainly control and reconfiguration. We would like to implement some
-already published algorithms and validate them using the hardware setup provided
-by the RoFI platform. Then we would like to explore the possibility of
+robots -- mainly the control and the reconfiguration. We would like to implement
+some already published algorithms and validate them using the hardware setup
+provided by the RoFI platform. Then we would like to explore the possibility of
 controlling the RoFI systems in a distributed manner as the nature of the
-modules seems suitable for distributed control and could leverage the
-computational potential of all the robots in the system.
+modules seems suitable for the distributed control and could leverage the
+computational potential of all robots in the system.
 
-In the long term goals it could be also interesting to explore topics related to
-security (how to prevent inter-module communication sniffing and manipulation),
-specification (how to encode abstract task like "bring me a ball" into a
-formalism suitable for machine processing) or control synthesis (how to find
-the sequence of actions to fulfill given task).
+From the long term perspective it could be also interesting to explore topics
+related to security (how to prevent inter-module communication sniffing and
+manipulation), specification (how to encode abstract task like ``bring me a
+ball'' into a formalism suitable for machine processing) or control synthesis
+(how to find the sequence of actions to fulfill a given task).
 
 With more applications of the platform, we would like to revisit the design
 choices we made and iteratively improve the platform. This might concern e.g.,
-the arrangement of the universal module, physical layer for the communication or
-the choice of the microcontroller.
+the arrangement of the universal module, the physical layer for the
+communication or the choice of the microcontroller.

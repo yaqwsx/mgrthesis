@@ -9,5 +9,5 @@ robots together, tackle the problem of inter-module communication, design a
 primary module of the platform and give means to program such robots. We also
 present some of the prototypes based on our designs.
 
-See [project repository](https://github.com/paradise-fi/rofi).
+See the [project repository](https://github.com/paradise-fi/rofi).
 

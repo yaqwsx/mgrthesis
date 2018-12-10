@@ -1,4 +1,4 @@
-\chapter{RoFI driver interface}\label{chap:rofi_interface}
+\chapter{RoFI Driver Interface}\label{chap:rofi_interface}
 
 The interface of the RoFI driver can be obtained by calling
 \cpp{auto interface = rofi::getInterface()}. The
@@ -12,74 +12,75 @@ function returns an implementation defined object fulfilling concept
     \item \cpp{interface.self} is an object fulfilling concept \cpp{Module}.
 \end{itemize}
 
-\noindent Object \cpp{joint} fulfills concept \cpp{Joint} if:
+\noindent An object \cpp{joint} fulfills concept \cpp{Joint} if:
 \begin{itemize}
     \item \cpp{joint} can be copied (\cpp{Joint} is only a facade).
-    \item \cpp{float Joint::max() const} returns maximal join position in
+    \item \cpp{float Joint::max() const} returns a maximal join position in
     radians.
-    \item \cpp{float Joint::min() const} returns minimal joint position
+    \item \cpp{float Joint::min() const} returns a minimal joint position
     in radians.
-    \item \cpp{float Joint::maxSpeed() const} returns maximal joint speed
+    \item \cpp{float Joint::maxSpeed() const} returns a maximal joint speed
     in radians per second.
     \item \cpp{float Joint::maxTorque() const} returns the
-    torque capability of joint in \si{\newton\meter}.
-    \item \cpp{float Joint::getPosition() const} returns joint position.
+    torque capability of a joint in N$\cdot$m.
+    \item \cpp{float Joint::getPosition() const} returns the joint position.
     \item \cpp{float Joint::getSpeed() const}
-    \item \cpp{void Joint::setTorque( float torque )} sets joint into
+    \item \cpp{void Joint::setTorque( float torque )} sets the joint into the
     torque movement control mode.
-    \item \cpp{void Joint::setSpeed( float speed )} sets joint into
+    \item \cpp{void Joint::setSpeed( float speed )} sets the joint into the
     speed control mode (constant velocity is kept) with given speed.
     \item \cpp{Pub< float > Joint::setPosition( float position ) }
-    sets joint into position control mode (position is kept). After the position
-    is reached, the position emitted and stream is closed.
-    \item \cpp{Pub< float > Joint::onPosition( float position ) const} emits
-    message whenever joint is in given position (tolerance is implementation
+    sets the joint into position control mode (position is kept). After the
+    position is reached, the position emitted and stream is closed.
+    \item \cpp{Pub< float > Joint::onPosition( float position ) const} emits a
+    message whenever joint is in the given position (tolerance is implementation
     defined). The stream never ends.
     \item \cpp{SubPub< T, float > Joint::positionReached( float position ) const }
     after receiving a value of type \cpp{T} emits a \cpp{position} when the
     position is reached.
     \item concurrent commands are sequentialized.
-    \item if one command aborts the previous one, error is emitted.
+    \item if one command aborts the previous one, an error is emitted.
 \end{itemize}
 
 \noindent Object \cpp{dock} fulfills concept \cpp{Dock} if:
 \begin{itemize}
     \item \cpp{dock} can be copied (\cpp{Dock} is only a facade).
-    \item \cpp{Pub< State > Dock::state() const } returns dock current state.
+    \item \cpp{Pub< State > Dock::state() const } returns the dock current
+    state.
     \item \cpp{Pub< State > Dock::connect() } expands the dock. A value is
     emitted one the final position is reached.
-    \item \cpp{Pub< Void > Dock::waitForConnection()} waits in expanded position
-    for the mating side. Emits value when mating side connects, then the stream
-    closes.
-    \item \cpp{Pub< Void > Dock::waitForDisConnection()} Emits value when mating
-    side disconnects, then the stream closes. If there is no mating side, emits
-    immediately.
-    \item \cpp{Pub< Void > Dock::onConnection()} Emits value when mating side
+    \item \cpp{Pub< Void > Dock::waitForConnection()} waits in the expanded
+    position for the mating side. Emits a value when mating side connects, then
+    the stream closes.
+    \item \cpp{Pub< Void > Dock::waitForDisConnection()} Emits a value when the
+    mating side disconnects, then the stream closes. If there is no mating side,
+    emits immediately.
+    \item \cpp{Pub< Void > Dock::onConnection()} Emits a value when mating side
     connects. Never closes.
-    \item \cpp{Pub< Void > Dock::onDisconnection()} Emits value when mating side
-    connects. Never closes.
+    \item \cpp{Pub< Void > Dock::onDisconnection()} Emits a value when mating
+    side connects. Never closes.
     \item \cpp{Pub< MutualOrientation > Dock::getMutualOrientation()} returns
-    mutual orientation of docks.
+    a mutual orientation of docks.
     \item \cpp{Pub< Void > Dockd::disconnect()} retracts the dock. Emits once
-    target position is reached.
+    the target position is reached.
     \item \cpp{Pub< Void > Dock::connect( Line line ) } connect the EXT or the
-    INT line. Once connected, value is emitted.
+    INT line. Once connected, a value is emitted.
     \item \cpp{Pub< Void > Dock::disconnect( Line line ) } connect the EXT or
-    the INT line. Once connected, value is emitted.
+    the INT line. Once connected, a value is emitted.
     \item \cpp{Pub< float > Dock::current( Line line ) } returns the current in
-    Ampers at given line.
+    Ampers at a given line.
     \item \cpp{Pub< float > Dock::voltage( Line line ) } returns the voltage in
-    Volts at given line.
+    Volts at a given line.
 \end{itemize}
 Note that the high level interface does not provide a way to send data to
 neighbors. The user application should rely on TCP/IP instead.
 
-Object \cpp{module} fulfills concept \cpp{Module} if:
+An object \cpp{module} fulfills concept \cpp{Module} if:
 \begin{itemize}
     \item \cpp{module} can be copied (\cpp{Module} is only a facade).
     \item \cpp{Guid Module::getId() const} returns module GUID.
     \item \cpp{std::string Module::getType() const} returns a human-readable
     module type name.
-    \item \cpp{ShapeDescriptor Module::getShape() const } returns shape
+    \item \cpp{ShapeDescriptor Module::getShape() const } returns a shape
     descriptor.
 \end{itemize}

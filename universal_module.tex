@@ -6,7 +6,7 @@ is supposed to be the primary building block of RoFI systems. It should provide
 enough versatility to build a broad range of systems.
 
 This chapter provides an overview of the design of the universal module and
-gives a specification to implement it. The current state of implementation is
+gives the specification to implement it. The current state of implementation is
 discussed in chapter \ref{chap:prototypes}.
 
 \section{Universal Module Shape}
@@ -16,7 +16,7 @@ in figure \ref{fig:um_reference}. Please note that this drawing gives a
 simplified model in which many technical details are omitted\footnote{You can
 compare the simplified model with the physical prototype in chapter
 \ref{chap:prototypes} -- the simplified model keeps the notion of the grid
-spheres.}. The module arrangement is inspired by the M-TRAN
+spheres.}. The module arrangement is inspired by M-TRAN
 \cite{kurokawa_distributed_2008}. Unlike M-TRAN, the universal module is
 grid-aware. The module composes of four parts:
 \begin{enumerate*}
@@ -33,8 +33,8 @@ to other modules and provide movement.
     \centering
     \includegraphics[width=\textwidth]{figures/um_reference.pdf}
     \caption{The universal RoFI module. The lines specify the grid, dotted
-    lines marks spheres in which the module in inscribed. Note that we show the
-    module with the Z axis facing right as it better fits the page layout. }
+    lines mark spheres in which the module is inscribed. Note that we show the
+    module with the Z-axis facing right as it better fits the page layout. }
     \label{fig:um_reference}
 \end{figure}
 
@@ -47,16 +47,16 @@ to other modules and provide movement.
 
 There are 3 degrees of freedom (figure \ref{fig:um_axis}):
 \begin{enumerate}
-    \item shoe A can rotate against body A along the $\alpha$ axis in a range
+    \item shoe A can rotate against body A along the $\alpha$-axis in range
     $\langle -90^\circ; +90^\circ\rangle$,
-    \item shoe B can rotate against body B along the $\beta$ axis in a range
+    \item shoe B can rotate against body B along the $\beta$-axis in range
     $\langle -90^\circ; +90^\circ\rangle$, and
-    \item body A can rotate against body B along the $\gamma$ axis in $\langle
-    -180^\circ; +180^\circ\rangle$ with an overflow\footnote{First prototypes
-    feature a limitation on a number of overflows in one direction on the
-    $\gamma$ axis due to technical limitations. }.
+    \item body A can rotate against body B along the $\gamma$-axis in range
+    $\langle -180^\circ; +180^\circ\rangle$ with an overflow\footnote{First
+    prototypes feature a limitation on a number of overflows in one direction on
+    the $\gamma$-axis due to technical limitations. }.
 \end{enumerate}
-The module should be able to provide at least 1.5 $\text{N}\cdot\text{m}$ of
+The module should be able to provide at least 1.5 N$\cdot$m of
 torque for each axis.
 
 \begin{figure}[!t]
@@ -79,7 +79,7 @@ docks is captured in figure \ref{fig:um_docks}. The shape descriptor in figure
 \end{figure}
 
 Such module arrangement is more versatile than the M-TRAN arrangement. Addition
-of the third axis, the $\gamma$ axis, overcomes two limitations of M-TRAN-like
+of the third axis, the $\gamma$-axis, overcomes two limitations of M-TRAN-like
 arrangement:
 \begin{enumerate*}
     \item given a chain configuration with all joints parallel to each other,
@@ -110,27 +110,27 @@ arrangement:
 
 \section{Universal Module Sensors}
 
-We design the universal module to be rather sensor-impecunious rather than
-sensor-rich. We suppose there will be various RoFI systems with various
-sensor needs. Therefore, we find much useful to implement in the universal
-module only sensors that can be beneficial nearly in all systems. The special
-sensors for concrete systems should be implemented as separate modules.
+We design the universal module to be sensor-impecunious rather than sensor-rich.
+We suppose there will be various RoFI systems with various sensor needs.
+Therefore, we find more useful to implement in the universal module only sensors
+that can be beneficial in nearly all systems. The special sensors for concrete
+systems should be implemented as separate modules.
 
 There are two types of sensors in each universal module:
 \begin{enumerate*}
-    \item inertial measurement unit (IMU) and
+    \item a inertial measurement unit (IMU) and
     \item distance sensors in the middle of each dock.
 \end{enumerate*}
 The IMU provides a basic notion of the module orientation in the space. Data
 from IMU can be used in algorithms to, e.g., determine a common direction in
 space among all modules using the Earth's gravitational force. A good solution
-for the IMU IC is MPU-9250 \cite{noauthor_mpu-9250_2016} due to broad community
-support and all-in-one-package solution (accelerometer, gyroscope, and
+for the IMU IC is MPU-9250 \cite{noauthor_mpu-9250_2016} due to a broad
+community support and all-in-one-package solution (accelerometer, gyroscope, and
 magnetometer).
 
 We plan to use the VL53L1X \cite{noauthor_new_2018} time-of-flight distance
 sensor in each dock. The sensors allow the universal module to detect obstacles
-in front of the module, help to establish correct alignment of two docks when
+in front of the module, help to establish a correct alignment of two docks when
 connecting and can also be used to scan the environment. The scanning of the
 environment is performed by moving a shoe and building a depth map. The depth
 map can be used as a simple input for computer vision. For example, when a RoFI
@@ -167,14 +167,14 @@ support. We are mainly concerned by three aspects of the software support:
 \end{enumerate*}
 
 First two aspects are crucial for easy development of software. From a practical
-aspect, the ESP32 is nearly indistinguishable from a desktop POSIX environment
-while it still preserves real-time nature and easy access to low-level
-peripherals. The POSIX compatibility allow the developers to leverage existing
-libraries and port them to the universal module without a significant effort.
-The support for lwIP is a benefit as the control unit serves as network
-switch (as defined in section \ref{sec:communication}) and therefore, we can
-use it. The only necessary part of implementing is the custom device driver for the
-docks.
+perspective, the ESP32 is nearly indistinguishable from a desktop POSIX
+environment while it still preserves real-time nature and easy access to
+low-level peripherals. The POSIX compatibility allows the developers to leverage
+existing libraries and port them to the universal module without a significant
+effort. The support for lwIP is a benefit as the control unit serves as a
+network switch (as defined in section \ref{sec:communication}) and therefore, we
+can use it. The only necessary part of implementing is the custom device driver
+for the docks.
 
 The control unit is not supposed to provide any sensors except the IMU since the
 placement of IMU in the robot is not crucial. The distance sensors on the docks
@@ -185,25 +185,25 @@ are controlled by a microcontroller on the dock and the control unit.
 
 We decided to use so-called \emph{smart servomotors} (servos) to power the
 universal module. These servos are similar to their hobby counterparts. Just
-like the hobby servo, a smart servo is a DC motor with a gearbox combined with a
-driver and feedback loop controller in a single compact package. The main
+like the hobby servo, the smart servo is a DC motor with a gearbox combined with
+a driver and a feedback loop controller in a single compact package. The main
 difference between these two is that smart servos provide a digital bus for
 sending commands (unlike pulse-width modulation communication used in hobby
 servos) and offer several advanced features. The hobby servo can be controlled
-only in position mode without any feedback to the control system. The smart
+only in a position mode without any feedback to the control system. The smart
 servos usually allow for multiple control modes (torque, speed, and position),
 allow continuous rotation and also provide feedback to the control system.
-Therefore, the system can detect when the motor reaches a commanded
-position or if the motor is overloaded.
+Therefore, the system can detect when the motor reaches a commanded position or
+if the motor is overloaded.
 
 The usage of smart servos simplifies both, the mechanical construction and the
 control unit, as we can omit motor driver, custom gearing and encoders. In our
 design, we use HerkuleX DRS-0101 \cite{noauthor_herkulex_nodate} servos. These
 servos are designed to be powered directly from a two cell li-ion accumulator
-and provide 1.2 N$\cdot$m of torque at maximal speed one turn per second. The
-servos communicate over UART bus, where the control unit serves as a master and
-the servos are slaves. The servos can be daisy-chained and therefore, only two
-wires are required for the communication. The command set provides means to
+and provide 1.2 N$\cdot$m of torque at the maximal speed of one turn per second.
+The servos communicate over UART bus, where the control unit serves as a master
+and the servos are slaves. The servos can be daisy-chained and therefore, only
+two wires are required for the communication. The command set provides means to
 perform a synchronized movement.
 
 We choose the DRS-0101 servos for several reasons: they feature slightly smaller
@@ -231,23 +231,23 @@ step-up module is also controlled by the control unit and can be disabled when
 not needed. Having this power sharing setup, the module can operate in four
 modes:
 
-\paragraph{Self-powered mode} The module runs on its own accumulator (charger is
-disabled and convertor is disabled).
+\paragraph{Self-powered mode} The module runs on its own accumulator (a charger
+is disabled and a convertor is disabled).
 
 \paragraph{Power sourcing mode} The module provides energy to the network
-(charger is disabled and convertor is enabled).
+(a charger is disabled and a convertor is enabled).
 
 \paragraph{Power draining mode} The module charges its accumulator and drains
 power from other modules.
 
 \paragraph{Survivor mode} The module disables motors, disables converter and
 limits the charging power roughly to cover energy consumption of the control
-module. Therefore, no charging occurs and the charger is acts as a step-down
+module. Therefore, no charging occurs and the charger acts as a step-down
 converter for the control unit.
 
 The communication in the RoFI platform requires an activity from the control
-unit as it routes packets between the docks. If a module shuts down due to
+unit as it routes packets between the docks. If a module shuts down due to a
 discharged accumulator, there cannot be any communication across the module.
-Dead module might lead to a separation of the system into two independent
+A dead module might lead to a separation of the system into two independent
 networks in some configurations. Therefore, survivor mode can be applied to keep
 the communication going without waisting power on charging the dead module.

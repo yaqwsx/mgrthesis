@@ -32,4 +32,6 @@
 *.txt
 figures/*.jpg
 _minted-thesis
+_minted-thesis-print
+extra
 thesis-print.tex

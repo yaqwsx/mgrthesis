@@ -12,12 +12,12 @@ be a~crucial feature.
 In the past decade, researches have been exploring \emph{modular robotic
 systems}. These systems are assembled of modules. By reassembling the modules, a
 new system with different capabilities is formed. This property makes such
-systems versatile and allows them to fulfill tasks which cannot be tested in
+systems versatile and allows them to perform tasks which cannot be tested in
 advance (planet colonization) or tasks which feature unpredictable events
 (rescue missions).
 
-Research in this area runs in two parallel branches -- on the one hand, there
-are publications dealing with hardware design of the modules, on the other hand,
+Research in this area runs in two parallel branches -- on one hand, there are
+publications dealing with hardware design of the modules, on the other hand,
 there are publications dealing with the algorithms for control synthesis and
 reconfiguration of the systems. However, an interconnection of these two
 research branches occurs only spuriously. We guess this is due to two factors:
@@ -25,8 +25,8 @@ research branches occurs only spuriously. We guess this is due to two factors:
     \item the hardware publications often lack proper documentation as it is
     usually confidential and there is no possibility to get physical modules for
     verification of algorithms.
-    \item The algorithmic publication often omit details of the physical
-    limitation of the modules.
+    \item The algorithmic publications often omit details of the physical
+    limitations of the modules.
 \end{enumerate*}
 
 Therefore, in this thesis, we aim for an ambitious goal -- to introduce a new
@@ -58,19 +58,19 @@ robots \cite{brunete_current_2017}.
 
 Each of these modules has a given set of capabilities. By joining multiple
 modules and via their cooperation, new capabilities can emerge. Different
-configurations of modules can emerge different capabilities. The modules are
+configurations of modules give rise to different capabilities. The modules are
 usually mechanically connected to form a single robot.
 
 The mechanical connection of the modules can be done externally, e.g., by an
-operator, or can be performed by the modules on each own. In the latter case, we
-talk about \emph{self-reconfigurable} modules \cite{brunete_current_2017}.
+operator, or can be performed by the modules on their own. In qte latter case,
+we talk about \emph{self-reconfigurable} modules \cite{brunete_current_2017}.
 Depending on the topology of the connection, there is a naming established in
 the literature \cite{brunete_current_2017}:
 \begin{enumerate*}
     \item \emph{chain type} for a linear, snake-like and tree-like
     configurations,
     \item \emph{lattice type} for regular grid-based robots,
-    \item \emph{hybrid type} for robots combining both previous approaches.
+    \item \emph{hybrid type} for robots combining both of previous approaches.
 \end{enumerate*}
 Further, if there is only a single or a few types of modules in the system, the
 system is called \emph{metamorphic} \cite{brunete_current_2017}. Modules of such
@@ -80,43 +80,43 @@ The system can be \emph{centrally controlled} by a single (and possibly
 external) unit, or the distributed nature of the modules can be leveraged, and
 therefore, the system can feature \emph{distributed control}. The centrally
 controlled approach is considered as an easier one; however, it does not utilize
-all the potential computational power of the modules and is harder to make it
-fault-tolerant (due to the presence of a single point of failure in the form of
-the control unit) compared to the distributed control.
+all the potential computational power of the modules and it is harder to make
+the system fault-tolerant (due to the presence of a single point of failure in
+the form of the control unit) compared to the distributed control.
 
 To build an intuition about the modular robots we give an analogy with
 Replicators -- robots present in a sci-fi TV series Stargate
 SG-1 \cite{wright_stargate_1997}. Readers unfamiliar with the TV series can skip
 the following paragraph.
 
-Replicators consist of a single Replicator block, which is unable to perform any
+Replicators consist of a single replicator block, which is unable to perform any
 action on its own. Single replicator block maps to a module in the terminology
 given above. However, when multiple blocks are combined, they can move and
 self-control. Therefore, Replicators are:
 \begin{enumerate*}
     \item modular (they can be assembled in many configurations from given
     building blocks),
-    \item self-reconfigurable (the block can change the configuration on their
+    \item self-reconfigurable (the blocks can change the configuration on their
     own) and
     \item metamorphic (as there is only a single type of block).
 \end{enumerate*}
 Whether Replicators are distributed is unclear -- the series does not give much
 detail about it. We firmly believe so, as each blob of modules can operate
-independently on the others and in case of reconfiguration all newly emerged
+independently of the others and in case of reconfiguration all newly emerged
 blobs become independent.
 
 \section{Existing Metamorphic Robots}
 
-We provide a selection of a few existing projects showing the areas of interest
-in current research:
+In the following paragraphs, we provide a selection of a few existing projects
+showing the areas of interest in current research:
 
 \paragraph{M-TRAN} is a project first published in the year 2002
 \cite{murata_m-tran:_2002}, followed by the second version in the year 2003
 \cite{haruhisa_kurokawa_m-tran_2003} and the third version in the year 2008
-\cite{kurokawa_distributed_2008}. Since that the project appears dead. M-TRAN
+\cite{kurokawa_distributed_2008}. Since then the project appears dead. M-TRAN
 module shape is a clear inspiration for other projects (including RoFI). The
 project lacks any sources that can be used by a third party. There is an attempt
-of rebuilding the project in an open-source way under name \emph{Dtto}
+of rebuilding the project in an open-source way under the name \emph{Dtto}
 \cite{noauthor_dtto_nodate}. However, it does not reach the qualities of the
 original M-TRAN.
 
@@ -125,10 +125,10 @@ smart furniture. Roombots feature an original arrangement of their degrees of
 freedom. It is also worth noting that the project heavily uses passive
 components in its assemblies.
 
-\paragraph{SMORES} \cite{davey_emulating_2012} differs from the other project by
-focusing not only on the locomotion of the whole system but also on the
+\paragraph{SMORES} \cite{davey_emulating_2012} differs from the other projects
+by focusing not only on the locomotion of the whole system but also on the
 locomotion of individual modules.
 
 \paragraph{HyMod} \cite{gros_hymod:_2018} is a platform similar to SMORES, but
 it focuses on solving several technical imperfections like docking system
-strength or lack of power sharing between the module in the SMORES project.
+strength or lack of power sharing between the modules in the SMORES project.

@@ -3,12 +3,12 @@
 The RoFI platform is expected to allow construction of reconfigurable robotic
 systems using small autonomous units. A typical use case for the platform is to
 validate algorithms for reconfigurable robots in a physical world or test
-hypothesis rather than solving real-world problems.
+hypotheses rather than solving real-world problems.
 
 \section{Design Goals}\label{sec:design_goals}
 
-Our overall goal can be broken down into the following requirements
-specification of the platform:
+Our overall goal can be broken down into the following requirements of the
+platform:
 
 \emph{Platform Requirements}: We expect the platform to define standardized
 autonomous modules, which can physically connect via a docking system in
@@ -39,10 +39,9 @@ formal model of the platform allows to reason about systems and also establishes
 terminology. Porting existing libraries and algorithms is beneficial for fast
 development since it enables to adapt existing, tested code. Both easy
 development of new programs and porting existing ones can be achieved by
-leveraging of standard technologies. The platform should also provide an
-automatic way of program distribution among the modules and should deal with
-debugging in the distributed environment to make development for the platform
-more pleasant.
+leveraging standard technologies. The platform should also provide an automatic
+way of program distribution among the modules and should deal with debugging in
+the distributed environment to make development for the platform more pleasant.
 
 \section{The RoFI Platform }
 
@@ -78,11 +77,11 @@ convex hull of their inscribed spheres (see double cell module in figure
 existing convex hulls for the module. See figure \ref{fig:rofi_shapes} for an
 example. When we reference a module shape, we use following terminology:
 \begin{enumerate*}
-    \item \emph{shoe} is a part of the module occupying a cell sphere and
-    \item \emph{body} is a part of the module occupying mainly the rest of the
+    \item a \emph{shoe} is a part of the module occupying a cell sphere and
+    \item a \emph{body} is a part of the module occupying mainly the rest of the
     space from the module hull.
 \end{enumerate*}
-See figure \ref{fig:um_body_parts} for an usage of the terminology on the
+See figure \ref{fig:um_body_parts} for a usage of the terminology on the
 universal module.
 
 \begin{figure}[!ht]
@@ -90,7 +89,7 @@ universal module.
     \includegraphics[width=0.7\textwidth]{figures/rofi_shapes.pdf}
     \caption{Example of a module hull construction. Each convex hull of adjacent
     cells is denoted by a coloured area. The module hull is the union of coloured
-    ares. Note that the coloured areas slightly overlap the grid. This is only
+    areas. Note that the coloured areas slightly overlap the grid. This is only
     for the purpose of visualization. In reality they fit exactly in the grid.}
     \label{fig:rofi_shapes}
 \end{figure}
@@ -122,18 +121,18 @@ contact. We further discuss this in section \ref{sec:dock} and section
 \begin{figure}[!t]
     \centering
     \includegraphics[width=\textwidth]{figures/grid_aware.pdf}
-    \caption{Visualization of grid-awareness. Consider two module shapes -- an
-    M-TRAN \cite{haruhisa_kurokawa_m-tran_2003} like (int the top row) and a
-    RoFI like (in the bottom row). Given the task to move right body over the
-    left one, M-TRAN like module occupies extra cells due to small parts of it
-    body overlapping out of the gird. On the other hand, RoFI like module
-    occupies the least cells required to make the movement. }
+    \caption{Visualization of grid-awareness. Consider two module shapes --
+    M-TRAN \cite{haruhisa_kurokawa_m-tran_2003} like (in the top row) and a RoFI
+    like (in the bottom row). Given the task to move right body over the left
+    one, M-TRAN like module occupies extra cells due to small parts of its body
+    overlapping out of the gird. That is not true for the RoFI like module as it
+    occupies the least number of cells required to make the movement. }
     \label{fig:grid_aware}
 \end{figure}
 
-We want to point out that even we showed grid-fitting positions of the robots
-(where all movement is performed by steps of $90^\circ$) in all examples, we do
-not give any restriction on the granularity of the movement. We assume the
+We want to point out that even though we showed grid-fitting positions of the
+robots (where all movement is performed by steps of $90^\circ$) in all examples,
+we do not give any restriction on the granularity of the movement. We assume the
 modules are physically able to move practically continuously (considering limits
 of a mechanic construction). However, the reconfiguration algorithms built on
 top of the system can take only discrete steps in the movement into account if
@@ -225,7 +224,7 @@ required to change state.
     \centering
     \includegraphics[width=\textwidth]{figures/dock_description.pdf}
     \caption{Naming of the components of the dock. The orientation and the
-    normal vector are important for specifying orientation of two connected
+    normal vector are important for specifying the orientation of two connected
     docks. }
     \label{fig:dock_description}
 \end{figure}
@@ -233,7 +232,8 @@ required to change state.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_key_components.pdf}
-    \caption{View of the three key components of the dock: clip, skirt and body.}
+    \caption{View of the three key components of the dock: a clip, a skirt and
+    a body.}
     \label{fig:dock_key_components}
 \end{figure}
 
@@ -248,11 +248,11 @@ hooks slide under each other and finish the docking process (situation 4).
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{figures/locking_process.pdf}
-    \caption{Illustration the docking procedure. Clip of the upper dock is
-    shown red, skirt of the upper dock is shown blue, clip of the bottom dock is
-    shown as green, skirt of the bottom dock is shown yellow.  Situation 1 is
-    the retracted state. The dock pass by the lock plane (2), then continue
-    expansion (3) and finish by purely rotational movement(4). }
+    \caption{Illustration of the docking procedure. The clip of the upper dock
+    is shown red, the skirt of the upper dock is shown blue, the clip of the
+    bottom dock is shown green, the skirt of the bottom dock is shown yellow.
+    Situation (1) is the retracted state. The docks pass by the lock plane (2),
+    then continue expansion (3) and finish by purely rotational movement (4). }
     \label{fig:dock_locking_process}
 \end{figure}
 
@@ -314,9 +314,9 @@ profile of the dock was achieved. Flat dock profile is a significant advantage
     \centering
     \includegraphics[width=\textwidth]{figures/dock_arrangement.pdf}
     \caption{Internal arrangement of the components inside the dock. Note that
-    skirt and clip are not shown. The skirt and clip are swapped compared to the
-    HiGen dock. This with a bevel gearing allow for placing the motor flat and
-    therefore achieving half the depth of dock.}
+    the skirt and the clip are not shown. The skirt and clip are swapped
+    compared to the HiGen dock. This, together with a bevel gearing allow for
+    placing the motor flat and therefore, achieving half the depth of the dock.}
     \label{fig:dock_internal_arrangement}
 \end{figure}
 
@@ -388,7 +388,7 @@ orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_orientation.pdf}
-    \caption{Possible orientation of two docks. Orientation vector of the
+    \caption{Possible orientation of two docks. The orientation vector of the
     current perspective is shown red, the orientation vector of the mating dock
     is shown blue. Note that it does not matter which dock's perspective we
     choose.}
@@ -418,7 +418,7 @@ can also easily recognize if the mating site is still attached.
 \begin{figure}[t]
     \centering
     \includegraphics[]{figures/dock_pins.pdf}
-    \caption{Pin arrangement on a dock skirt. }
+    \caption{Pin arrangement on the dock skirt. }
     \label{fig:dock_pins}
 \end{figure}
 
@@ -464,7 +464,7 @@ differently (e.g. rearrange them in send buffer, drop them, etc.).
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/dock_block.pdf}
-    \caption{Block diagram of the dock functionality}
+    \caption{Block diagram of the dock functionality.}
     \label{fig:dock_block}
 \end{figure}
 
@@ -694,9 +694,9 @@ cell it occupies. Once we introduce module descriptors in section
 \begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_positions.pdf}
-    \caption{Given a shoe the docks are allowed on 6 positions -- in the
-    middles of faces of the corresponding cell cube. The docks are named using
-    the axes names. Small arrows denote orientation vector of each dock.}
+    \caption{There are 6 positions for the docks on a shoe -- in the
+    centers of faces of the corresponding cell cube. The docks are named using
+    the axes names. Small arrows denote the orientation vector of each dock.}
     \label{fig:dock_positions}
 \end{figure}
 
@@ -709,7 +709,7 @@ has its advantages and disadvantages.
 
 The wireless communication is easy to implement, as there is no need to
 establish a physical connection between the modules. Absence of physical wiring
-simplifies docking mechanism and also allows for communication of separate
+simplifies docking mechanism also allows for communication of separate
 systems of modules. However, due to its nature, it does not scale well as all
 the modules share the same medium and only a single module can transmit at a
 time. Also, standard networking technologies like WiFi or Bluetooth are not
@@ -829,12 +829,12 @@ an example of such a descriptor for a universal module in figure
 \begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{figures/um_descriptor.pdf}
-    \caption{Shape descriptor for an universal module. See figure
+    \caption{Shape descriptor for a universal module. See figure
     \ref{fig:um_body_parts} and \ref{fig:um_axis} for a visualization of the
     module and its axes. Function $\text{rot}_A(x)$ returns a 3D rotation matrix
     along axis $A$ and $x$ radians, $\text{trans}_A(x)$ returns a 3D translation
     matrix in direction of axis $A$ and distance $x$ units, $\text{sym}$ returns
-    a matrix flipping direction of all axes. $G$ denotes size of the grid.}
+    a matrix flipping direction of all axes. $G$ denotes the size of the grid.}
     \label{fig:um_descriptor}
 \end{figure}
 
@@ -876,8 +876,9 @@ construction.
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/shoe_descriptor.pdf}
-    \caption{Shape descriptor of a shoe. Triangles represent docks. See figure
-    \ref{fig:dock_positions} for visualization of physical layout.}
+    \caption{Shape descriptor of a shoe. Triangles represent the docks. See
+    figure
+    \ref{fig:dock_positions} for visualization of a physical layout.}
     \label{fig:shoe_descriptor}
 \end{figure}
 
@@ -893,10 +894,10 @@ operation as \emph{shape descriptor union}.
     \includegraphics[width=0.8\textwidth]{figures/descriptor_connection.pdf}
     \caption{Illustration of connection of two module descriptors. Each module
     has a shoe (shoe A, shoe B) with docks they connect to each other. To
-    connect the modules, new edge is constructed between the docks. Parameter
-    $o$ is the mutual orientation of the docks. Note that it does not matter on
-    the edge orientation as the mutual orientation is symmetric as shown in
-    section \ref{sec:mutual_orientation}. }
+    connect the modules, a new edge is constructed between the docks.
+    Parameter~$o$ is the mutual orientation of the docks. Note that it does not
+    depend on the edge orientation as the mutual orientation is symmetric as
+    shown in section \ref{sec:mutual_orientation}. }
     \label{fig:connection_descriptor}
 \end{figure}
 
@@ -947,8 +948,8 @@ Formally, we define a topology $\mathcal{T}$ as a tuple $(M, E, d)$:
     \centering
     \includegraphics[width=\textwidth]{figures/topology_example.pdf}
     \caption{Example of a topology (left) for a system of the universal modules
-    (right). Connection are denoted by gray rectangles, the naming of the docks
-    follow figure \ref{fig:um_docks}. }
+    (right). Connections are denoted by gray rectangles, the naming of the docks
+    follows figure \ref{fig:um_docks}. }
     \label{fig:topology_example}
 \end{figure}
 

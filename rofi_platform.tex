@@ -96,7 +96,7 @@ universal module.
 
 The modules are allowed to change their shape by offering several degrees of
 freedom in the form of \emph{joints}. Joint is a single rotational or linear
-degree of freedom. Intuitively, we can view a module as beads, which can rotate
+degree of freedom. Intuitively, we can imagine a module as beads, which can rotate
 against each other along the axes of joints. For a simple example of a double
 cell module movement see figure \ref{fig:grid_aware}.
 
@@ -106,11 +106,11 @@ grounded left part of the module, move its right part above the left one.
 Figure~\ref{fig:grid_aware} illustrates the task. If we consider a module which
 fits exactly inside a cube-shaped cell, e.g. an M-TRAN module
 \cite{haruhisa_kurokawa_m-tran_2003}, the module occupies extra cells during the
-movement (marked by red circles in the figure). Such shape restricts the module
-movement in a densely occupied grid. However, if we consider a grid-aware module
-(e.g., double cell module), it only occupies the minimal number of cells
+movement (marked by red circles in the figure). Such a shape restricts the
+module movement in a densely occupied grid. However, if we consider a grid-aware
+module (e.g., double cell module), it only occupies the minimal number of cells
 necessary for the movement and as a result. it should allow for more efficient
-reconfiguration algorithms. The key to grid-awareness is the sphere inscribed in
+reconfiguration algorithms. The key to grid-awareness is a sphere inscribed in
 a cell. Therefore, Roombots \cite{bonardi_locomotion_2012} are not grid-aware
 even though their shape is a sphere. Their bodies cannot be inscribed in spheres
 inside grid cells. Grid-awareness, however, comes at a cost. It requires a
@@ -134,18 +134,19 @@ We want to point out that even though we showed grid-fitting positions of the
 robots (where all movement is performed by steps of $90^\circ$) in all examples,
 we do not give any restriction on the granularity of the movement. We assume the
 modules are physically able to move practically continuously (considering limits
-of a mechanic construction). However, the reconfiguration algorithms built on
+of a mechanical construction). However, the reconfiguration algorithms built on
 top of the system can take only discrete steps in the movement into account if
 they need to.
 
 The shape specification allows us to define modules with various shapes and
 functionality. However, we do not expect the platform to feature many different
 types of modules and especially oddly shaped ones. We firmly believe that the
-double cell universal module (described in chapter \ref{chap:universal_module}),
+double cell universal module (described in chapter \ref{chap:universal_module})
 should be the primary building block of RoFI systems. However, in future, we
 consider having, e.g., a passive module (built only from a mechanical
-construction), accumulator module or single-cell modules featuring specialized
-sensors (e.g., camera) or actuators (e.g., robotic hand or a wheel).
+construction), an accumulator module or single-cell modules featuring
+specialized sensors (e.g., camera) or actuators (e.g., a robotic hand or a
+wheel).
 
 \section{RoFI Docking System}\label{sec:dock}
 
@@ -176,14 +177,14 @@ To overcome this issue, we present the RoFI docking system (figure
 \ref{fig:dock_overview}). The RoFI system is inspired by the HiGen docking
 system \cite{parrott_higen:_2014}. In short, our dock:
 \begin{itemize}
-    \item allows for connection of two modules when they are not touching side
+    \item allows for a connection of two modules when they are not touching side
     by side,
-    \item allows for connection in four different orientations,
+    \item allows for a connection in four different orientations,
     \item is genderless (any two docks can connect),
     \item is based on a mechanical connection (and therefore it is not
     limited by a magnetic force and drains energy only during docking and
     undocking),
-    \item can disconnect without participation of the mating side (which also
+    \item can disconnect without participation of a mating side (which also
     allows for connecting to a passive dock -- similar to Roombots
     \cite{bonardi_locomotion_2012}) and
     \item supports data communication and power sharing.
@@ -198,7 +199,7 @@ interface between a module control unit and the dock (described in
 \subsection{The Principle of Operation}
 
 The main principle of operation is the same as the principle of the HiGen dock.
-There are two key components -- clip and skirt (figure
+There are two key components -- the clip and the skirt (figure
 \ref{fig:dock_key_components}). The clip features four hooks. These hooks can
 slide under hooks of the clip from the mating side and form a connection which
 prevents pulling the docks apart. When two skirts touch each other, they stop
@@ -216,9 +217,9 @@ slides upwards. So far, the clip extends to a locking distance. However, the
 hooks of the docks could not slide under each other. A horizontal part ends the
 helical slot (see figure \ref{fig:dock_key_components}). This ending allows for
 sliding the hooks under each other. The pressure on the hooks and skirts causes
-force only in the Z direction; there is no need to hold the components in
+force only in the Z-direction; there is no need to hold the components in
 position by an active element (e.g., motor) and therefore energy is only
-required to change state.
+required to change the state.
 
 \begin{figure}[t]
     \centering
@@ -240,10 +241,10 @@ required to change state.
 See figure \ref{fig:dock_locking_process} for an example of an interaction of
 two docks. Situation~1 shows the docks in a position such that the connection
 plane represents the boundary between two adjacent cells. By rotation of the
-shaft ring, the clips and skirts extend (situation 2). Situation 3 shows fully
-expanded clips and skirts. The skirts are now connected, and no rotational
-movement of the docks is possible. By further rotation of the shaft ring, the
-hooks slide under each other and finish the docking process (situation 4).
+shaft ring, clips and skirts extend (situation 2). Situation 3 shows fully
+expanded clips and skirts. Skirts are now connected, and no rotational movement
+of the docks is possible. By further rotation of the shaft ring, the hooks slide
+under each other and finish the docking process (situation 4).
 
 \begin{figure}[!ht]
     \centering
@@ -256,27 +257,28 @@ hooks slide under each other and finish the docking process (situation 4).
     \label{fig:dock_locking_process}
 \end{figure}
 
-There are two crucial observation to note:
+There are two crucial observations to note:
 \begin{enumerate*}
-    \item the docks are symmetric; therefore there are 4 different orientation
+    \item the docks are symmetric; therefore there are 4 different orientations
     the docks can lock in;
     \item the movement of two docks does not have to be synchronized, and
     therefore, it is possible for a dock to wait in expanded position or to
     disconnect when the mating module stops responding.
 \end{enumerate*}
 The absence of the necessity for synchronization can also be leveraged for the
-construction of passive docks. Passive dock is a component with no moving parts
-in a shape of an extended dock, which an active dock on a module can connect to.
+construction of passive docks. A passive dock is a component with no moving
+parts in a shape of an extended dock, which an active dock on a module can
+connect to.
 
 The symmetry of the dock is best shown on the skirt -- see figure
 \ref{fig:dock_skirt_symmetry}. There are four identical blocks on the skirt
-along the horizontal and vertical axes. The blocks allows for four different
-orientation of the docks. When two skirts are facing, there is a mapping of
-blocks from one skirt to the other one. The facing blocks have the property that
-the green circle is always facing a red one. This feature is vital for
-three reasons:
+along the horizontal and vertical axes. The blocks allow for four different
+orientation of the docks. When two skirts are facing each other, there is a
+mapping of blocks from one skirt to the other one. The facing blocks have the
+property that the green circle is always facing the red one. This feature is
+vital for three reasons:
 \begin{itemize}
-    \item There are pins on the skirt, which prevents the skirt from
+    \item There are pins on the skirt, which prevent the skirt from
     rotation against another skirt (see perspective view in figure
     \ref{fig:dock_key_components}).
     \item Also, there are magnets in the holes (red -- north facing up, green --
@@ -284,10 +286,10 @@ three reasons:
     misaligned docks to connect correctly.
     \item By mounting spring contacts in the symmetry blocks, we can build power
     and data transmission lines between modules -- see section
-    \ref{sec:dock_interaction} for detailed description.
+    \ref{sec:dock_interaction} for a detailed description.
 \end{itemize}
-The idea behind symmetry of the clip is the same as the idea behind the skirt
-symmetry.
+The idea behind the symmetry of the clip is the same as the idea behind the
+skirt symmetry.
 
 \begin{figure}[!ht]
     \centering
@@ -304,61 +306,61 @@ to 7~mm (module face-to-face distance 14~mm). Compared to the HiGen dock, we
 feature half the depth (HiGen depth is 32~mm) while having slightly larger
 docking distance (7~mm in our case, 6~mm in the case of HiGen). The thin profile
 was achieved by swapping positions of the clip and skirt -- in our case, the
-clip is the outer ring and skirt is the inner ring, in the HiGen case skirt is
-the outer ring and clip is the internal one. The swap allowed for placing the
-motor flat (figure \ref{fig:dock_internal_arrangement}) and therefore, flatter
-profile of the dock was achieved. Flat dock profile is a significant advantage
--- the inside of the body can be larger compared to a non-flat profile.
+clip is the outer ring and the skirt is the inner ring, in the HiGen case the
+skirt is the outer ring and the clip is the internal one. The swap allowed for
+placing the motor flat (figure \ref{fig:dock_internal_arrangement}) and
+therefore, a flatter profile of the dock was achieved. The flat dock profile is
+a significant advantage -- the inside of the body can be larger compared to a
+non-flat profile.
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{figures/dock_arrangement.pdf}
     \caption{Internal arrangement of the components inside the dock. Note that
-    the skirt and the clip are not shown. The skirt and clip are swapped
-    compared to the HiGen dock. This, together with a bevel gearing allow for
+    the skirt and the clip are not shown. The skirt and the clip are swapped
+    compared to the HiGen dock. This, together with a bevel gearing, allows for
     placing the motor flat and therefore, achieving half the depth of the dock.}
     \label{fig:dock_internal_arrangement}
 \end{figure}
 
-Note that the depth is independent on the diameter. The diameter choice is a
-trade-off between connection stability (increases with diameter) and module size
-(also increases with diameter) as we explain in section \ref{sec:dock_in_grid}.
-We designed our model to be parametric -- it is possible to specify desired
-diameter, connection distance and material thickness, and generate a new model.
-The depth of the dock $h$ is equal to $h=l+6w$, where $l$ is the connection
-distance (in our model 7~mm) and $w$ is wall thickness (in our model 1.5~mm).
-Note that the parameters for the model cannot be chosen arbitrarily as there
-some limitations (e.g., in the motor size).
+Note that the depth is independent of the diameter. The diameter choice is a
+trade-off between connection stability (increases with diameter) and a module
+size (also increases with diameter) as we explain in section
+\ref{sec:dock_in_grid}. We designed our model to be parametric -- it is possible
+to specify desired diameter, connection distance and material thickness, and
+generate a new model. The depth of the dock $h$ is equal to $h=l+6w$, where $l$
+is the connection distance (in our model 7~mm) and $w$ is wall thickness (in our
+model 1.5~mm). Note that the parameters for the model cannot be chosen
+arbitrarily as there are some limitations (e.g., in the motor size).
 
-The dock composes of 5 custom components:
+The dock is composed of 5 custom components:
 \begin{enumerate*}
-    \item body,
-    \item shaft ring,
-    \item clip,
-    \item skirt and
-    \item motor mount.
+    \item a body,
+    \item a shaft ring,
+    \item a clip,
+    \item a skirt and
+    \item a motor mount.
 \end{enumerate*}
-We built several prototypes of the components using a 3D printer. We describe
-the process and present the CAD models in chapter \ref{chap:prototypes}. We
-believe that with only small modifications, these parts could be lathed and
-milled from metal and therefore, being stronger. We build this assumption on
-a~similar component complexity as the ModRED docking system
-\cite{hossain_towards_2014}. However, even the 3D printed dock provides enough
-strength to support small RoFI systems as we show in chapter
-\ref{chap:prototypes}.
+We built several prototypes of the components using a 3D printer. The process
+and the CAD models are presented in chapter \ref{chap:prototypes}. We believe
+that with only small modifications, these parts could be lathed and milled from
+metal and therefore, be stronger. We build this assumption on a~similar
+component complexity as the ModRED docking system \cite{hossain_towards_2014}.
+However, even the 3D printed dock provides enough strength to support small RoFI
+systems as we show in chapter \ref{chap:prototypes}.
 
 As we mentioned, the dock is supposed to be a reusable stand-alone unit.
 Therefore, there will a PCB with driver electronics in the back of the dock.
-However, current prototype does not feature it. The purpose of the electronics
-is to:
+However, the current prototype does not feature it. The purpose of the
+electronics is to:
 \begin{enumerate*}
     \item drive the motor in the clip,
-    \item buffer incoming communication from an attached dock,
+    \item buffer incoming communication from the attached dock,
     \item provide a bus interface for a master controller in the module to
     easily control the dock, and
     \item provide an interface for power sharing.
 \end{enumerate*}
-The electronics is supposed to be rather simple -- small microcontroller is
+The electronics is supposed to be rather simple -- a small microcontroller is
 supposed to drive H-bridge for the motor, detect the limit position of the
 mechanism via hall sensors and appropriately placed magnets. Usage of hall
 sensors instead of mechanical switches allows for further minimization compared
@@ -372,10 +374,10 @@ name them\footnote{Naming is used to describe configurations in section
 \ref{fig:dock_description}. When two docks connect, there can be an angle of
 $0^\circ$, $90^\circ$, $180^\circ$ or $270^\circ$ between their orientation
 vectors (measured counterclockwise from a perspective one of the modules;
-looking from shoe center to the dock center). Notice that the angle is the same
-no matter which module we choose. Therefore, we give a following convention: If
-we aim one of the orientation vectors up (to the \emph{north}), the other vector
-aims either:
+looking from the shoe center to the dock center). Notice that the angle is the
+same no matter which module we choose. Therefore, we introduce a following
+convention: If we aim one of the orientation vectors up (to the \emph{north}),
+the other vector aims either:
 \begin{enumerate*}
     \item \emph{north},
     \item \emph{east},
@@ -399,21 +401,22 @@ orientation $o$ to be an element of $\mathcal{O} = \{N, E, S, W\}$.
 \subsection{Docks Interaction}\label{sec:dock_interaction}
 
 When two docks are connected, they can exchange binary blobs and share power.
-The communication and power sharing is accomplished by mechanical contact using
-pogo pins placed in the inner part of the skirt. The communication between two
-docks is implemented as a simple UART (Universal Synchronous Receiver and
+The communication and power sharing is accomplished by a mechanical contact
+using pogo pins placed in the inner part of the skirt. The communication between
+two docks is implemented as a simple UART (Universal Synchronous Receiver and
 Transmitter).
 
-To allow docks to connect in four different mutual orientations and to preserve
-the ability to communicate and share power, we use a similar pin arrangement as
-the HiGen dock \cite{parrott_higen:_2014} shown in figure \ref{fig:dock_pins}.
-The pins are arranged such that in each orientation one of the pin sections A or
-B is in contact with one of the pad sections 1 or 2. There are four pins in
-total; two pins for power-sharing (GND and 48 V), one pin for UART (TX pin to RX
-pad) and a dedicated sense pin for detection of the mutual orientation. The
-orientation could be retrieved by detecting which communication line is active,
-however, we find such a solution much more complicated. The dedicated sense pin
-can also easily recognize if the mating site is still attached.
+To allow the docks to connect in four different mutual orientations and to
+preserve the ability to communicate and share power, we use a similar pin
+arrangement as the HiGen dock \cite{parrott_higen:_2014} shown in figure
+\ref{fig:dock_pins}. The pins are arranged such that in each orientation one of
+the pin sections A or B is in contact with one of the pad sections 1 or 2. There
+are four pins in total; two pins for power-sharing (GND and 48 V), one pin for
+UART (TX pin to RX pad) and a dedicated sense pin for detection of the mutual
+orientation. The orientation could be retrieved by detecting which communication
+line is active, however, we find such a solution much more complicated. The
+dedicated sense pin can also easily recognize if the mating site is still
+attached.
 
 \begin{figure}[t]
     \centering
@@ -430,7 +433,7 @@ be determined by the table in figure \ref{fig:dock_pins}.
 
 The docks communicate over UART \footnote{The communication speed is easily
 achievable due to a short physical communication distance.} with 8 bits, no
-parity and a 1.5 stop bit at 6 Mbaud/s. The words are transmitted in
+parity and a 1.5 stop bit at 6 Mbaud/s. The words are transmitted in a
 little-endian byte order. The communication protocol between two docks is simple
 as the only allowed operation is to pass one binary blob from one dock to
 another. The blobs are wrapped in a frame with the following format:
@@ -453,11 +456,11 @@ mismatch), the dock can discard the frame\footnote{This behavior mimics the
 Ethernet interface and simplifies implementation of the dock.}. Bytes of the
 outcoming frame are required to be sent consequently with no additional delay.
 There is a silent period of 8 bytes (14 \si{\micro\second}) after each frame.
-The receiver should discard incomplete frame after the silent period and prepare
-for a next incoming frame. The hardware can implement baud rate correction
-algorithms and leverage the constant header 0xAA for this purpose. The content
-type field identifies the content in payload and allows to transmit various
-protocols over the docks, (e.g., IP datagrams, RoFI debug messages, RoFI
+The receiver should discard an incomplete frame after the silent period and
+prepare for a next incoming frame. The hardware can implement baud rate
+correction algorithms and leverage the constant header 0xAA for this purpose.
+The content type field identifies the content in payload and allows to transmit
+various protocols over the docks, (e.g., IP datagrams, RoFI debug messages, RoFI
 firmware upgrades etc.). The dock is allowed to treat different content
 differently (e.g. rearrange them in send buffer, drop them, etc.).
 

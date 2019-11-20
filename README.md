@@ -10,5 +10,5 @@ primary module of the platform and give means to program such robots. We also
 present some of the prototypes based on our designs.
 
 See the [project repository](https://github.com/paradise-fi/rofi) and the
-[thesis](https://is.muni.cz/auth/th/y1s7e/).
+[thesis](https://is.muni.cz/th/y1s7e/).
 
